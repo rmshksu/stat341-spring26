@@ -63,6 +63,8 @@ defaults:
   #     type: notes
   #   values:
   #     layout: notes
+include:
+  - "notes/_main_files"
 
 compress_html:
   clippings: all
