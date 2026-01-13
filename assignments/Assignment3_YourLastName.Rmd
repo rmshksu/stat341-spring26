@@ -1,0 +1,63 @@
+---
+title: "Assignment 3"
+author: "Your Name"
+date: "2025-06-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## About this assignment  
+
+- **Goal:** to review the concepts learned about treatment structure and design structure of an experiment. 
+- **Due:** Tuesday, July 8th. 
+
+## 1. In less than 5 sentences, mention how you can easily identify a multilevel design structure. 
+
+## 2. Pick one design (D1, D2, or D3) described below and answer points a, b, and c. 
+
+**Design D1.** A company wants to investigate the suitability of a corn hybrid under different irrigation (low, medium, high) and fertilization (low, medium, high) regimes. 
+The field scientist's operations for this experiment are constrained by the size of the agricultural machinery for irrigating and applying the fertilizer. 
+The field that is available is 180 feet wide (East to West) and 270 feet long (South to North).  
+The sprinkler irrigation equipment that is available can apply the same irrigation rate with a working width of 30 feet and runs from South to North. 
+The equipment available to apply the fertilizer has a working width of 20 feet and also runs from South to North. 
+
+**a. What is the treatment structure?**  
+
+**b. What design structure would you use? What are the consequences regarding power of choosing that design? (e.g., power to detect differences between irrigation levels vs. power to detect differences between fertilizer levels)**  
+
+**c. Write the statistical model (using math notation) for analyzing data produced by that experiment.**
+
+
+
+**Design D2.** A group of researchers wishes to study the effects of timing of vaccination (pre-weaning or post-weaning) on beef calves held on diets with different levels of energy supplementation (low, medium, and high levels) on body weight 30 days after weaning. 
+The facility available has one room with 36 pens that fit one calf. 
+
+**a. What is the treatment structure?**  
+
+**b. What design structure would you use? What are the consequences regarding power of choosing that design, compared to a multilevel design?**   
+
+**c. Write the statistical model (using math notation) for analyzing data produced by that experiment.**
+
+
+
+
+**Design D3.** A baking scientist wants to study the differences between two sourdough starters (starter A vs. starter B) for 2 rising temperature (18C or 30C) on dough acidity (measured with pH).
+The equipment that is available includes an oven that fits 4 loaves all at once. 
+
+**a. What is the treatment structure?**  
+
+**b. What design structure would you use if your main priority is to study the starter x temperature interaction?** 
+
+**c. Write the statistical model (using math notation) for analyzing data produced by that experiment.**
+
+## 3. Find the publication you used for HW2 (in exercise 2) and answer the following questions:  
+
+**a. What is the design structure?**  
+
+**c. Write the statistical model that corresponds with that design.**
+
+**c. Develop an ANOVA table for that study, including degrees of freedom and discuss the strengths of that design (e.g., ).**  
+

@@ -1,0 +1,50 @@
+---
+title: "Assignment 3"
+author: "Your Name"
+date: "2025-06-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## About this assignment  
+
+- **Goal:** to review the concepts learned about treatment structure and design structure of split-plot experiments. 
+- **Due:** Friday, July 18th. 
+
+## 1
+
+The data in `df` below correspond to an experiment grown in 1995-1996 at the Scottish Crop Research Institute. The treatment design was a 2x70 factorial, and the design structure was a split-plot design with 4 blocks, 2 whole-plot fungicide treatments, and 70 barley varieties. The total area was 10 rows (North/South) by 56 beds (East/West). 
+
+```{r}
+library(agridat)
+data("durban.splitplot")
+df <- durban.splitplot
+```
+
+### 1.a. 
+
+Using math notation, write the statistical model to analyze that dataframe. Define all model components. 
+
+### 1.b. 
+
+Write an ANOVA table including source of variation and degrees of freedom. Include both the treatment and the design sources of variability. 
+
+### 1.c. 
+
+Fit the model in (1.a.) to the data using R software. 
+
+### 1.d. 
+
+Please provide the estimated treatment means for fungicide treatment "F1" and genotype "G42" and their 95% confidence intervals.  
+
+### 1.e. 
+
+Please provide the estimated variance components (i.e., the $\sigma$s in (1.a.). 
+
+
+
+
+

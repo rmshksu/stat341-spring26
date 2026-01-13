@@ -1,0 +1,35 @@
+# Practice: Hierarchical (Multilevel) Designs 
+June 25th, 2025  
+
+## Review: Hierarchical Designs 
+
+- Remember the definition of experimental unit? The smallest unit to which a treatment is independently applied. 
+- Sometimes we find that there are different sizes of experimental units. 
+- In such cases, it is important to identify the different experimental units and the randomization scheme. We may be in front of a multilevel design. 
+
+```{r echo=FALSE, fig.cap="Schematic description of a field experiment with a split-plot design", out.width = '100%'}
+knitr::include_graphics("../figures/designs_splitplot.PNG")
+```
+
+```{r echo=FALSE, fig.cap="Schematic description of a swine experiment with a split-plot design", out.width = '100%'}
+knitr::include_graphics("../figures/pigs_splitplot.PNG")
+```
+
+- Sometimes, these differences in the sizes of EUs are not that easy to notice.  
+- More details in Analysis of Messy Data - Ch5. 
+
+### More pictures:  
+![Example 1 - RCBD](https://www.agrobit.ag/wp-content/uploads/2023/06/2_caso-studio-trial-plots-cover-800x533.jpg)
+
+![Example 2 - RCBD](https://www.researchgate.net/publication/309748939/figure/fig4/AS:466592510287876@1488255731678/UAV-image-of-the-field-trial-Different-plot-designs-including-one-two-three-and.png)
+
+![Example 3](https://www.pnw.coop/images/651/images/strip4.jpg)
+
+## R demo 
+
+[Follow along with this R script!](../scripts/06252025_splitplot1.Rmd)
+
+## Tomorrow  
+
+- Zoom classes -- we will use the link for the office hours 
+

@@ -1,0 +1,93 @@
+# More practice: Hierarchical (Multilevel) Designs 
+June 26th, 2025  
+
+## Review: Hierarchical Designs 
+
+- Remember the definition of experimental unit? The smallest unit to which a treatment is independently applied. 
+- Sometimes we find that there are different sizes of experimental units. 
+- In such cases, it is important to identify the different experimental units and the randomization scheme. We may be in front of a multilevel design. 
+
+```{r echo=FALSE, fig.cap="Schematic description of a field experiment with a split-plot design", out.width = '100%'}
+knitr::include_graphics("../figures/designs_splitplot.PNG")
+```
+
+```{r echo=FALSE, fig.cap="Schematic description of a swine experiment with a split-plot design", out.width = '100%'}
+knitr::include_graphics("../figures/pigs_splitplot.PNG")
+```
+
+- Sometimes, these differences in the sizes of EUs are not that easy to notice.  
+- More details in Analysis of Messy Data - Ch5. 
+
+### Remember our example:  
+
+Rows and beds (aka columns) probably looked somewhat like this: 
+
+![](https://www.pnw.coop/images/651/images/strip4.jpg)
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(agridat)
+library(ggpubr)
+
+data("durban.splitplot")
+df <- durban.splitplot
+
+theme_set(theme_minimal())
+
+p_blocks <- 
+  df %>% 
+  ggplot(aes(bed, row))+
+  geom_tile(aes(fill = block))+
+  geom_tile(color = "black", fill=NA)+
+  coord_fixed()
+
+p_wholeplot <-
+  df %>% 
+  ggplot(aes(bed, row))+
+  geom_tile(aes(fill = fung))+
+  geom_tile(color = "black", fill=NA)+
+  coord_fixed()
+
+p_splitplot <- 
+df %>% 
+  ggplot(aes(bed, row))+
+  geom_tile(aes(fill = gen), show.legend= F)+
+  geom_tile(color = "black", fill=NA)+
+  coord_fixed()
+
+ggarrange(p_blocks, p_wholeplot, p_splitplot, ncol = 1, nrow = 3)
+```
+
+
+
+## Building the ANOVA skeleton using design (aka topographical) and treatment elements  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+t_topo <- data.frame(Source = c("Block", " ", "Fungicide(Block)","","","Gen(Fung x Block)", "Total"),
+                     df = c("b-1", "-", "(f-1)*b", "-", "-", "(g-1)*f*b", "N-1"))
+
+t_trt <- data.frame(Source = c("-", "Fungicide", "-", "Genotype", "Fung x Gen", "Parallels", "Total"),
+                    df = c("-", "f-1", "", "g-1", "(f-1)(g-1)", "N-(f*g)", "N-1"))
+
+t_comb <- data.frame(Source = c("Block", "Fungicide", "Fungicide(Block)", "Genotype",
+                                "Fung x Gen", "Pens(Block x Trt) error", "Total"),
+                    df = c("b-1", "t-1", "(f-1)*b - (t-1)",  "g-1", "(f-1)(g-1)", "(g-1)* f * b - (g-1 + (f-1)(g-1))", "N-1"))
+
+knitr::kables(
+  list(
+    knitr::kable(t_topo, caption = "Experiment or Topographical"),
+    knitr::kable(t_trt, caption = "Treatment"),
+    knitr::kable(t_comb, caption = "Combined Table")
+  ),
+  caption = 'Constructing the ANOVA skeleton'
+)
+```
+
+## R demo 
+
+[Follow along with this R script!](../scripts/06262025_splitplot2.Rmd)
+
+## Tomorrow  
+
+- Zoom classes -- we will use the link for the office hours 
+

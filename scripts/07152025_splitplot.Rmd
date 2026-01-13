@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+author: "J Lacasa"
+date: "2025-07-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(agridat)
+library(lme4)
+library(emmeans)
+```
+
+
+```{r}
+df_splitplot <- agridat::durban.splitplot
+
+df_splitplot %>% 
+  ggplot(aes(bed, row))+
+  # geom_tile(aes(fill = block))+
+  # geom_tile(aes(fill = paste(fung)))+
+  geom_tile(aes(fill = gen))+
+  geom_tile(aes(), color = "black", fill = NA)
+  
+```
+
+
+```{r}
+m_splitplot <- lmer(yield ~ fung * gen + 
+                      (1|block/fung), 
+                    data = df_splitplot)
+```
+
+
+```{r}
+m_splitplot_re <- lmer(yield ~ fung + gen + fung:gen +
+                      (1|block) + (1|block:fung), 
+                    data = df_splitplot)
+
+m_splitplot_fixed <- lmer(yield ~ fung + gen + fung:gen +
+                      block + (1|block:fung), 
+                    data = df_splitplot)
+
+m_splitplot_nothing <- lm(yield ~ fung + gen + fung:gen, 
+                    data = df_splitplot)
+```
+
+```{r}
+sigma(m_splitplot_re)
+sigma(m_splitplot_fixed)
+sigma(m_splitplot_nothing)
+```
+
+```{r}
+VarCorr(m_splitplot_re)
+VarCorr(m_splitplot_fixed)
+```
+
+```{r}
+emmeans(m_splitplot_re, ~fung, contr = list(c(1, -1) ))
+emmeans(m_splitplot_fixed, ~fung, contr = list(c(1, -1) ))
+
+
+emmeans(m_splitplot_nothing, ~fung, contr = list(c(1, -1) ))
+```
+```{r}
+emmeans(m_splitplot_re, ~gen, contr = list(c(1, -1, rep(0, 68)) ))$contr
+emmeans(m_splitplot_fixed, ~gen, contr = list(c(1, -1, rep(0, 68)) ))$contr
+emmeans(m_splitplot_nothing, ~gen, contr = list(c(1, -1, rep(0, 68)) ))$contr
+
+```
+
+
+
