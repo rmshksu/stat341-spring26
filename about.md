@@ -17,7 +17,6 @@ nav_order: 1
 
 ---
 
-
 ## About
 
 This course serves as an introduction to applied statistical modeling for the biological sciences. Major topics include: regression analysis, uncertainty quantification, chi-square testing, and analysis of variance. We will cover more complex topics like generalized linear models and mixed models if time permits.

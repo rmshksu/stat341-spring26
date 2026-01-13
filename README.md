@@ -1,30 +1,25 @@
 ---
 layout: home
-title: STAT 720
+title: STAT 341
 nav_exclude: true
 permalink: /:path/
 seo:
   type: Course
-  name: STAT 720
+  name: STAT 341
 ---
 
-# STAT 720 - Design of Experiments  
-Summer 2025   
+# STAT 341 - Biometrics II 
+Spring 2026 
 Kansas State University
 
-**Instructor:** Dr. Josefina Lacasa  
+**Instructor:** Robert Sholl
 
-**Time:** Mon-Tue-Wed-Thu-Fri 9:10 am - 10.10 am   
+**Time:** Tuesday/Thursday 1:05 PM - 2:20 PM
 
-**Course Description:**  This course introduces students to the design and analysis of experiments.
-The statistical modeling in this course will focus on statistical thinking (more on statistical thinking [here](https://errorstatistics.com/wp-content/uploads/2016/01/brown-and-kass_what-is-statistics-with-discussion.pdf)). 
-We will cover basics of designed experiments, basic experiment designs (e.g., completely randomized designs, randomized complete block designs, incomplete block designs, split-plot designs) and may cover more advanced topics like power analyses.
-Note that more complex designs and data structure may be covered in Analysis of Messy Data (STAT 870). 
+**Course Description:**  
+This course serves as an introduction to applied statistical modeling for the biological sciences. Major topics include: regression analysis, uncertainty quantification, chi-square testing, and analysis of variance. We will cover more complex topics like generalized linear models and mixed models if time permits.
 
 **Main Goal of this Course:**  
-The main goal of this course is to present the basic concepts of designed experiments. 
-Students are expected to learn to identify key design components, write out the corresponding statistical model and fit it to the data using R software.  
+The main goal of this course is to introduce students to statistical modeling, present data from both observational studies and designed experiments, write out the corresponding statistical model and fit it to the data using R software.  
 
-**What this course is not:** an R programming course (however, help will be provided).
-
-**Prerequisites:** STAT 705.   
+**Prerequisites:** STAT 240.   
