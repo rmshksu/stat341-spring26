@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Day 2 | Biometrics II - STAT 341</title>
+  <meta name="description" content="2 Day 2 | Biometrics II - STAT 341" />
+  <meta name="generator" content="bookdown 0.44 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Day 2 | Biometrics II - STAT 341" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Day 2 | Biometrics II - STAT 341" />
+  
+  
+  
+
+<meta name="author" content="R. M. Sholl" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="day-1.html"/>
+<link rel="next" href="day-3.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">STAT 341</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="day-1.html"><a href="day-1.html"><i class="fa fa-check"></i><b>1</b> Day 1</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="day-1.html"><a href="day-1.html#welcome-mandatory-formalities"><i class="fa fa-check"></i><b>1.1</b> Welcome + Mandatory Formalities</a></li>
+<li class="chapter" data-level="1.2" data-path="day-1.html"><a href="day-1.html#assignments"><i class="fa fa-check"></i><b>1.2</b> Assignments</a></li>
+<li class="chapter" data-level="1.3" data-path="day-1.html"><a href="day-1.html#final-project"><i class="fa fa-check"></i><b>1.3</b> Final Project</a></li>
+<li class="chapter" data-level="1.4" data-path="day-1.html"><a href="day-1.html#review"><i class="fa fa-check"></i><b>1.4</b> Review</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="day-1.html"><a href="day-1.html#general-intro-stats"><i class="fa fa-check"></i><b>1.4.1</b> General Intro Stats</a></li>
+<li class="chapter" data-level="1.4.2" data-path="day-1.html"><a href="day-1.html#biometrics-i"><i class="fa fa-check"></i><b>1.4.2</b> Biometrics I</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="day-1.html"><a href="day-1.html#assignment-1"><i class="fa fa-check"></i><b>1.5</b> Assignment 1</a></li>
+<li class="chapter" data-level="1.6" data-path="day-1.html"><a href="day-1.html#go-away"><i class="fa fa-check"></i><b>1.6</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="day-2.html"><a href="day-2.html"><i class="fa fa-check"></i><b>2</b> Day 2</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="day-2.html"><a href="day-2.html#math-overview"><i class="fa fa-check"></i><b>2.1</b> Math overview</a></li>
+<li class="chapter" data-level="2.2" data-path="day-2.html"><a href="day-2.html#matrix-algebra"><i class="fa fa-check"></i><b>2.2</b> Matrix algebra</a></li>
+<li class="chapter" data-level="2.3" data-path="day-2.html"><a href="day-2.html#calculus"><i class="fa fa-check"></i><b>2.3</b> Calculus</a></li>
+<li class="chapter" data-level="2.4" data-path="day-2.html"><a href="day-2.html#advanced-math"><i class="fa fa-check"></i><b>2.4</b> Advanced Math</a></li>
+<li class="chapter" data-level="2.5" data-path="day-2.html"><a href="day-2.html#next-class"><i class="fa fa-check"></i><b>2.5</b> Next class</a></li>
+<li class="chapter" data-level="2.6" data-path="day-2.html"><a href="day-2.html#assignment-1-1"><i class="fa fa-check"></i><b>2.6</b> Assignment 1</a></li>
+<li class="chapter" data-level="2.7" data-path="day-2.html"><a href="day-2.html#go-away-1"><i class="fa fa-check"></i><b>2.7</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="day-3.html"><a href="day-3.html"><i class="fa fa-check"></i><b>3</b> Day 3</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="day-3.html"><a href="day-3.html#review-1"><i class="fa fa-check"></i><b>3.1</b> Review</a></li>
+<li class="chapter" data-level="3.2" data-path="day-3.html"><a href="day-3.html#r-programming"><i class="fa fa-check"></i><b>3.2</b> R Programming</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="day-3.html"><a href="day-3.html#r-studio"><i class="fa fa-check"></i><b>3.2.1</b> R Studio</a></li>
+<li class="chapter" data-level="3.2.2" data-path="day-3.html"><a href="day-3.html#basic-principles"><i class="fa fa-check"></i><b>3.2.2</b> Basic principles</a></li>
+<li class="chapter" data-level="3.2.3" data-path="day-3.html"><a href="day-3.html#live-example"><i class="fa fa-check"></i><b>3.2.3</b> Live example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="day-3.html"><a href="day-3.html#r-programming-lab"><i class="fa fa-check"></i><b>3.3</b> R Programming Lab</a></li>
+<li class="chapter" data-level="3.4" data-path="day-3.html"><a href="day-3.html#go-away-2"><i class="fa fa-check"></i><b>3.4</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="day-4.html"><a href="day-4.html"><i class="fa fa-check"></i><b>4</b> Day 4</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="day-4.html"><a href="day-4.html#review-2"><i class="fa fa-check"></i><b>4.1</b> Review</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="day-4.html"><a href="day-4.html#basic-principles-1"><i class="fa fa-check"></i><b>4.1.1</b> Basic principles</a></li>
+<li class="chapter" data-level="4.1.2" data-path="day-4.html"><a href="day-4.html#r-basics"><i class="fa fa-check"></i><b>4.1.2</b> R Basics</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="day-4.html"><a href="day-4.html#more-advanced-stuff"><i class="fa fa-check"></i><b>4.2</b> (More) Advanced stuff</a></li>
+<li class="chapter" data-level="4.3" data-path="day-4.html"><a href="day-4.html#advanced-programming"><i class="fa fa-check"></i><b>4.3</b> Advanced Programming</a></li>
+<li class="chapter" data-level="4.4" data-path="day-4.html"><a href="day-4.html#in-class-activity"><i class="fa fa-check"></i><b>4.4</b> In-class activity</a></li>
+<li class="chapter" data-level="4.5" data-path="day-4.html"><a href="day-4.html#go-away-3"><i class="fa fa-check"></i><b>4.5</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="day-5.html"><a href="day-5.html"><i class="fa fa-check"></i><b>5</b> Day 5</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="day-5.html"><a href="day-5.html#review-3"><i class="fa fa-check"></i><b>5.1</b> Review</a></li>
+<li class="chapter" data-level="5.2" data-path="day-5.html"><a href="day-5.html#statistical-modeling"><i class="fa fa-check"></i><b>5.2</b> Statistical Modeling</a></li>
+<li class="chapter" data-level="5.3" data-path="day-5.html"><a href="day-5.html#stringing-sentences"><i class="fa fa-check"></i><b>5.3</b> Stringing sentences</a></li>
+<li class="chapter" data-level="5.4" data-path="day-5.html"><a href="day-5.html#telling-stories"><i class="fa fa-check"></i><b>5.4</b> Telling stories</a></li>
+<li class="chapter" data-level="5.5" data-path="day-5.html"><a href="day-5.html#go-away-4"><i class="fa fa-check"></i><b>5.5</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="day-6.html"><a href="day-6.html"><i class="fa fa-check"></i><b>6</b> Day 6</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="day-6.html"><a href="day-6.html#review-4"><i class="fa fa-check"></i><b>6.1</b> Review</a></li>
+<li class="chapter" data-level="6.2" data-path="day-6.html"><a href="day-6.html#stringing-sentences-1"><i class="fa fa-check"></i><b>6.2</b> Stringing sentences</a></li>
+<li class="chapter" data-level="6.3" data-path="day-6.html"><a href="day-6.html#telling-stories-1"><i class="fa fa-check"></i><b>6.3</b> Telling stories</a></li>
+<li class="chapter" data-level="6.4" data-path="day-6.html"><a href="day-6.html#linear-models"><i class="fa fa-check"></i><b>6.4</b> Linear models</a></li>
+<li class="chapter" data-level="6.5" data-path="day-6.html"><a href="day-6.html#parameter-estimation"><i class="fa fa-check"></i><b>6.5</b> Parameter estimation</a></li>
+<li class="chapter" data-level="6.6" data-path="day-6.html"><a href="day-6.html#live-example-1"><i class="fa fa-check"></i><b>6.6</b> Live example</a></li>
+<li class="chapter" data-level="6.7" data-path="day-6.html"><a href="day-6.html#the-path-forward"><i class="fa fa-check"></i><b>6.7</b> The path forward</a></li>
+<li class="chapter" data-level="6.8" data-path="day-6.html"><a href="day-6.html#go-away-5"><i class="fa fa-check"></i><b>6.8</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="day-7.html"><a href="day-7.html"><i class="fa fa-check"></i><b>7</b> Day 7</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="day-7.html"><a href="day-7.html#review-5"><i class="fa fa-check"></i><b>7.1</b> Review</a></li>
+<li class="chapter" data-level="7.2" data-path="day-7.html"><a href="day-7.html#multivariate-normal-distributions"><i class="fa fa-check"></i><b>7.2</b> Multivariate Normal Distributions</a></li>
+<li class="chapter" data-level="7.3" data-path="day-7.html"><a href="day-7.html#the-simplest-model"><i class="fa fa-check"></i><b>7.3</b> The simplest model</a></li>
+<li class="chapter" data-level="7.4" data-path="day-7.html"><a href="day-7.html#live-example-2"><i class="fa fa-check"></i><b>7.4</b> Live example</a></li>
+<li class="chapter" data-level="7.5" data-path="day-7.html"><a href="day-7.html#go-away-6"><i class="fa fa-check"></i><b>7.5</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="day-8.html"><a href="day-8.html"><i class="fa fa-check"></i><b>8</b> Day 8</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="day-8.html"><a href="day-8.html#review-6"><i class="fa fa-check"></i><b>8.1</b> Review</a></li>
+<li class="chapter" data-level="8.2" data-path="day-8.html"><a href="day-8.html#adding-complexity"><i class="fa fa-check"></i><b>8.2</b> Adding complexity</a></li>
+<li class="chapter" data-level="8.3" data-path="day-8.html"><a href="day-8.html#model-development"><i class="fa fa-check"></i><b>8.3</b> Model development</a></li>
+<li class="chapter" data-level="8.4" data-path="day-8.html"><a href="day-8.html#confidence-intervals"><i class="fa fa-check"></i><b>8.4</b> Confidence intervals</a></li>
+<li class="chapter" data-level="8.5" data-path="day-8.html"><a href="day-8.html#derived-quantities"><i class="fa fa-check"></i><b>8.5</b> Derived quantities</a></li>
+<li class="chapter" data-level="8.6" data-path="day-8.html"><a href="day-8.html#r-programming-lab-1"><i class="fa fa-check"></i><b>8.6</b> R programming Lab</a></li>
+<li class="chapter" data-level="8.7" data-path="day-8.html"><a href="day-8.html#go-away-7"><i class="fa fa-check"></i><b>8.7</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="day-9.html"><a href="day-9.html"><i class="fa fa-check"></i><b>9</b> Day 9</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="day-9.html"><a href="day-9.html#review-7"><i class="fa fa-check"></i><b>9.1</b> Review</a></li>
+<li class="chapter" data-level="9.2" data-path="day-9.html"><a href="day-9.html#confidence-intervals-for-derived-quantities"><i class="fa fa-check"></i><b>9.2</b> Confidence intervals for derived quantities</a></li>
+<li class="chapter" data-level="9.3" data-path="day-9.html"><a href="day-9.html#non-parametric-bootstrap"><i class="fa fa-check"></i><b>9.3</b> Non-parametric bootstrap</a></li>
+<li class="chapter" data-level="9.4" data-path="day-9.html"><a href="day-9.html#concept-demo"><i class="fa fa-check"></i><b>9.4</b> Concept demo</a></li>
+<li class="chapter" data-level="9.5" data-path="day-9.html"><a href="day-9.html#r-programming-lab-2"><i class="fa fa-check"></i><b>9.5</b> R programming Lab</a></li>
+<li class="chapter" data-level="9.6" data-path="day-9.html"><a href="day-9.html#go-away-8"><i class="fa fa-check"></i><b>9.6</b> Go away</a></li>
+<li class="chapter" data-level="9.7" data-path="day-9.html"><a href="day-9.html#extended-notes-on-the-delta-method"><i class="fa fa-check"></i><b>9.7</b> Extended notes on the Delta Method</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="day-10.html"><a href="day-10.html"><i class="fa fa-check"></i><b>10</b> Day 10</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="day-10.html"><a href="day-10.html#review-8"><i class="fa fa-check"></i><b>10.1</b> Review</a></li>
+<li class="chapter" data-level="10.2" data-path="day-10.html"><a href="day-10.html#in-class-activity-1"><i class="fa fa-check"></i><b>10.2</b> In-class activity</a></li>
+<li class="chapter" data-level="10.3" data-path="day-10.html"><a href="day-10.html#assignment-3"><i class="fa fa-check"></i><b>10.3</b> Assignment 3</a></li>
+<li class="chapter" data-level="10.4" data-path="day-10.html"><a href="day-10.html#projects"><i class="fa fa-check"></i><b>10.4</b> Projects</a></li>
+<li class="chapter" data-level="10.5" data-path="day-10.html"><a href="day-10.html#class-choice-lectures"><i class="fa fa-check"></i><b>10.5</b> Class choice lectures</a></li>
+<li class="chapter" data-level="10.6" data-path="day-10.html"><a href="day-10.html#go-away-9"><i class="fa fa-check"></i><b>10.6</b> Go away</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="assignment-1-2.html"><a href="assignment-1-2.html"><i class="fa fa-check"></i><b>11</b> Assignment 1</a></li>
+<li class="chapter" data-level="12" data-path="assignment-2.html"><a href="assignment-2.html"><i class="fa fa-check"></i><b>12</b> Assignment 2</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biometrics II - STAT 341</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="day-2" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Day 2<a href="day-2.html#day-2" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="math-overview" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Math overview<a href="day-2.html#math-overview" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>Not a “math class”</p>
+<ul>
+<li><p>Applied statistics class</p></li>
+<li><p>Math is a tool</p></li>
+<li><p>So we need to <em>understand</em> it</p></li>
+</ul></li>
+<li><p>Today only covers the <em>essentials</em></p></li>
+<li><p>Supplemental material</p>
+<ul>
+<li><p>If you want it</p></li>
+<li><p>Not required (but recommended)</p></li>
+<li><p>Final project <em>can</em> be math focused</p></li>
+</ul></li>
+</ul>
+<p><br></p>
+</div>
+<div id="matrix-algebra" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Matrix algebra<a href="day-2.html#matrix-algebra" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><span class="math display">\[
+\text{Matrix: } \textbf{A} = \begin{bmatrix}1 &amp; 2 \\ 3 &amp; 4\end{bmatrix}
+\qquad\qquad
+\text{Vector: } \boldsymbol{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}
+\qquad\qquad
+\text{Scalar: } a = 5
+\]</span></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="day-2.html#cb35-1" tabindex="-1"></a><span class="co"># 2x2 matrix</span></span>
+<span id="cb35-2"><a href="day-2.html#cb35-2" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb35-3"><a href="day-2.html#cb35-3" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="day-2.html#cb35-4" tabindex="-1"></a><span class="co"># 1x3 vector</span></span>
+<span id="cb35-5"><a href="day-2.html#cb35-5" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</span>
+<span id="cb35-6"><a href="day-2.html#cb35-6" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="day-2.html#cb35-7" tabindex="-1"></a><span class="co"># scalar (1x1 matrix/vector)</span></span>
+<span id="cb35-8"><a href="day-2.html#cb35-8" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">5</span></span>
+<span id="cb35-9"><a href="day-2.html#cb35-9" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="day-2.html#cb35-10" tabindex="-1"></a>A</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="day-2.html#cb37-1" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## [1] 1 2 3</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="day-2.html#cb39-1" tabindex="-1"></a>a</span></code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<ul>
+<li>Sums</li>
+</ul>
+<p><span class="math display">\[
+\textbf{A} = \begin{bmatrix}1 &amp; 2 \\ 3 &amp; 4\end{bmatrix}
+\qquad\qquad
+\textbf{B} = \begin{bmatrix}1 &amp; 1 \\ 1 &amp; 0\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\textbf{A} + \textbf{B} = \begin{bmatrix}1 &amp; 2 \\ 3 &amp; 4\end{bmatrix} + \begin{bmatrix}1 &amp; 0 \\ 1 &amp; 0\end{bmatrix} =
+\begin{bmatrix}2 &amp; 2 \\ 4 &amp; 4\end{bmatrix}
+\]</span></p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="day-2.html#cb41-1" tabindex="-1"></a>B <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>),<span class="dv">2</span>,<span class="dv">2</span>,T)</span>
+<span id="cb41-2"><a href="day-2.html#cb41-2" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="day-2.html#cb41-3" tabindex="-1"></a><span class="co"># adding two matrices</span></span>
+<span id="cb41-4"><a href="day-2.html#cb41-4" tabindex="-1"></a>A <span class="sc">+</span> B</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    2    3
+## [2,]    4    4</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="day-2.html#cb43-1" tabindex="-1"></a><span class="co"># scalar + matrix</span></span>
+<span id="cb43-2"><a href="day-2.html#cb43-2" tabindex="-1"></a>a <span class="sc">+</span> A</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    6    7
+## [2,]    8    9</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="day-2.html#cb45-1" tabindex="-1"></a><span class="co"># scalar + vector</span></span>
+<span id="cb45-2"><a href="day-2.html#cb45-2" tabindex="-1"></a>a <span class="sc">+</span> x</span></code></pre></div>
+<pre><code>## [1] 6 7 8</code></pre>
+<ul>
+<li>Scalar Products of Vector/Matrix</li>
+</ul>
+<p><span class="math display">\[
+3 \times \begin{bmatrix}1 &amp; 2 \\ 3 &amp; 4\end{bmatrix} = \begin{bmatrix}3 &amp; 6 \\ 9 &amp; 12\end{bmatrix}
+\qquad\qquad
+10 \times \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} = \begin{bmatrix}10 \\ 20 \\ 30\end{bmatrix}
+\]</span></p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="day-2.html#cb47-1" tabindex="-1"></a><span class="co"># scalar * matrix</span></span>
+<span id="cb47-2"><a href="day-2.html#cb47-2" tabindex="-1"></a><span class="dv">3</span><span class="sc">*</span>A</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    3    6
+## [2,]    9   12</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="day-2.html#cb49-1" tabindex="-1"></a><span class="co"># scalar * vector</span></span>
+<span id="cb49-2"><a href="day-2.html#cb49-2" tabindex="-1"></a><span class="dv">10</span><span class="sc">*</span>x</span></code></pre></div>
+<pre><code>## [1] 10 20 30</code></pre>
+<ul>
+<li>Transpose</li>
+</ul>
+<p><span class="math display">\[
+\textbf{A} = \begin{bmatrix}1 &amp; 2 \\ 3 &amp; 4 \\ 5 &amp; 6 \end{bmatrix}
+\qquad\qquad
+\textbf{A}^\prime = \begin{bmatrix}1 &amp; 3  &amp; 5\\ 2 &amp; 4 &amp; 6 \end{bmatrix}
+\]</span></p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="day-2.html#cb51-1" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="dv">3</span>,<span class="dv">2</span>,T)</span>
+<span id="cb51-2"><a href="day-2.html#cb51-2" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="day-2.html#cb51-3" tabindex="-1"></a>A <span class="co"># 2x3 matrix</span></span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4
+## [3,]    5    6</code></pre>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="day-2.html#cb53-1" tabindex="-1"></a><span class="fu">t</span>(A) <span class="co"># 3x2 when transposed</span></span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    3    5
+## [2,]    2    4    6</code></pre>
+<ul>
+<li>Matrix Products</li>
+</ul>
+<p><span class="math display">\[
+\begin{bmatrix}
+1 &amp; 3 &amp; 5 \\
+2 &amp; 4 &amp; 6
+\end{bmatrix}
+\begin{bmatrix}
+1 &amp; 2 \\
+3 &amp; 4 \\
+5 &amp; 6
+\end{bmatrix} =
+\begin{bmatrix}
+(1 \cdot 1) + (3 \cdot 3) + (5 \cdot 5)
+    &amp;
+(1 \cdot 2) + (3 \cdot 4) + (5 \cdot 6)
+\\
+(2 \cdot 1) + (4 \cdot 3) + (6 \cdot 5)
+    &amp;
+(2 \cdot 2) + (4 \cdot 4) + (6 \cdot 6)
+\end{bmatrix} =
+\begin{bmatrix}
+35 &amp; 44 \\
+44 &amp; 56
+\end{bmatrix}
+\]</span></p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="day-2.html#cb55-1" tabindex="-1"></a><span class="co"># inner product (dimension reducing)</span></span>
+<span id="cb55-2"><a href="day-2.html#cb55-2" tabindex="-1"></a><span class="fu">t</span>(A)<span class="sc">%*%</span>A</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]   35   44
+## [2,]   44   56</code></pre>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="day-2.html#cb57-1" tabindex="-1"></a><span class="co"># out product (dimension increasing)</span></span>
+<span id="cb57-2"><a href="day-2.html#cb57-2" tabindex="-1"></a>A<span class="sc">%*%</span><span class="fu">t</span>(A)</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    5   11   17
+## [2,]   11   25   39
+## [3,]   17   39   61</code></pre>
+<ul>
+<li>Determinants</li>
+</ul>
+<p><span class="math display">\[
+\textbf{A} = \begin{bmatrix}
+    0 &amp; -2 \\
+    2 &amp; 0
+\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\text{det}(\textbf{A}) = \text{det} \left(\begin{bmatrix}
+    0 &amp; -2 \\
+    2 &amp; 0
+\end{bmatrix} \right) = ad - bc = (0 \times 0) - (-2 \times 2) = 4
+\]</span></p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="day-2.html#cb59-1" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">0</span>),<span class="dv">2</span>,<span class="dv">2</span>,T)</span>
+<span id="cb59-2"><a href="day-2.html#cb59-2" tabindex="-1"></a>A</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0   -2
+## [2,]    2    0</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="day-2.html#cb61-1" tabindex="-1"></a><span class="co"># determinant</span></span>
+<span id="cb61-2"><a href="day-2.html#cb61-2" tabindex="-1"></a><span class="fu">det</span>(A)</span></code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<ul>
+<li>Matrix inverse</li>
+</ul>
+<p><span class="math display">\[
+\textbf{A} = \begin{bmatrix}0 &amp; -1 \\ 1 &amp; 0\end{bmatrix}
+\qquad\qquad
+\textbf{A}^{-1} = \begin{bmatrix}0 &amp; 1 \\ -1 &amp; 0\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\textbf{AA}^{-1} = \begin{bmatrix}0 &amp; -1 \\ 1 &amp; 0\end{bmatrix}\begin{bmatrix}0 &amp; 1 \\ -1 &amp; 0\end{bmatrix} = \begin{bmatrix}1 &amp; 0 \\ 0 &amp; 1\end{bmatrix} = \textbf{I}
+\]</span></p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="day-2.html#cb63-1" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>),<span class="dv">2</span>,<span class="dv">2</span>,T)</span>
+<span id="cb63-2"><a href="day-2.html#cb63-2" tabindex="-1"></a>A</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0   -1
+## [2,]    1    0</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="day-2.html#cb65-1" tabindex="-1"></a><span class="co"># inverse of A</span></span>
+<span id="cb65-2"><a href="day-2.html#cb65-2" tabindex="-1"></a><span class="fu">solve</span>(A)</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0    1
+## [2,]   -1    0</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="day-2.html#cb67-1" tabindex="-1"></a><span class="co"># A * inv(A) = identity</span></span>
+<span id="cb67-2"><a href="day-2.html#cb67-2" tabindex="-1"></a>A<span class="sc">%*%</span><span class="fu">solve</span>(A)</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    1</code></pre>
+<ul>
+<li>Special matrices</li>
+</ul>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="day-2.html#cb69-1" tabindex="-1"></a><span class="co"># identity matrix</span></span>
+<span id="cb69-2"><a href="day-2.html#cb69-2" tabindex="-1"></a>A<span class="sc">%*%</span><span class="fu">solve</span>(A)</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    1</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="day-2.html#cb71-1" tabindex="-1"></a><span class="co"># acts as a matrix equivalent to scalar 1</span></span>
+<span id="cb71-2"><a href="day-2.html#cb71-2" tabindex="-1"></a>A<span class="sc">%*%</span>A<span class="sc">%*%</span><span class="fu">solve</span>(A)</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0   -1
+## [2,]    1    0</code></pre>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="day-2.html#cb73-1" tabindex="-1"></a><span class="co"># zero matrix</span></span>
+<span id="cb73-2"><a href="day-2.html#cb73-2" tabindex="-1"></a>O <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>),<span class="dv">2</span>,<span class="dv">2</span>,T)</span>
+<span id="cb73-3"><a href="day-2.html#cb73-3" tabindex="-1"></a>O<span class="sc">%*%</span>B</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0    0
+## [2,]    0    0</code></pre>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="day-2.html#cb75-1" tabindex="-1"></a><span class="co"># diagonal matrix</span></span>
+<span id="cb75-2"><a href="day-2.html#cb75-2" tabindex="-1"></a><span class="st">`</span><span class="at">diag&lt;-</span><span class="st">`</span>(O,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    2</code></pre>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="day-2.html#cb77-1" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,T)</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    1</code></pre>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="day-2.html#cb79-1" tabindex="-1"></a><span class="co"># J matrix</span></span>
+<span id="cb79-2"><a href="day-2.html#cb79-2" tabindex="-1"></a>J <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,T)</span>
+<span id="cb79-3"><a href="day-2.html#cb79-3" tabindex="-1"></a>J</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    1
+## [2,]    1    1</code></pre>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="day-2.html#cb81-1" tabindex="-1"></a><span class="co"># useful for expansions</span></span>
+<span id="cb81-2"><a href="day-2.html#cb81-2" tabindex="-1"></a>J<span class="sc">*</span>a</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    5    5
+## [2,]    5    5</code></pre>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="day-2.html#cb83-1" tabindex="-1"></a><span class="co"># cdc vsp data</span></span>
+<span id="cb83-2"><a href="day-2.html#cb83-2" tabindex="-1"></a>cruise <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/cruisedata.csv&quot;</span>) </span>
+<span id="cb83-3"><a href="day-2.html#cb83-3" tabindex="-1"></a>x1 <span class="ot">=</span> cruise<span class="sc">$</span>infected <span class="co"># total infected w/ norovirus</span></span>
+<span id="cb83-4"><a href="day-2.html#cb83-4" tabindex="-1"></a>x2 <span class="ot">=</span> cruise<span class="sc">$</span>total_population <span class="co"># total on ship</span></span>
+<span id="cb83-5"><a href="day-2.html#cb83-5" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>,x1,x2) <span class="co"># design matrix</span></span>
+<span id="cb83-6"><a href="day-2.html#cb83-6" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">nrow</span>(cruise) <span class="co"># sample size</span></span>
+<span id="cb83-7"><a href="day-2.html#cb83-7" tabindex="-1"></a>J <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span>,<span class="dv">1</span>,n,T) <span class="co"># 1xn J &quot;matrix&quot;</span></span>
+<span id="cb83-8"><a href="day-2.html#cb83-8" tabindex="-1"></a></span>
+<span id="cb83-9"><a href="day-2.html#cb83-9" tabindex="-1"></a><span class="co"># matrix form of mean</span></span>
+<span id="cb83-10"><a href="day-2.html#cb83-10" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">/</span>n)<span class="sc">*</span>(J<span class="sc">%*%</span>X)</span></code></pre></div>
+<pre><code>##              x1       x2
+## [1,] 1 128.0794 2823.905</code></pre>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="day-2.html#cb85-1" tabindex="-1"></a><span class="fu">mean</span>(x1)</span></code></pre></div>
+<pre><code>## [1] 128.0794</code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="day-2.html#cb87-1" tabindex="-1"></a><span class="fu">mean</span>(x2)</span></code></pre></div>
+<pre><code>## [1] 2823.905</code></pre>
+<ul>
+<li>Trace</li>
+</ul>
+<p><span class="math display">\[
+\text{tr}(\textbf{A}) =  \sum_{i=1}^n a_{ii}
+\]</span></p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="day-2.html#cb89-1" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>),<span class="dv">3</span>,<span class="dv">3</span>,T)</span>
+<span id="cb89-2"><a href="day-2.html#cb89-2" tabindex="-1"></a>A</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+## [3,]    7    8    9</code></pre>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="day-2.html#cb91-1" tabindex="-1"></a><span class="co"># trace() won&#39;t give you this</span></span>
+<span id="cb91-2"><a href="day-2.html#cb91-2" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(A)) <span class="co"># sum of diagonals</span></span></code></pre></div>
+<pre><code>## [1] 15</code></pre>
+<ul>
+<li>Eigenvalues &amp; eigenvectors</li>
+</ul>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="day-2.html#cb93-1" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">2</span>),<span class="dv">2</span>,<span class="dv">2</span>,T)</span>
+<span id="cb93-2"><a href="day-2.html#cb93-2" tabindex="-1"></a><span class="fu">eigen</span>(A) <span class="co"># spectral decomp</span></span></code></pre></div>
+<pre><code>## eigen() decomposition
+## $values
+## [1] 3 2
+## 
+## $vectors
+##      [,1]       [,2]
+## [1,]    1 -0.7071068
+## [2,]    0  0.7071068</code></pre>
+<p><br></p>
+<ul>
+<li>Why do we care?</li>
+</ul>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1x_i + \beta_2z_i + \epsilon_i
+\]</span></p>
+<p><span class="math display">\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]</span></p>
+<p><span class="math display">\[
+\hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
+\]</span></p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="day-2.html#cb95-1" tabindex="-1"></a>x1 <span class="ot">=</span> cruise<span class="sc">$</span>start_month <span class="co"># predictor 1</span></span>
+<span id="cb95-2"><a href="day-2.html#cb95-2" tabindex="-1"></a>x2 <span class="ot">=</span> cruise<span class="sc">$</span>voyage_duration <span class="co"># predictor 2</span></span>
+<span id="cb95-3"><a href="day-2.html#cb95-3" tabindex="-1"></a>y <span class="ot">=</span> cruise<span class="sc">$</span>infected <span class="co"># response</span></span>
+<span id="cb95-4"><a href="day-2.html#cb95-4" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>,x1,x2) <span class="co"># design matrix</span></span>
+<span id="cb95-5"><a href="day-2.html#cb95-5" tabindex="-1"></a></span>
+<span id="cb95-6"><a href="day-2.html#cb95-6" tabindex="-1"></a><span class="co"># matrix method of least squares</span></span>
+<span id="cb95-7"><a href="day-2.html#cb95-7" tabindex="-1"></a><span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X)<span class="sc">%*%</span><span class="fu">t</span>(X)<span class="sc">%*%</span>y</span></code></pre></div>
+<pre><code>##          [,1]
+##    179.700447
+## x1  -5.217664
+## x2  -1.889147</code></pre>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="day-2.html#cb97-1" tabindex="-1"></a><span class="co"># base R multiple regression</span></span>
+<span id="cb97-2"><a href="day-2.html#cb97-2" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2))</span></code></pre></div>
+<pre><code>## (Intercept)          x1          x2 
+##  179.700447   -5.217664   -1.889147</code></pre>
+<p><br></p>
+</div>
+<div id="calculus" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Calculus<a href="day-2.html#calculus" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>I can’t teach you all of calculus in 1 class</p>
+<ul>
+<li><p>Don’t need to</p></li>
+<li><p>Exposure to some concepts</p></li>
+</ul></li>
+</ul>
+<p><br></p>
+<ul>
+<li><p>Limits</p>
+<ul>
+<li><p>What happens as we ‘approach’ a value in a function</p></li>
+<li><p>Without hitting it</p></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+f(x) = x^2 - x + 2
+\qquad\qquad
+\lim_{x \to 2}f(x) = 4
+\]</span></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><br></p>
+<ul>
+<li>Plug in the approaching value</li>
+</ul>
+<p><span class="math display">\[
+\lim_{n \to \infty}\left(t_{\alpha/2} \frac{s}{\sqrt{n}} \right) = t_{\alpha/2} \frac{s}{\sqrt{\infty}} = t_{\alpha/2} \times 0 = 0
+\]</span></p>
+<ul>
+<li>You may notice things like</li>
+</ul>
+<p><span class="math display">\[
+s = \sqrt{\frac{1}{n-1}(x_i - \bar{x})^2}
+\]</span></p>
+<p><span class="math display">\[
+\lim_{n \to \infty}s = \sqrt{\frac{1}{\infty-1}(x_i - \bar{x})^2} = 0
+\]</span></p>
+<p><span class="math display">\[
+\frac{0}{0} \Rightarrow \text{ Undefined}
+\]</span></p>
+<ul>
+<li>“Speed of convergence”</li>
+</ul>
+<p><br></p>
+<ul>
+<li>Derivatives</li>
+</ul>
+<p><span class="math display">\[
+f^\prime (a) \equiv \lim_{h \to 0}\frac{f(a + h) - f(a)}{h}
+\]</span></p>
+<p><span class="math display">\[
+f(x) = x^2 - 8x + 9
+\]</span></p>
+<p><br></p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; \lim_{h \to 0} \frac{f(a + h) - f(a)}{h} = \lim_{h \to 0} \frac{[(a + h)^2 - 8(a + h) + 9] - [a^2 - 8a + 9]}{h} \\
+\\
+&amp; = \lim_{h \to 0} \frac{a^2 + 2ah + h^2 - 8a - 8h + 9 - a^2 + 8a - 9}{h} \\
+\\
+&amp; = \lim_{h \to 0} \frac{2ah + h^2 - 8h}{h} = \lim_{h \to 0 } (2a + h - 8) \\
+\\
+&amp; = 2a - 8
+\end{aligned}
+\]</span></p>
+<ul>
+<li>Power and addition rules</li>
+</ul>
+<p><span class="math display">\[
+\frac{d}{dx} x^2 = 2x
+\qquad\qquad
+\frac{d}{dx} 8x = 8
+\qquad\qquad
+\frac{d}{dx} 9 = 0
+\]</span></p>
+<p><span class="math display">\[
+\frac{d}{dx} x^2 - 8x + 9 = 2x - 8
+\]</span></p>
+<ul>
+<li><p>Numerical differentiation</p>
+<ul>
+<li>Using limit definition of derivative</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+f^\prime(2) = 2(2) - 8 = -4
+\]</span></p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="day-2.html#cb99-1" tabindex="-1"></a><span class="co">#limit definition of derivative</span></span>
+<span id="cb99-2"><a href="day-2.html#cb99-2" tabindex="-1"></a>lim_diff <span class="ot">=</span> <span class="cf">function</span>(f, x, <span class="at">h =</span> <span class="fl">1e-5</span>) { </span>
+<span id="cb99-3"><a href="day-2.html#cb99-3" tabindex="-1"></a>  <span class="co"># h should always be a small step size</span></span>
+<span id="cb99-4"><a href="day-2.html#cb99-4" tabindex="-1"></a>  ddx <span class="ot">=</span> (<span class="fu">f</span>(x <span class="sc">+</span> h) <span class="sc">-</span> <span class="fu">f</span>(x)) <span class="sc">/</span> h</span>
+<span id="cb99-5"><a href="day-2.html#cb99-5" tabindex="-1"></a>  <span class="fu">return</span>(ddx)</span>
+<span id="cb99-6"><a href="day-2.html#cb99-6" tabindex="-1"></a>}</span>
+<span id="cb99-7"><a href="day-2.html#cb99-7" tabindex="-1"></a></span>
+<span id="cb99-8"><a href="day-2.html#cb99-8" tabindex="-1"></a>fx <span class="ot">=</span> <span class="cf">function</span>(x){x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">8</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">9</span>}</span>
+<span id="cb99-9"><a href="day-2.html#cb99-9" tabindex="-1"></a><span class="fu">lim_diff</span>(fx,<span class="dv">2</span>) <span class="co"># evaluate at x = 2</span></span></code></pre></div>
+<pre><code>## [1] -3.99999</code></pre>
+<ul>
+<li>Analytic methods can get nasty fast</li>
+</ul>
+<p><span class="math display">\[
+f(x) = \frac{\text{sin}(x^2) + e^{x - 9} + 10x + 2}{x^2}
+\]</span></p>
+<ul>
+<li><p>8 step derivative</p>
+<ul>
+<li>Mess of chain rule, product rule, quotient rule, trigonometry</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+f^\prime (x) = \frac{2x \cos\left(x^{2}\right) + \mathrm{e}^{x - 9} + 10}{x^{2}} - \frac{2 \left(\sin\left(x^{2}\right) + \mathrm{e}^{x - 9} + 10x + 2\right)}{x^{3}}
+\]</span></p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="day-2.html#cb101-1" tabindex="-1"></a><span class="co"># much nastier function</span></span>
+<span id="cb101-2"><a href="day-2.html#cb101-2" tabindex="-1"></a>fx <span class="ot">=</span> <span class="cf">function</span>(x){(<span class="fu">sin</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">exp</span>(x <span class="sc">-</span> <span class="dv">9</span>) <span class="sc">+</span> <span class="dv">10</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">2</span>)<span class="sc">/</span>(x<span class="sc">^</span><span class="dv">2</span>)}</span>
+<span id="cb101-3"><a href="day-2.html#cb101-3" tabindex="-1"></a><span class="fu">lim_diff</span>(fx,<span class="dv">2</span>) <span class="co"># also eval x = 2</span></span></code></pre></div>
+<pre><code>## [1] -3.464408</code></pre>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="day-2.html#cb103-1" tabindex="-1"></a><span class="co"># true derivative</span></span>
+<span id="cb103-2"><a href="day-2.html#cb103-2" tabindex="-1"></a>fprime <span class="ot">=</span> <span class="cf">function</span>(x){(((<span class="dv">2</span><span class="sc">*</span>x)<span class="sc">*</span><span class="fu">cos</span>(x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">+</span><span class="fu">exp</span>(x<span class="dv">-9</span>)<span class="sc">+</span><span class="dv">10</span>)<span class="sc">/</span>(x<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">-</span> </span>
+<span id="cb103-3"><a href="day-2.html#cb103-3" tabindex="-1"></a>    ((<span class="dv">2</span><span class="sc">*</span>((<span class="fu">sin</span>(x<span class="sc">^</span><span class="dv">2</span>))<span class="sc">+</span><span class="fu">exp</span>(x<span class="dv">-9</span>)<span class="sc">+</span>(<span class="dv">10</span><span class="sc">*</span>x)<span class="sc">+</span><span class="dv">2</span>))<span class="sc">/</span>(x<span class="sc">^</span><span class="dv">3</span>))}</span>
+<span id="cb103-4"><a href="day-2.html#cb103-4" tabindex="-1"></a><span class="fu">fprime</span>(<span class="dv">2</span>) <span class="co"># eval x = 2</span></span></code></pre></div>
+<pre><code>## [1] -3.464443</code></pre>
+<p><br></p>
+<ul>
+<li>Optimization</li>
+</ul>
+<p><span class="math display">\[
+\text{argmax}\{f(x)\} = \frac{d}{dx}f(x) \overset{set}{=} 0
+\]</span></p>
+<p><span class="math display">\[
+f(x) = 2400x - 2x^2
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{argmax}\{f(x)\} = \frac{d}{dx} 2400x - 2x^2 = 2400 - 4x \overset{set}{=} 0 \\
+\\
+2400 = 4x \\
+\\
+600 = x
+\end{aligned}
+\]</span></p>
+<ul>
+<li>Check second derivative</li>
+</ul>
+<p><span class="math display">\[
+\frac{d}{d^2 x} 2400x - 2x^2 = \frac{d}{dx} 2400 - 4x = -4 &lt; 0
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(x = 600\)</span> is the absolute maximum of <span class="math inline">\(f(x)\)</span></p>
+<ul>
+<li><span class="math inline">\(f(x)\)</span> is <em>concave down</em></li>
+</ul></li>
+</ul>
+<p><img src="_main_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<ul>
+<li><p>Programming languages like Python and Wolfram can use <code>argmax()</code> and <code>argmin()</code> functions</p>
+<ul>
+<li><p>In R we use <code>optim()</code></p></li>
+<li><p>We’ll discuss later</p></li>
+<li><p>This is our “why do we care” for derivatives</p></li>
+</ul></li>
+</ul>
+<p><br></p>
+<ul>
+<li><p>Integrals</p>
+<ul>
+<li>“Anti-derivative”</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\frac{d}{dx}x^2 = 2x
+\qquad\qquad
+\int 2x \ dx = \frac{2x^2}{2} + C = x^2 + C
+\]</span></p>
+<ul>
+<li><p>C is a constant</p>
+<ul>
+<li>“indefinite” integrals assume nothing about the derivative</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\frac{d}{dx}x^2 + 1000 = 2x = \frac{d}{dx}x^2
+\]</span></p>
+<ul>
+<li><p>Integrals are the area underneath a curve</p>
+<ul>
+<li>We can set definite boundaries to look at interval areas</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\int_{1}^2 \frac{1}{x} \ dx = \ln(|2|) - \ln(|1|) \approx 0.693
+\]</span></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<ul>
+<li>Why do we care?</li>
+</ul>
+<p><br></p>
+<p><span class="math display">\[
+X \sim \text{Exp}(\theta)
+\]</span></p>
+<p><br></p>
+<p><span class="math display">\[
+f_x(x) = \theta e^{-\theta x}
+\]</span></p>
+<p><br></p>
+<p><span class="math display">\[
+\mathbb{E}X = \int_0^{\infty} x f_x(x) \ dx  = \int_0^{\infty} x\theta e^{-\theta x} \ dx  = \frac{1}{\theta}
+\]</span></p>
+<p><br></p>
+<p><span class="math display">\[
+\mathbb{E}X^2 = \int_0^{\infty} x^2 f_x(x) \ dx  = \int_0^{\infty} x^2 \theta e^{-\theta x} \ dx  = \frac{2}{\theta^2}
+\]</span></p>
+<p><br></p>
+<p><span class="math display">\[
+\mathbb{V}X = \mathbb{E}X^2 - [\mathbb{E}X]^2 = \frac{2}{\theta^2} - \left( \frac{1}{\theta} \right)^2 = \frac{1}{\theta^2}
+\]</span></p>
+<p><br></p>
+<ul>
+<li><p>Numerical integration</p></li>
+<li><p>Riemann sums</p>
+<ul>
+<li><p>Taught <em>before</em> integrals</p></li>
+<li><p>Area of rectangles underneath integral</p></li>
+<li><p>Accuracy is based on number of rectangles</p></li>
+<li><p>Not great to implement</p></li>
+<li><p>Only good for univariate</p></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+f(x) = x^2 - 2x + 3
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\int_1^3 x^2 - 2x + 3 \ dx = \left. \frac{x^3}{3}- x^2 + 3x \ \right|_1^3 =\\
+\\
+\left(\frac{3^3}{3} - 3^2 + 3(3) \right) - \left(\frac{1^3}{3}- 1^2 + 3(1) \right) =\\
+\\
+(3 - 9 + 9) - \left(\frac{1}{3} - 4 \right) =\\
+\\
+6 \frac{2}{3} \approx 6.67 \\
+\end{aligned}
+\]</span></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<ul>
+<li><p>Monte Carlo integration</p>
+<ul>
+<li><p>Simulate values within the interval</p></li>
+<li><p>Evaluate the function at those values</p></li>
+<li><p>Take their mean</p></li>
+<li><p>Weight it by the interval</p></li>
+<li><p>Very reliable, can handle multidimensional</p></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="day-2.html#cb105-1" tabindex="-1"></a>fx <span class="ot">=</span> <span class="cf">function</span>(x){x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">3</span>}</span>
+<span id="cb105-2"><a href="day-2.html#cb105-2" tabindex="-1"></a></span>
+<span id="cb105-3"><a href="day-2.html#cb105-3" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">1</span> <span class="co"># lower bound</span></span>
+<span id="cb105-4"><a href="day-2.html#cb105-4" tabindex="-1"></a>b <span class="ot">=</span> <span class="dv">3</span> <span class="co"># upper bound</span></span>
+<span id="cb105-5"><a href="day-2.html#cb105-5" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">100000</span> <span class="co"># n samples</span></span>
+<span id="cb105-6"><a href="day-2.html#cb105-6" tabindex="-1"></a></span>
+<span id="cb105-7"><a href="day-2.html#cb105-7" tabindex="-1"></a><span class="co"># random simulation between a and b</span></span>
+<span id="cb105-8"><a href="day-2.html#cb105-8" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">runif</span>(n, <span class="at">min =</span> a, <span class="at">max =</span> b)</span>
+<span id="cb105-9"><a href="day-2.html#cb105-9" tabindex="-1"></a></span>
+<span id="cb105-10"><a href="day-2.html#cb105-10" tabindex="-1"></a><span class="co"># evaluate f(x) at simulations</span></span>
+<span id="cb105-11"><a href="day-2.html#cb105-11" tabindex="-1"></a>mc_sim <span class="ot">=</span> <span class="fu">fx</span>(x)</span>
+<span id="cb105-12"><a href="day-2.html#cb105-12" tabindex="-1"></a></span>
+<span id="cb105-13"><a href="day-2.html#cb105-13" tabindex="-1"></a><span class="co"># mean weighted by difference</span></span>
+<span id="cb105-14"><a href="day-2.html#cb105-14" tabindex="-1"></a>mc_int <span class="ot">=</span> (b <span class="sc">-</span> a)<span class="sc">*</span><span class="fu">mean</span>(mc_sim)</span>
+<span id="cb105-15"><a href="day-2.html#cb105-15" tabindex="-1"></a>mc_int</span></code></pre></div>
+<pre><code>## [1] 6.66993</code></pre>
+<ul>
+<li>Why do we care?</li>
+</ul>
+<p><span class="math display">\[
+X \sim \text{Beta}(4,10)
+\]</span></p>
+<p><span class="math display">\[
+\mathbb{E}X = ?
+\qquad\qquad
+\mathbb{V}X = ?
+\]</span></p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="day-2.html#cb107-1" tabindex="-1"></a><span class="co"># simulate 10000 beta(4,10) r.v. realizations</span></span>
+<span id="cb107-2"><a href="day-2.html#cb107-2" tabindex="-1"></a>mc_sim <span class="ot">=</span> <span class="fu">rbeta</span>(<span class="dv">10000</span>,<span class="dv">4</span>,<span class="dv">10</span>)</span>
+<span id="cb107-3"><a href="day-2.html#cb107-3" tabindex="-1"></a><span class="fu">mean</span>(mc_sim) <span class="co"># empirical mean</span></span></code></pre></div>
+<pre><code>## [1] 0.2861241</code></pre>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="day-2.html#cb109-1" tabindex="-1"></a><span class="fu">var</span>(mc_sim) <span class="co"># variance</span></span></code></pre></div>
+<pre><code>## [1] 0.0138754</code></pre>
+<p><span class="math display">\[
+\mathbb{E}X = \frac{4}{4+10} = \frac{4}{14} \approx 0.285
+\]</span></p>
+<p><span class="math display">\[
+\mathbb{V}X = \frac{4 \times 10}{(4 + 10)^2 (4 + 10 + 1)} = \frac{40}{196 \times 15} = \frac{40}{2940} \approx 0.0136
+\]</span></p>
+<p><br></p>
+</div>
+<div id="advanced-math" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Advanced Math<a href="day-2.html#advanced-math" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>Traditionally, statistics involves proofs</p>
+<ul>
+<li><p>Supplemental material includes them</p></li>
+<li><p>Not required (or really recommended)</p></li>
+<li><p>Stats majors (?)</p></li>
+</ul></li>
+<li><p>Math focused “class choice” topics</p>
+<ul>
+<li><p>Differential equations</p>
+<ul>
+<li><p>Worth discussing for the ecologists (a little for Epi students)</p></li>
+<li><p>No calculus needed, algebraic “difference” equations</p></li>
+</ul></li>
+<li><p>Graph theory / Networks</p>
+<ul>
+<li><p>Very useful, very topical (AI/LLMs/ML)</p></li>
+<li><p>More important for Agronomy/Plant path/Epi students</p></li>
+</ul></li>
+<li><p>Bayesian</p>
+<ul>
+<li><p>“Useful” to everyone</p></li>
+<li><p>Difficult to understand</p></li>
+<li><p>Need strong comprehension of integrals/expected values</p></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="next-class" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Next class<a href="day-2.html#next-class" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>Bring laptops</p></li>
+<li><p>Have R downloaded + RStudio</p>
+<ul>
+<li>Equivalent if you’re using Python</li>
+</ul></li>
+<li><p>Talk to me if any of the above is an issue</p></li>
+<li><p>We will have a “Lab”</p></li>
+</ul>
+</div>
+<div id="assignment-1-1" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> Assignment 1<a href="day-2.html#assignment-1-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="go-away-1" class="section level2 hasAnchor" number="2.7">
+<h2><span class="header-section-number">2.7</span> Go away<a href="day-2.html#go-away-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="day-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-3.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/USERNAME/REPO/edit/BRANCH/02-math.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["_main.pdf", "_main.epub"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
