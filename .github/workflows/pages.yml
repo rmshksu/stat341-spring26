@@ -30,10 +30,10 @@ jobs:
 
       # If you use renv in your book project, add renv restore here.
       # Otherwise install what you need directly:
-      - name: Install R packages
+      - name: Restore R packages with renv
         run: |
-          Rscript -e 'install.packages(c("bookdown","rmarkdown","knitr","kableExtra","dplyr","tidyr","ggplot2","tidyverse","nlme","latex2exp","mgcv","readxl","gamair","mosaic","msm"), repos="https://cloud.r-project.org")'
-
+          Rscript -e 'install.packages("renv", repos="https://cloud.r-project.org")'
+          Rscript -e 'setwd("notes/book-src"); renv::restore()'
 
       - name: Render bookdown into notes/book
         run: |
