@@ -32,7 +32,8 @@ jobs:
       # Otherwise install what you need directly:
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages(c("bookdown","rmarkdown"), repos="https://cloud.r-project.org")'
+          Rscript -e 'install.packages(c("bookdown","rmarkdown","knitr","kableExtra","dplyr","tidyr","ggplot2","tidyverse","nlme","latex2exp","mgcv","readxl","gamair","mosaic","msm"), repos="https://cloud.r-project.org")'
+
 
       - name: Render bookdown into notes/book
         run: |
