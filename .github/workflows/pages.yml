@@ -36,7 +36,8 @@ jobs:
 
       - name: Render bookdown into notes/book
         run: |
-          Rscript -e 'bookdown::render_book("notes/book-src/index.Rmd", "bookdown::gitbook")'
+          Rscript -e 'setwd("notes/book-src"); bookdown::render_book("index.Rmd", "bookdown::gitbook")'
+
 
       # --- Ruby / Jekyll ---
       - name: Set up Ruby
