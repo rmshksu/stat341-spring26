@@ -1,0 +1,630 @@
+# Day 9
+
+## Review
+
+- Multiple linear regression
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x}_1 + \beta_2 \boldsymbol{x}_2 + ... + \beta_k \boldsymbol{x}_k + \boldsymbol{\epsilon}
+\]
+
+
+\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]
+
+\[
+\widehat{\mathbb{E}(\boldsymbol{y})} = \hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
+\]
+
+<br>
+
+```{r}
+# framingham heart study (long term cohort study on heart health)
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/framingham_heart_study.csv"
+framingham = read.csv(url)
+
+# reduce dimensions and throw out NA values
+df = na.omit(framingham[,c(1,2,5,10:15)])
+
+# first 6 rows of each column
+head(df) 
+
+# correlation between each variable and BMI
+cor(df)[7,]
+```
+
+<br>
+
+```{r}
+m1 = lm(BMI ~ sysBP, data = df)
+m2 = lm(BMI ~ sysBP + diaBP, data = df)
+m3 = lm(BMI ~ sysBP + diaBP + age, data = df)
+m4 = lm(BMI ~ sysBP + diaBP + age + cigsPerDay, data = df)
+```
+
+```{r}
+# matrix for tabling coefficient results
+cmat = matrix(c(mean(df$BMI), 0, 0, 0, 0,
+                coef(m1)[1], coef(m1)[2], 0, 0, 0,
+                coef(m2)[1], coef(m2)[2], coef(m2)[3], 0, 0,
+                coef(m3)[1], coef(m3)[2], coef(m3)[3], coef(m3)[4], 0,
+                coef(m4)[1], coef(m4)[2], coef(m4)[3], coef(m4)[4], coef(m4)[5]),
+              5,5,T)
+colnames(cmat) = c("b0", "b1", "b2", "b3", "b4")
+rownames(cmat) = c("IO", "M1", "M2", "M3", "M4")
+cmat
+```
+
+- What's happening as we add predictors?
+
+  - Are certain predictors "better" than others?
+  
+<br>
+
+```{r}
+par(mfrow = c(1, 2),
+    mar = c(4.5, 1, 1, 1),
+    oma = c(0, 4, 0, 0))
+plot(df$sysBP, df$BMI,
+     xlab = "Systolic",
+     ylab = "",
+     pch = 20,
+     col = "#00000050")
+plot(df$diaBP, df$BMI,
+     xlab = "Diastolic",
+     ylab = "",
+     yaxt = "n",
+     pch = 20,
+     col = "#00000050")
+mtext("BMI", side = 2, outer = TRUE, line = 2)
+```
+
+<br>
+
+```{r}
+par(mar = c(4.5,4.5,1,1))
+plot(df$sysBP,df$diaBP,
+     xlab = "Systolic",
+     ylab = "Diastolic",
+     pch = 20,
+     col = "#00000050")
+```
+
+<br>
+
+- Confidence intervals
+
+```{r}
+# historic water level data 1995-2013
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/KS_Water_Level_Monitoring_95to13.csv"
+wlev = read.csv(url, stringsAsFactors = F)
+wlev = wlev[,-1] # remove index column
+
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#00000030")
+```
+
+```{r}
+m1 = lm(lev_va_ft ~ day_i, data = wlev)
+summary(m1)
+```
+
+<br>
+
+```{r}
+# degrees of freedom
+dfr = nrow(wlev) - 2
+
+# t value
+t_v = qt(0.975,dfr)
+
+# standard error of beta 1
+stde_b1 = diag(vcov(m1))[2]^0.5
+
+coef(m1)[2] - t_v*stde_b1 # lower
+coef(m1)[2] + t_v*stde_b1 # upper
+```
+
+2. Throw definitions / structures at it
+
+```{r}
+# standard error of beta 1
+summary(m1)$coefficients[,2][2]
+stde_b1
+
+# very close to z at 95%
+t_v
+
+# upper and lower ci
+coef(m1)[2] - 1.96 * summary(m1)$coefficients[,2][2]
+coef(m1)[2] + 1.96 * summary(m1)$coefficients[,2][2]
+```
+
+3. Throw functions / packages at it
+
+```{r}
+# base R function for ci
+confint(m1)[2,]
+```
+
+<br>
+
+- Interpreting confidence intervals
+  
+<br>
+
+```{r}
+# predictions with confidence bands
+pred = predict(m1, type = "response", interval = "confidence")
+
+# plot including conf bands
+or = order(wlev$day_i)
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#D1D1D170")
+polygon(c(wlev$day_i[or], rev(wlev$day_i[or])),
+        c(pred[,2][or], rev(pred[,3][or])),
+        col = "#51288570",
+        border = NA)
+lines(wlev$day_i[or], pred[,1][or], lwd = 2, col = "#512885")
+```
+
+```{r}
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#D1D1D170",
+     ylim = c(70,100))
+polygon(c(wlev$day_i[or], rev(wlev$day_i[or])),
+        c(pred[,2][or], rev(pred[,3][or])),
+        col = "#51288570",
+        border = NA)
+lines(wlev$day_i[or], pred[,1][or], lwd = 2, col = "#512885")
+```
+
+<br>
+
+- Derived quantities
+  
+<br>
+
+```{r}
+# solution for x intercept
+dry_day = as.numeric(-coef(m1)[1]/coef(m1)[2])
+dry_day # the day the aquifer will dry up
+```
+
+```{r}
+dry_year = dry_day/365
+dry_year # year aquifer dries up
+```
+
+```{r}
+# position at nov 1 1994
+dry_year + 1994.917
+```
+
+<br>
+
+**Any questions?**
+
+<br>
+
+## Confidence intervals for derived quantities
+
+- Point estimates aren't useful to statisticians
+
+    - Show me the intervals
+    
+```{r}
+beta_ci = confint(m1)
+beta_ci[1,] # ci for b0
+beta_ci[2,] # ci for b1
+
+# straight to jail!
+dry_day_ci = -beta_ci[1,]/beta_ci[2,]
+dry_day_ci
+
+1994.917 + (dry_day_ci/365)
+```
+
+<br>
+
+- Consider the random variable $X$. 
+
+    - $X$ is a sequence of random values controlled by a distribution.
+  
+    - The mean of $X$ is constant upon realizing the values of $x$.
+  
+- Consider the function $g()$.
+
+    - $g()$ is a differentiable function, say $g(y) = y^2$.
+  
+- Consider $g(X)$.
+
+    - $g(X)$ is not just the values of $X$ squared.
+    
+    - $X$ is controlled by a distribution *function*.
+    
+    - To square a function is not always equivalent to squaring its output.
+    
+- This is why $se\left[ g(X) \right] \neq g(se(X))$.
+
+<br>
+
+**Delta method**
+
+- For a random variable $X$ and differentiable function $g()$, the covariance of $g(X)$ can be approximated as:
+
+$$
+Cov(g(X)) = g^\prime(\mu)Cov(X)\left[ g^\prime(\mu)\right]^T
+$$
+
+<br>
+
+- Done "manually"
+
+```{r}
+x1 = as.numeric(coef(m1)[1]) # b0
+x2 = as.numeric(coef(m1)[2]) # b1
+
+# first derivative of g(X) = -x1/x2
+gprime_mu = attr(eval(deriv(~ -x1/x2, c("x1","x2"))), "gradient")
+
+# approximate covariance of g(X)
+cov_g = gprime_mu%*%vcov(m1)%*%t(gprime_mu)
+sqrt(cov_g)
+
+# wald-type confidence intervals
+dry_day_l = dry_day - 1.96 * sqrt(cov_g)
+dry_day_u = dry_day + 1.96 * sqrt(cov_g)
+
+# lower estimate
+1994.917 + dry_day_l/365
+
+# upper estimate
+1994.917 + dry_day_u/365
+```
+
+<br>
+
+- Done with the `msm` package
+
+```{r}
+library(msm)
+cov_g2 = deltamethod(~ -x1/x2, mean = coef(m1), cov = vcov(m1))
+cov_g2
+
+1994.917 + ((dry_day - 1.96*cov_g2)/365)
+1994.917 + ((dry_day + 1.96*cov_g2)/365)
+```
+
+<br>
+
+## Non-parametric bootstrap
+
+1. For a dataset with $n$ observations, take a sample of size $n$ with replacement.
+
+2. Fit the sampled data to the chosen statistical model.
+
+3. Save the parameters and/or estiamtes of interest.
+
+4. Repeat the process $m$ times.
+
+<br>
+
+
+<div style="background:#f7f7f7; padding:14px; border-radius:6px; font-family:monospace; line-height:1.6;">
+<b>Pseudo-code</b><br><br>
+
+SET $m \to m$<br>
+
+SET $n \to \text{LENGTH}(Y)$<br><br>
+
+FOR $i = 1$ TO $m$ DO<br>
+
+  &nbsp;&nbsp;DRAW $(S_1, S_2, \dots, S_n)$ independently from $\{1,2,\dots,n\}$
+  &nbsp;&nbsp;SET $\mathbf{S} = (S_1, S_2, \dots, S_n)$<br>
+  
+  &nbsp;&nbsp;DEFINE $(x_j^*, y_j^*) = (x_{S_j}, y_{S_j})$ for $j = 1,2,\dots,n$<br><br>
+  
+  &nbsp;&nbsp;FIT $y_j^* = \beta_0^* + \beta_1^* x_j^* + \varepsilon_j^*$ for $j = 1,2,\dots,n$<br><br>
+  
+  &nbsp;&nbsp;COMPUTE $\theta^* = \frac{-\beta_0^*}{\beta_1^*}$<br>
+  
+  &nbsp;&nbsp;SET $\theta_i \to \mathbf{\theta}^*$<br>
+  
+  &nbsp;&nbsp;SET $i \to i + 1$<br>
+  
+END FOR<br>
+
+</div>
+
+<br>
+
+- R code
+
+```{r}
+# reproducibility seed
+# if we change this then the results will change with it
+set.seed(73)
+
+# number of bootstrap iterations
+m = 1000
+
+# number of observations in the data
+n = nrow(wlev)
+
+# empty matrix for derived quantities
+dry_day_boot = matrix(,m,1)
+
+# for loop across bootstrap iterations
+for(i in 1:m){
+  
+  # sample N times from the data WITH replacement
+  boot_sample = sample(1:n, replace = TRUE)
+  
+  # create temporary data for that iteration of sampling
+  temp_data = wlev[boot_sample,c(19,21)]
+  
+  # fit the model to the sampled data
+  model = lm(lev_va_ft ~ day_i, data = temp_data)
+  
+  # compute dry day using the coefficients of that model
+  dry_day_boot[i,] = -coef(model)[1]/coef(model)[2]
+  
+}
+```
+
+- Inference from confidence intervals
+
+    - What does a confidence intervals *actually* measure?
+    
+- Sampling distributions
+
+    - Hypothetical, unobservable mathematical objects
+    
+    - Confidence intervals are derived from the assumption of their existence
+    
+- Empirical distributions
+
+    - Most STAT 225 students could tell you how to work with these
+    
+    - Summary statistics and plots are intuitive
+    
+- Treat the empirical distribution like the sampling distribution
+
+```{r}
+library(latex2exp)
+hist(dry_day_boot,col="white",xlab="Day",
+     main=TeX(
+       'Empirical distribuiton of $$-$$\\hat{\\frac{$\\beta_0}{$\\beta_1}}'),
+     freq=FALSE, breaks=20)
+```
+
+- Affine transformation
+
+    - The original information is preserved
+    
+    - Except for the meaning of $0$
+
+```{r}
+dry_year_boot = (dry_day_boot/365) + 1994.917
+hist(dry_year_boot,col="white",xlab="Year",
+     main=TeX(
+       'Empirical distribuiton of $$-$$\\hat{\\frac{$\\beta_0}{$\\beta_1}}'),
+     freq=FALSE,breaks=20)
+```
+
+```{r}
+# five number summary of empirical distribution of
+# estimated year that the ogallala dries up
+quantile(dry_year_boot, c(0,0.25,0.5,0.75,1))
+
+# 95% CI based on empirical distribution
+quantile(dry_year_boot, c(0.025, 0.975))
+```
+
+<br>
+
+- The value of vectorization
+
+```{r}
+# bootstrap iterations
+m = 1000
+
+# x and y data
+x = wlev$day_i
+y = wlev$lev_va_ft
+
+# number of observations in the data
+n = length(y)
+
+# reproducibility seed
+set.seed(73)
+
+# replicate acts similarly to a for loop
+dry_day_boot2 = replicate(m, {
+  # sampling index
+  idx = sample.int(n, n, replace = TRUE)
+  
+  # sample from x and y
+  x_boot = x[idx]
+  y_boot = y[idx]
+  
+  # compute the mean of each sample
+  xbar = mean(x_boot)
+  ybar = mean(y_boot)
+
+  # perform scalar form simple linear regression for the sample
+  b1 = sum((x_boot - xbar) * (y_boot - ybar)) / sum((x_boot - xbar)^2)  
+  b0 = ybar - b1 * xbar                                     
+  
+  # compute dry day
+  -b0 / b1 })
+```
+
+- Same algorithm, just sped up *a lot*
+
+    - The computation time was reduced by an order of magnitude
+    
+    - Note: this works because we're using simple linear regression
+
+```{r}
+dry_year_boot2 = (dry_day_boot2/365) + 1994.917
+quantile(dry_year_boot2, c(0,0.25,0.5,0.75,1))
+quantile(dry_year_boot, c(0.025,0.975))
+```
+
+<br>
+
+- Packages
+
+    - My philosophy: it's better to avoid packages until you understand what they're doing in full
+    
+    - a.k.a. do it in base R before you solve your problem with a package
+    
+    - Then it's just a time save (i.e., I don't program my machine learning models from scratch every time... *but I can*)
+    
+    - You are always at the mercy of the package authors optimization skills
+    
+    - If you have a bad computer, it's sometimes more efficient to just become a better programmer
+    
+```{r message=FALSE, warning=FALSE}
+library(mosaic) # one of many package options for bootstrapping
+
+# reproducibility seed
+set.seed(73)
+
+# mosaic's bootstrap
+bootstrap = do(1000) * coef(lm(lev_va_ft ~ day_i, data = resample(wlev)))
+
+# fills a dataframe* with each parameter from each iteration
+# *check str(bootstrap) and tell me why im lying
+head(bootstrap)
+
+
+# compute the dry day
+theta_hat = -bootstrap[,1]/bootstrap[,2]
+
+quantile(theta_hat, c(0.025,0.975))
+
+quantile(((theta_hat/365) + 1994.917), c(0.025,0.975))
+```
+
+## Concept demo
+
+- [Bootstrapping shiny app](https://rmsholl.shinyapps.io/bootstrap_showcase/)
+
+## R programming Lab
+
+- Read these two pages from [Wood (2006)](https://raw.githubusercontent.com/rmshksu/teaching-data/main/literature/Wood_2006.pdf)
+
+```{r}
+# install.packages("gamair")
+library(gamair)
+data(hubble)
+par(mar = c(4.5,4.5,2,1))
+plot(hubble$x,hubble$y,
+     xlab = "Distance in Mega parsecs",
+     ylab = "Velocity (km/s)",
+     pch = 19)
+m = lm(hubble$y ~ hubble$x - 1)
+abline(m)
+```
+
+Using the `hubble` data in the `gamair` package:
+
+1. Write out a linear model for predicting the velocity of the Cepheid stars observed by the Hubble space telescope based on their distance in mega parsecs, based on Hubble's law. 
+
+2. State and briefly explain what the assumptions behind that model are.
+
+3. Fit the data in R using the matrix form of method of least squares. Save the results to a variable in R.
+
+$$
+\boldsymbol{\beta} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime y
+$$
+
+4. Fit the data in R using the `lm()` function. Save the model.
+
+5. Compare the coefficients from (3) and (4). Are they different?
+
+6. Add the fitted regression line from (4) to the plot of the original data. Set the line width to 2 and change the color to be different from the points. 
+
+7. Compute the confidence interval for the coefficients in (4) using any method you prefer. Save them. 
+
+8. Based off of the reading, predict the age of the universe. Note that the distance is measured in Mega parsecs, which are $3.09 \times 10^19$ km.
+
+9. Using the confidence interval from (7), estimate the lower and upper bound for the age of the universe.
+
+10. Estimate the lower and upper bound using the Delta Method instead.
+
+11. Estimate the lower and upper bound using non-parametric bootstrapping.
+
+12. Compare the three confidence intervals. Which of the three is widest? Which of the three is valid?
+
+## Go away
+
+<br>
+
+<br>
+
+## Extended notes on the Delta Method
+
+**Delta method**
+
+- To appropriately comprehend the rationale behind the Delta method it is important to recognize that it arises from the combination of four theorems: 
+
+1. Taylor's theorem (as a by-product, the mean value theorem)
+
+2. The Strong Central Limit theorem
+
+3. The Continuous Mapping theorem
+
+4. Slutsky's theorem
+
+As statistics is founded in the mathematics of probability theory, we should not be alarmed to see that our fundamental theorems are expressed using real analytics. For a detailed proof of the Central Limit theorem and Delta Method you could do worse by reading pages 236 - 243 of Statistical Inference $2^{nd}$ edition, by George Casella and Roger L. Berger. 
+
+Below I've provided the statements of each theorem relevant to the Delta Method. Anyone with interest in understanding the mathematics behind statistics should take a moment to review these and try to piece together how they might produce the final result of the Delta Method. Extending this exercise to instead deriving a proof of the Delta Method isn't a terrible idea for anyone considering a career in the quantitative sciences. 
+
+- Taylor polynomial: If a function $g(x)$ has derivatives of order $r$, that is, $g^{(r)}(x) = \frac{d^r}{dx^r}$ exists, then for any constant $a$, the Taylor polynomial of order $r$ about $a$ is
+
+$$
+T_r(x) = \sum_{i=0}^r \frac{g^{(i)}(a)}{i!}(x-a)^i.
+$$
+
+- The Central Limit Theorem: for a random variable $X$, $\bar{X}_n = \frac{1}{n}X_i$ has the limiting distribution $N(\mu, \sigma^2 n^{-1})$
+
+$$
+\begin{aligned}
+& \bar{X}_n \xrightarrow{d} N(\mu, \sigma^2 n^{-1}), \\
+\\
+& \bar{X}_n - \mu  \xrightarrow{d} N(0, \sigma^2 n^{-1}), \\
+\\
+& \sqrt{n}(\bar{X}_n - \mu)  \xrightarrow{d} N(0, \sigma^2), \\
+\\
+& \sqrt{n}(\bar{X}_n - \mu)/\sigma  \xrightarrow{d} N(0, 1). \\
+\end{aligned}
+$$
+
+- Continuous Mapping Theorem: A function that satisfies $x_n \rightarrow x \text{ and } g(x_n) \rightarrow g(x)$ for any deterministic sequence $x_n$ will satisfy then same convergence for any sequence of random variables $X_n$.
+
+- Slutsky's Theorem: If $X_n \rightarrow X$ in distribution and $Y_n \rightarrow a$, a constant, in probability, then
+
+$$
+\begin{aligned}
+Y_n X_n \rightarrow aX \text{ in distribution.}\\
+\\
+X_n + Y_n \rightarrow X + a \text{ in distribution.}
+\end{aligned}
+$$
+
+- Delta method: Let $Y_n$ be a sequence of random variables that satisfied $\sqrt{n}(Y_n - \theta) \xrightarrow{d} N(0,\sigma^2)$. For a given function $g$ and a specific value of $\theta$, suppose that $g^\prime(\theta)$ exists and is not $0$. Then
+
+$$
+\sqrt{n}\left[g(Y_n) - g(\theta) \right] \xrightarrow{d} N(0, \sigma^2 \left[ g^\prime(\theta) \right]^2).
+$$

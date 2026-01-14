@@ -1,0 +1,7 @@
+book_filename: "stat341-notes"
+output_dir: "../book"
+delete_merged_file: true
+new_session: false
+language:
+  ui:
+    chapter_name: ""

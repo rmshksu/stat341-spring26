@@ -73,7 +73,8 @@ defaults:
   #     layout: notes
 
 include:
-  - "notes/_main_files"
+  - notes/book/_bookdown_files
+  - notes/book/_main_files
 
 compress_html:
   clippings: all

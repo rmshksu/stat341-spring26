@@ -1,0 +1,692 @@
+# Day 3
+
+## Review
+
+\[
+\text{Matrix: } \textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
+\qquad\qquad
+\text{Vector: } \boldsymbol{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}
+\qquad\qquad
+\text{Scalar: } a = 5
+\]
+
+- Sums
+
+\[
+\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
+\qquad\qquad
+\textbf{B} = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix}
+\]
+
+\[
+\textbf{A} + \textbf{B} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} + \begin{bmatrix}1 & 0 \\ 1 & 0\end{bmatrix} = 
+\begin{bmatrix}2 & 2 \\ 4 & 4\end{bmatrix}
+\]
+
+- Vectors/Matrices multiplied by Scalars
+
+\[
+3 \times \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} = \begin{bmatrix}3 & 6 \\ 9 & 12\end{bmatrix}
+\qquad\qquad
+10 \times \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} = \begin{bmatrix}10 \\ 20 \\ 30\end{bmatrix}
+\]
+
+- Transpose
+
+\[
+\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4 \\ 5 & 6 \end{bmatrix}
+\qquad\qquad
+\textbf{A}^\prime = \begin{bmatrix}1 & 3  & 5\\ 2 & 4 & 6 \end{bmatrix}
+\]
+
+- Matrix products
+
+\[
+\begin{bmatrix}
+1 & 3 & 5 \\
+2 & 4 & 6
+\end{bmatrix}
+\begin{bmatrix}
+1 & 2 \\
+3 & 4 \\
+5 & 6
+\end{bmatrix} =
+\begin{bmatrix}
+(1 \cdot 1) + (3 \cdot 3) + (5 \cdot 5)
+    & 
+(1 \cdot 2) + (3 \cdot 4) + (5 \cdot 6)
+\\
+(2 \cdot 1) + (4 \cdot 3) + (6 \cdot 5)
+    &
+(2 \cdot 2) + (4 \cdot 4) + (6 \cdot 6)
+\end{bmatrix} =
+\begin{bmatrix}
+35 & 44 \\
+44 & 56
+\end{bmatrix}
+\]
+
+- Determinants
+
+\[
+\textbf{A} = \begin{bmatrix}
+    0 & -2 \\
+    2 & 0
+\end{bmatrix}
+\]
+
+\[
+\text{det}(\textbf{A}) = \text{det} \left(\begin{bmatrix}
+    0 & -2 \\
+    2 & 0
+\end{bmatrix} \right) = ad - bc = (0 \times 0) - (-2 \times 2) = 4
+\]
+
+- Matrix inverse
+
+\[
+\textbf{A} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}
+\qquad\qquad
+\textbf{A}^{-1} = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}
+\]
+
+\[
+\textbf{AA}^{-1} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}\begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix} = \begin{bmatrix}1 & 0 \\ 0 & 1\end{bmatrix} = \textbf{I}
+\]
+
+- Method of least squares
+
+\[
+y_i = \beta_0 + \beta_1x_i + \beta_2z_i + \epsilon_i
+\]
+
+\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]
+
+\[
+\hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
+\]
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/cruisedata.csv"
+cruise = read.csv(url) 
+x1 = cruise$start_month # predictor 1
+x2 = cruise$voyage_duration # predictor 2
+y = cruise$infected # response
+X = cbind(1,x1,x2) # design matrix
+
+# matrix method of least squares
+solve(t(X)%*%X)%*%t(X)%*%y
+
+# base R multiple regression
+coef(lm(y ~ x1 + x2))
+```
+
+- Derivatives
+
+\[
+\frac{d}{dx} x^2 = 2x
+\qquad\qquad 
+\frac{d}{dx} 8x = 8
+\qquad\qquad
+\frac{d}{dx} 9 = 0
+\]
+
+\[
+\frac{d}{dx} x^2 - 8x + 9 = 2x - 8
+\]
+
+
+```{r}
+#limit definition of derivative
+lim_diff = function(f, x, h = 1e-5) { 
+  # h should always be a small step size
+  ddx = (f(x + h) - f(x)) / h
+  return(ddx)
+}
+
+fx = function(x){x^2 - 8*x + 9}
+lim_diff(fx,2) # evaluate at x = 2
+```
+
+- Optimization
+
+\[
+\text{argmax}\{f(x)\} = \frac{d}{dx}f(x) \overset{set}{=} 0
+\]
+
+\[
+f(x) = 2400x - 2x^2
+\]
+
+\[
+\begin{aligned}
+\text{argmax}\{f(x)\} = \frac{d}{dx} 2400x - 2x^2 = 2400 - 4x \overset{set}{=} 0 \\
+\\
+2400 = 4x \\
+\\
+600 = x
+\end{aligned}
+\]
+
+- Check second derivative
+
+\[
+\frac{d}{d^2 x} 2400x - 2x^2 = \frac{d}{dx} 2400 - 4x = -4 < 0
+\]
+
+- $x = 600$ is the absolute maximum of $f(x)$ 
+
+  - $f(x)$ is *concave down*
+  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){(2400*x) - 2*(x^2)}
+x = seq(-1900,3100,100)
+
+plot(x, fx(x),
+     ylab = "f(x)",
+     type="l",
+     lwd = 2,
+     ylim=c(fx(3000), 1500000))
+abline(v = 600, col = "red3", lwd = 2)
+abline(h = fx(600), col = "gold", lwd = 2)
+points(600, fx(600), cex = 2, lwd = 2)
+text(1000,-900000, "x = 600")
+text(1200,-2100000, "f(x) = 720000")
+```
+
+- Integrals
+
+\[
+\frac{d}{dx}x^2 = 2x
+\qquad\qquad
+\int 2x \ dx = \frac{2x^2}{2} + C = x^2 + C
+\]
+
+\[
+\int_{1}^2 \frac{1}{x} \ dx = \ln(|2|) - \ln(|1|) \approx 0.693
+\]
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){1/x}
+x = seq(0.1,3,0.01)
+
+plot(x,fx(x),ylab = "f(x)",type="l")
+segments(1,0,1,fx(1))
+segments(2,0,2,fx(2))
+x1_fill = seq(1, 2, length.out = 100)
+y1_fill = fx(x1_fill)
+polygon(c(1, x1_fill, 2), c(-0.1, y1_fill, -0.1), col = "#512885", border = NA)
+arrows(2,4,1.5,1,0.1, col = "#512885", lwd = 1.5)
+text(2.35,4.3,"Area = 0.693" ,col = "#512885", cex = 1.2)
+```
+
+<br>
+
+\[
+X \sim \text{Exp}(\theta)
+\]
+
+<br>
+
+\[
+f_x(x) = \theta e^{-\theta x}
+\]
+
+<br>
+
+\[
+\mathbb{E}X = \int_0^{\infty} x f_x(x) \ dx  = \int_0^{\infty} x\theta e^{-\theta x} \ dx  = \frac{1}{\theta}
+\]
+
+<br>
+
+\[
+\mathbb{E}X^2 = \int_0^{\infty} x^2 f_x(x) \ dx  = \int_0^{\infty} x^2 \theta e^{-\theta x} \ dx  = \frac{2}{\theta^2}
+\]
+
+<br>
+
+\[
+\mathbb{V}X = \mathbb{E}X^2 - [\mathbb{E}X]^2 = \frac{2}{\theta^2} - \left( \frac{1}{\theta} \right)^2 = \frac{1}{\theta^2}
+\]
+
+<br>
+
+- Numerical integration
+
+\[
+f(x) = x^2 - 2x + 3
+\]
+
+\[
+\begin{aligned}
+\int_1^3 x^2 - 2x + 3 \ dx = \left. \frac{x^3}{3}- x^2 + 3x \ \right|_1^3 =\\
+\\
+\left(\frac{3^3}{3} - 3^2 + 3(3) \right) - \left(\frac{1^3}{3}- 1^2 + 3(1) \right) =\\
+\\
+(3 - 9 + 9) - \left(\frac{1}{3} - 4 \right) =\\
+\\
+6 \frac{2}{3} \approx 6.67 \\
+\end{aligned}
+\]
+  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x) {
+  return(x^2 - 2*x + 3)
+}
+
+a = 1
+b = 3
+n = 10 
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = "black", lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+n = 100
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = NA, lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+- Monte Carlo integration
+
+```{r}
+fx = function(x){x^2 - 2*x + 3}
+
+a = 1 # lower bound
+b = 3 # upper bound
+n = 100000 # n samples
+
+# random simulation between a and b
+x = runif(n, min = a, max = b)
+
+# evaluate f(x) at simulations
+mc_sim = fx(x)
+
+# mean weighted by difference
+mc_int = (b - a)*mean(mc_sim)
+mc_int
+```
+
+\[
+X \sim \text{Beta}(4,10)
+\]
+
+\[
+\mathbb{E}X = ?
+\qquad\qquad
+\mathbb{V}X = ?
+\]
+
+```{r}
+# simulate 10000 beta(4,10) r.v. realizations
+mc_sim = rbeta(10000,4,10)
+mean(mc_sim) # empirical mean
+var(mc_sim) # variance
+```
+
+\[
+\mathbb{E}X = \frac{4}{4+10} = \frac{4}{14} \approx 0.285
+\]
+
+\[
+\mathbb{V}X = \frac{4 \times 10}{(4 + 10)^2 (4 + 10 + 1)} = \frac{40}{196 \times 15} = \frac{40}{2940} \approx 0.0136
+\]
+
+<br>
+
+**Any questions?**
+
+<br>
+
+## R Programming
+
+- If you're using Python, be warned
+
+  - Python use means you're too comfortable to switch
+  
+  - I expect clean, decently optimized code
+  
+  - Strong rationale for every library
+  
+- Excel
+
+  - Possible, reasonable
+  
+  - Not recommended
+  
+- Program R
+
+  - "Scripting" language
+  
+  - Open-source (a.k.a. Free)
+  
+  - Highly accessible
+  
+  - Like Python, but easier to learn + slightly more performant
+  
+<br>
+
+- General structure
+
+  - Not a programming class
+  
+  - Today: quick overview, basic principles
+  
+  - Tomorrow: R Markdown and simple LaTeX
+  
+  - That's it, the rest is on you
+  
+  - Follow along + start messing around on your own
+  
+<br>
+
+### R Studio
+
+- "Interactive Development Environment" or IDE for short
+
+  - Makes using and learning R much easier
+  
+  - Hands down the best "R only" IDE
+  
+- Other IDEs
+
+  - Virtual Studio
+  
+  - JetBrains
+  
+  - VIM
+  
+  - My take: don't obsess. RStudio for R, VSCode if you become a programmer.
+  
+    - VIM users are the coffee snobs of tech
+    
+- R Studio walk-through
+
+<br>
+
+### Basic principles
+
+- Documentation/commenting code
+
+  - Every non-redundant line
+  
+```{r}
+# mtcars base R dataset
+data = mtcars
+
+y = data$mpg # mpg
+x1 = data$hp # horsepower 
+x2 = data$wt # weight
+
+# linear model predicting mpg with horsepower
+m1 = lm(y ~ x1)
+
+# predict mpg with weight
+m2 = lm(y ~ x2)
+
+# predict mpg with both
+m3 = lm(y ~ x1 + x2)
+
+# coefficients for each model
+coef(m1)
+coef(m2)
+coef(m3)
+```
+
+- Helper functions
+
+  - Build early, build often
+
+  - Separate files (obviously can't do here)
+  
+```{r}
+library(dplyr) # tidyverse data wrangling
+
+# function to calculate means for x based on strata
+strata_means = function(data,strata,x){
+  out = data %>% 
+    # group by strata
+    group_by(.data[[strata]]) %>%
+    # calculate mean of x per strata
+    summarise(xbar = mean(.data[[x]]))
+  # rename columns
+  colnames(out) = c(strata,x)
+  return(out) # return dataframe of means
+}
+
+# run function
+strata_means(data,"vs","mpg")
+```
+
+- You would save this as `strata_means.R` and call it with `source("strata_means.R")`
+
+  - Then you could run the function
+  
+  - Prevents "How did I do that thing?"
+  
+  - Easier to troubleshoot errors
+  
+<br>
+
+- Explanatory code
+
+  - Objects/elements/function are named in ways that don't require comments
+
+- Naming conventions
+  
+  - camelCase
+  
+  - snake_case
+  
+  - PascalCase
+  
+  - kebab-case
+  
+  - UPPER_CASE
+  
+  - S.case (common in R)
+  
+- Just be consistent
+
+  - Switching constantly creates confusion
+  
+  - I use a bastardized version of snake_case
+  
+  - You probably shouldn't copy me 
+  
+  - But that's between you and your creator
+  
+```{r}
+# the right way to do snake_case in R
+
+# arrows to define objects
+cars_data     <- mtcars 
+
+# equals for inline definition + underscores on all separators
+mpg_model_1   <- lm(mpg ~ hp, data = cars_data) 
+
+# consistent spacing for code & comments
+model_1_coefs <- coef(mpg_model_1) 
+
+# clear and explanatory code
+print(model_1_coefs)
+```
+
+```{r, eval=FALSE}
+# my jacked up way
+
+# uppercase when the vibe fits
+DOC_address = "data/DOCYearEndReportAllData.xlsx" 
+# equal sign instead of arrows always for max laziness
+polys = st_read("data/WBDHU8/WBDHU8mod.shp")
+# inconsistent spacing of functions
+kansas_map = maps::map("state", "kansas", fill = TRUE, plot = FALSE)
+kansas_sf = st_as_sf(kansas_map) |> st_set_crs(4326)
+dat24 = daq[[4]] # numbers don't get underscore delims
+# no comment spacing / change above vs. inline comment whenever
+df_tkn = subset(dat24,dat24$Pollutant == "TKN") 
+# reversing naming conventions when the spirit guides me
+sf_df = st_as_sf(df_tkn, coords = c("Long","Lat"), crs = 4326)
+```
+
+- You don't read this mess without a function dictionary
+
+  - Spoiler alert: I never make those
+  
+<br>
+  
+- Error catching
+
+  - Rather advanced technique
+  
+  - Still probably good to learn (?) I'm bad about it
+  
+```{r}
+# function to calculate means for x based on strata
+strata_means = function(data,strata,x){
+  
+  # error catch for non-numeric inputs
+  if(is.numeric(data[[x]]) == FALSE){
+    cat("Error: Variable input to be averaged is non-numeric.", "\n",
+        "Please check str(data[[x]]) and confirm.", "\n",
+        "Change to as.numeric(data[[x]]) if this is intended.")
+  }
+  else{
+    out = data %>% 
+      # group by strata
+      group_by(.data[[strata]]) %>%
+      # calculate mean of x per strata
+      summarise(xbar = mean(.data[[x]]))
+    # rename columns
+    colnames(out) = c(strata,x)
+    return(out) # return dataframe of means
+  }
+}
+
+# run function
+data$mpg = as.character(data$mpg)
+strata_means(data,"vs","mpg")
+```
+
+### Live example
+
+- Code
+
+## R Programming Lab
+
+Partner up if you so choose. Complete the following with the seed "73":
+
+1. Define 3 scalars
+
+\[
+a = 3
+\qquad\qquad
+b = 5
+\qquad\qquad
+c = 0.25
+\]
+
+2. Define 3 vectors
+
+\[
+\boldsymbol{x} = \begin{bmatrix} 5 \\ 3 \\ 6 \end{bmatrix}
+\qquad\qquad
+\boldsymbol{y} = \begin{bmatrix} 11.3 \\ 8.97 \\ 9.82 \end{bmatrix}
+\qquad\qquad
+\boldsymbol{z} = \begin{bmatrix} a \\ b \\ c \end{bmatrix}
+\]
+
+3. Generate 3 standard normal values and save them to a variable named w.
+
+4. Multiply w by a random uniform value bound between 1 and 5, then save it as the new w.
+
+5. Define the matrix:
+
+\[
+\textbf{A} = \begin{bmatrix} \boldsymbol{x} + w_1 \\ \boldsymbol{y} + w_2 \\ \boldsymbol{z} + w_3 \end{bmatrix}
+\]
+
+6. Confirm the following is true:
+
+\[
+\textbf{AA}^{-1} = \textbf{I}
+\]
+
+7. Add a row of 3 gamma distributed values with shape equal to 2 and rate equal to 1/5.
+
+8. Simulate 4 normally distributed data points with a mean equal to the trace of A and standard deviation of 5. Save them as a variable named q.
+
+9. Add a column of 1s to the matrix A and define:
+
+\[
+\hat{\boldsymbol{\theta}} = (\boldsymbol{A}^\prime \boldsymbol{A})^{-1} \boldsymbol{A}^\prime \boldsymbol{q}
+\]
+
+10. Calculate the predicted values of q:
+
+\[
+\hat{\boldsymbol{q}} = \boldsymbol{A} \boldsymbol{\hat{\theta}}
+\]
+
+<br>
+
+## Go away

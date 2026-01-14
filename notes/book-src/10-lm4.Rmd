@@ -1,0 +1,340 @@
+# Day 10
+
+## Review
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# historic water level data 1995-2013
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/KS_Water_Level_Monitoring_95to13.csv"
+wlev = read.csv(url, stringsAsFactors = F)
+wlev = wlev[,-1] # remove index column
+m1 = lm(lev_va_ft ~ day_i, data = wlev)
+summary(m1)
+```
+
+- Confidence intervals for derived quantities
+
+- The wrong way
+    
+```{r}
+beta_ci = confint(m1)
+beta_ci[1,] # ci for b0
+beta_ci[2,] # ci for b1
+
+# straight to jail!
+dry_day_ci = -beta_ci[1,]/beta_ci[2,]
+dry_day_ci
+
+1994.917 + (dry_day_ci/365)
+```
+
+<br>
+
+- The delta method
+
+- "Manually"
+
+```{r}
+x1 = as.numeric(coef(m1)[1]) # b0
+x2 = as.numeric(coef(m1)[2]) # b1
+
+# first derivative of g(X) = -x1/x2
+gprime_mu = attr(eval(deriv(~ -x1/x2, c("x1","x2"))), "gradient")
+
+# approximate covariance of g(X)
+cov_g = gprime_mu%*%vcov(m1)%*%t(gprime_mu)
+sqrt(cov_g)
+
+# wald-type confidence intervals
+dry_day_l = dry_day - 1.96 * sqrt(cov_g)
+dry_day_u = dry_day + 1.96 * sqrt(cov_g)
+
+# lower estimate
+1994.917 + dry_day_l/365
+
+# upper estimate
+1994.917 + dry_day_u/365
+```
+
+- `msm` package
+
+```{r}
+library(msm)
+cov_g2 = deltamethod(~ -x1/x2, mean = coef(m1), cov = vcov(m1))
+cov_g2
+
+1994.917 + ((dry_day - 1.96*cov_g2)/365)
+1994.917 + ((dry_day + 1.96*cov_g2)/365)
+```
+
+- Non-parametric bootstrap
+
+1. For a dataset with $n$ observations, take a sample of size $n$ with replacement.
+
+2. Fit the sampled data to the chosen statistical model.
+
+3. Save the parameters and/or estiamtes of interest.
+
+4. Repeat the process $m$ times.
+
+<br>
+
+
+<div style="background:#f7f7f7; padding:14px; border-radius:6px; font-family:monospace; line-height:1.6;">
+<b>Pseudo-code</b><br><br>
+
+SET $m \to m$<br>
+
+SET $n \to \text{LENGTH}(Y)$<br><br>
+
+FOR $i = 1$ TO $m$ DO<br>
+
+  &nbsp;&nbsp;DRAW $(S_1, S_2, \dots, S_n)$ independently from $\{1,2,\dots,n\}$
+  &nbsp;&nbsp;SET $\mathbf{S} = (S_1, S_2, \dots, S_n)$<br>
+  
+  &nbsp;&nbsp;DEFINE $(x_j^*, y_j^*) = (x_{S_j}, y_{S_j})$ for $j = 1,2,\dots,n$<br><br>
+  
+  &nbsp;&nbsp;FIT $y_j^* = \beta_0^* + \beta_1^* x_j^* + \varepsilon_j^*$ for $j = 1,2,\dots,n$<br><br>
+  
+  &nbsp;&nbsp;COMPUTE $\theta^* = \frac{-\beta_0^*}{\beta_1^*}$<br>
+  
+  &nbsp;&nbsp;SET $\theta_i \to \mathbf{\theta}^*$<br>
+  
+  &nbsp;&nbsp;SET $i \to i + 1$<br>
+  
+END FOR<br>
+
+</div>
+
+<br>
+
+- R code
+
+```{r}
+# reproducibility seed
+# if we change this then the results will change with it
+set.seed(73)
+
+# number of bootstrap iterations
+m = 1000
+
+# number of observations in the data
+n = nrow(wlev)
+
+# empty matrix for derived quantities
+dry_day_boot = matrix(,m,1)
+
+# for loop across bootstrap iterations
+for(i in 1:m){
+  
+  # sample N times from the data WITH replacement
+  boot_sample = sample(1:n, replace = TRUE)
+  
+  # create temporary data for that iteration of sampling
+  temp_data = wlev[boot_sample,c(19,21)]
+  
+  # fit the model to the sampled data
+  model = lm(lev_va_ft ~ day_i, data = temp_data)
+  
+  # compute dry day using the coefficients of that model
+  dry_day_boot[i,] = -coef(model)[1]/coef(model)[2]
+  
+}
+```
+
+- Inference from confidence intervals
+
+    - What does a confidence intervals *actually* measure?
+    
+- Sampling distributions
+
+    - Hypothetical, unobservable mathematical objects
+    
+    - Confidence intervals are derived from the assumption of their existence
+    
+- Empirical distributions
+    
+    - Summary statistics and plots are intuitive
+    
+- Empirical distribution $\approx$ sampling distribution
+
+```{r}
+library(latex2exp)
+hist(dry_day_boot,col="white",xlab="Day",
+     main=TeX(
+       'Empirical distribuiton of $$-$$\\hat{\\frac{$\\beta_0}{$\\beta_1}}'),
+     freq=FALSE, breaks=20)
+```
+
+- Affine transformation
+
+```{r}
+dry_year_boot = (dry_day_boot/365) + 1994.917
+hist(dry_year_boot,col="white",xlab="Year",
+     main=TeX(
+       'Empirical distribuiton of $$-$$\\hat{\\frac{$\\beta_0}{$\\beta_1}}'),
+     freq=FALSE,breaks=20)
+```
+
+```{r}
+# five number summary of empirical distribution of
+# estimated year that the ogallala dries up
+quantile(dry_year_boot, c(0,0.25,0.5,0.75,1))
+
+# 95% CI based on empirical distribution
+quantile(dry_year_boot, c(0.025, 0.975))
+```
+
+<br>
+
+- Optimized bootstrap for simple linear regression 
+
+```{r}
+# bootstrap iterations
+m = 1000
+
+# x and y data
+x = wlev$day_i
+y = wlev$lev_va_ft
+
+# number of observations in the data
+n = length(y)
+
+# reproducibility seed
+set.seed(73)
+
+# replicate acts similarly to a for loop
+dry_day_boot2 = replicate(m, {
+  # sampling index
+  idx = sample.int(n, n, replace = TRUE)
+  
+  # sample from x and y
+  x_boot = x[idx]
+  y_boot = y[idx]
+  
+  # compute the mean of each sample
+  xbar = mean(x_boot)
+  ybar = mean(y_boot)
+
+  # perform scalar form simple linear regression for the sample
+  b1 = sum((x_boot - xbar) * (y_boot - ybar)) / sum((x_boot - xbar)^2)  
+  b0 = ybar - b1 * xbar                                     
+  
+  # compute dry day
+  -b0 / b1 })
+```
+
+```{r}
+dry_year_boot2 = (dry_day_boot2/365) + 1994.917
+quantile(dry_year_boot2, c(0,0.25,0.5,0.75,1))
+quantile(dry_year_boot, c(0.025,0.975))
+```
+
+<br>
+
+- Using the mosaic package
+    
+```{r message=FALSE, warning=FALSE}
+library(mosaic) # one of many package options for bootstrapping
+
+# reproducibility seed
+set.seed(73)
+
+# mosaic's bootstrap
+bootstrap = do(1000) * coef(lm(lev_va_ft ~ day_i, data = resample(wlev)))
+
+# fills a dataframe* with each parameter from each iteration
+# *check str(bootstrap) and tell me why im lying
+head(bootstrap)
+
+
+# compute the dry day
+theta_hat = -bootstrap[,1]/bootstrap[,2]
+
+quantile(theta_hat, c(0.025,0.975))
+
+quantile(((theta_hat/365) + 1994.917), c(0.025,0.975))
+```
+
+<br>
+
+**Any questions?**
+
+<br>
+
+## In-class activity
+
+- Work together with your partner to find data from [Dryad](https://datadryad.org), [Kaggle](https://www.kaggle.com), or another valid data repository.
+
+- Select at least $3$ and at most $6$ variables from the data.
+
+1. Compute the mean, standard deviation, and five number summary for those variables.
+
+2. Create at least 2 different graphics from those variables, describing their distributions or relationships with one another.
+
+3. Select a response variable, then write out a linear model for predicting that response.
+
+4. Fit the model to the data using the `lm()` function in R.
+
+5. Produce a summary, coefficients, and confidence intervals for that model. 
+
+6. Plot the fitted regression line for the model onto a scatterplot for each variable with the response.
+
+<br>
+
+## Assignment 3
+
+- hilarious
+
+<br>
+
+## Projects
+
+- Week 8 is closer than you think
+
+    - Start thinking about what you want to do
+
+    - Start thinking about who you *might* work well with
+
+    - Think harder about who you **won't** work well with
+    
+    - There's no shame in being incompatible in a group
+    
+- Try to align your strengths
+
+    - In a statistics classroom, I would pair myself with someone more mathematically inclined.
+    
+    - In a computer science classroom, I'm the math guy.
+    
+    - In a biology classroom, I'm whatever my project team sucks the most at.
+    
+- A note to provide zero pressure to the project whatsoever
+
+    - Publications are **very** valuable in hiring
+
+    - Kansas Water Institute, ID3A, etc.
+    
+<br>
+
+## Class choice lectures
+
+- Get curious (please)
+
+- If the class has no direction/curiosity we're doing:
+
+    - GLMMs
+
+    - Machine Learning
+    
+    - Bayesian models
+
+    - Eigenvalues
+    
+- Those lectures will not be pretty
+
+- There will be math
+
+- This is a threat (I'm joking) (Legally speaking)
+
+<br>
+
+## Go away

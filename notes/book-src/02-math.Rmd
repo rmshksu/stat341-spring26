@@ -1,0 +1,807 @@
+# Day 2
+
+## Math overview
+
+- Not a "math class"
+
+  - Applied statistics class
+  
+  - Math is a tool
+  
+  - So we need to *understand* it
+  
+- Today only covers the *essentials*
+  
+- Supplemental material
+
+  - If you want it
+  
+  - Not required (but recommended)
+  
+  - Final project *can* be math focused
+  
+<br>
+
+## Matrix algebra
+
+\[
+\text{Matrix: } \textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
+\qquad\qquad
+\text{Vector: } \boldsymbol{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}
+\qquad\qquad
+\text{Scalar: } a = 5
+\]
+
+```{r}
+# 2x2 matrix
+A = matrix(c(1,2,3,4), nrow = 2, ncol = 2, byrow = TRUE)
+
+# 1x3 vector
+x = c(1,2,3)
+
+# scalar (1x1 matrix/vector)
+a = 5
+
+A
+x
+a
+```
+
+- Sums
+
+\[
+\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
+\qquad\qquad
+\textbf{B} = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix}
+\]
+
+\[
+\textbf{A} + \textbf{B} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} + \begin{bmatrix}1 & 0 \\ 1 & 0\end{bmatrix} = 
+\begin{bmatrix}2 & 2 \\ 4 & 4\end{bmatrix}
+\]
+
+```{r}
+B = matrix(c(1,1,1,0),2,2,T)
+
+# adding two matrices
+A + B
+
+# scalar + matrix
+a + A
+
+# scalar + vector
+a + x
+```
+
+- Scalar Products of Vector/Matrix
+
+\[
+3 \times \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} = \begin{bmatrix}3 & 6 \\ 9 & 12\end{bmatrix}
+\qquad\qquad
+10 \times \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} = \begin{bmatrix}10 \\ 20 \\ 30\end{bmatrix}
+\]
+
+```{r}
+# scalar * matrix
+3*A
+
+# scalar * vector
+10*x
+```
+
+- Transpose
+
+\[
+\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4 \\ 5 & 6 \end{bmatrix}
+\qquad\qquad
+\textbf{A}^\prime = \begin{bmatrix}1 & 3  & 5\\ 2 & 4 & 6 \end{bmatrix}
+\]
+
+```{r}
+A = matrix(c(1,2,3,4,5,6),3,2,T)
+
+A # 2x3 matrix
+
+t(A) # 3x2 when transposed
+```
+
+- Matrix Products
+
+\[
+\begin{bmatrix}
+1 & 3 & 5 \\
+2 & 4 & 6
+\end{bmatrix}
+\begin{bmatrix}
+1 & 2 \\
+3 & 4 \\
+5 & 6
+\end{bmatrix} =
+\begin{bmatrix}
+(1 \cdot 1) + (3 \cdot 3) + (5 \cdot 5)
+    & 
+(1 \cdot 2) + (3 \cdot 4) + (5 \cdot 6)
+\\
+(2 \cdot 1) + (4 \cdot 3) + (6 \cdot 5)
+    &
+(2 \cdot 2) + (4 \cdot 4) + (6 \cdot 6)
+\end{bmatrix} =
+\begin{bmatrix}
+35 & 44 \\
+44 & 56
+\end{bmatrix}
+\]
+
+```{r}
+# inner product (dimension reducing)
+t(A)%*%A
+
+# out product (dimension increasing)
+A%*%t(A)
+```
+
+
+- Determinants
+
+\[
+\textbf{A} = \begin{bmatrix}
+    0 & -2 \\
+    2 & 0
+\end{bmatrix}
+\]
+
+\[
+\text{det}(\textbf{A}) = \text{det} \left(\begin{bmatrix}
+    0 & -2 \\
+    2 & 0
+\end{bmatrix} \right) = ad - bc = (0 \times 0) - (-2 \times 2) = 4
+\]
+
+```{r}
+A = matrix(c(0,-2,2,0),2,2,T)
+A
+
+# determinant
+det(A)
+```
+
+- Matrix inverse
+
+\[
+\textbf{A} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}
+\qquad\qquad
+\textbf{A}^{-1} = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}
+\]
+
+\[
+\textbf{AA}^{-1} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}\begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix} = \begin{bmatrix}1 & 0 \\ 0 & 1\end{bmatrix} = \textbf{I}
+\]
+
+```{r}
+A = matrix(c(0,-1,1,0),2,2,T)
+A
+
+# inverse of A
+solve(A)
+
+# A * inv(A) = identity
+A%*%solve(A)
+```
+
+- Special matrices
+
+```{r}
+# identity matrix
+A%*%solve(A)
+
+# acts as a matrix equivalent to scalar 1
+A%*%A%*%solve(A)
+
+# zero matrix
+O = matrix(c(0,0,0,0),2,2,T)
+O%*%B
+
+# diagonal matrix
+`diag<-`(O,c(1,2))
+diag(1,2,2,T)
+
+# J matrix
+J = matrix(1,2,2,T)
+J
+
+# useful for expansions
+J*a
+
+# cdc vsp data
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/cruisedata.csv"
+cruise = read.csv(url) 
+x1 = cruise$infected # total infected w/ norovirus
+x2 = cruise$total_population # total on ship
+X = cbind(1,x1,x2) # design matrix
+n = nrow(cruise) # sample size
+J = matrix(1,1,n,T) # 1xn J "matrix"
+
+# matrix form of mean
+(1/n)*(J%*%X)
+
+mean(x1)
+mean(x2)
+```
+
+- Trace
+
+\[
+\text{tr}(\textbf{A}) =  \sum_{i=1}^n a_{ii}
+\]
+
+```{r}
+A = matrix(c(1,2,3,4,5,6,7,8,9),3,3,T)
+A
+# trace() won't give you this
+sum(diag(A)) # sum of diagonals
+```
+
+- Eigenvalues & eigenvectors
+
+```{r}
+A = matrix(c(3,1,0,2),2,2,T)
+eigen(A) # spectral decomp
+```
+
+<br>
+
+- Why do we care?
+
+\[
+y_i = \beta_0 + \beta_1x_i + \beta_2z_i + \epsilon_i
+\]
+
+\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]
+
+\[
+\hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
+\]
+
+```{r}
+x1 = cruise$start_month # predictor 1
+x2 = cruise$voyage_duration # predictor 2
+y = cruise$infected # response
+X = cbind(1,x1,x2) # design matrix
+
+# matrix method of least squares
+solve(t(X)%*%X)%*%t(X)%*%y
+
+# base R multiple regression
+coef(lm(y ~ x1 + x2))
+```
+
+<br>
+
+## Calculus
+
+- I can't teach you all of calculus in 1 class
+
+  - Don't need to
+  
+  - Exposure to some concepts
+  
+<br>
+
+- Limits
+
+  - What happens as we 'approach' a value in a function
+  
+  - Without hitting it
+
+\[
+f(x) = x^2 - x + 2
+\qquad\qquad
+\lim_{x \to 2}f(x) = 4
+\]
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){
+  x^2 - x + 2
+}
+
+x = c(seq(0,1.99,0.01),rev(seq(2.01,2.1,0.01)))
+y = fx(x)
+plot(x,y,pch=20,cex=0.5,
+     xlab = "x",
+     ylab = "f(x)",
+     main = "Limit as f(x) approaches 2")
+abline(v = 2,
+       col = "gold",
+       lty = 2,
+       lwd = 2)
+```
+
+<br>
+
+- Plug in the approaching value
+
+\[
+\lim_{n \to \infty}\left(t_{\alpha/2} \frac{s}{\sqrt{n}} \right) = t_{\alpha/2} \frac{s}{\sqrt{\infty}} = t_{\alpha/2} \times 0 = 0
+\]
+
+- You may notice things like
+
+\[
+s = \sqrt{\frac{1}{n-1}(x_i - \bar{x})^2}
+\]
+
+\[
+\lim_{n \to \infty}s = \sqrt{\frac{1}{\infty-1}(x_i - \bar{x})^2} = 0
+\]
+
+\[
+\frac{0}{0} \Rightarrow \text{ Undefined}
+\]
+
+- "Speed of convergence"
+
+<br>
+
+- Derivatives
+
+\[
+f^\prime (a) \equiv \lim_{h \to 0}\frac{f(a + h) - f(a)}{h}
+\]
+
+\[
+f(x) = x^2 - 8x + 9
+\]
+
+<br>
+
+\[
+\begin{aligned}
+& \lim_{h \to 0} \frac{f(a + h) - f(a)}{h} = \lim_{h \to 0} \frac{[(a + h)^2 - 8(a + h) + 9] - [a^2 - 8a + 9]}{h} \\
+\\
+& = \lim_{h \to 0} \frac{a^2 + 2ah + h^2 - 8a - 8h + 9 - a^2 + 8a - 9}{h} \\
+\\
+& = \lim_{h \to 0} \frac{2ah + h^2 - 8h}{h} = \lim_{h \to 0 } (2a + h - 8) \\
+\\
+& = 2a - 8
+\end{aligned}
+\]
+
+- Power and addition rules
+
+\[
+\frac{d}{dx} x^2 = 2x
+\qquad\qquad 
+\frac{d}{dx} 8x = 8
+\qquad\qquad
+\frac{d}{dx} 9 = 0
+\]
+
+\[
+\frac{d}{dx} x^2 - 8x + 9 = 2x - 8
+\]
+
+- Numerical differentiation
+
+  - Using limit definition of derivative
+  
+\[
+f^\prime(2) = 2(2) - 8 = -4
+\]
+
+```{r}
+#limit definition of derivative
+lim_diff = function(f, x, h = 1e-5) { 
+  # h should always be a small step size
+  ddx = (f(x + h) - f(x)) / h
+  return(ddx)
+}
+
+fx = function(x){x^2 - 8*x + 9}
+lim_diff(fx,2) # evaluate at x = 2
+```
+
+- Analytic methods can get nasty fast
+  
+\[
+f(x) = \frac{\text{sin}(x^2) + e^{x - 9} + 10x + 2}{x^2}
+\]
+
+- 8 step derivative 
+
+  - Mess of chain rule, product rule, quotient rule, trigonometry
+  
+\[
+f^\prime (x) = \frac{2x \cos\left(x^{2}\right) + \mathrm{e}^{x - 9} + 10}{x^{2}} - \frac{2 \left(\sin\left(x^{2}\right) + \mathrm{e}^{x - 9} + 10x + 2\right)}{x^{3}}
+\]
+
+```{r}
+# much nastier function
+fx = function(x){(sin(x^2) + exp(x - 9) + 10*x + 2)/(x^2)}
+lim_diff(fx,2) # also eval x = 2
+
+# true derivative
+fprime = function(x){(((2*x)*cos(x^2)+exp(x-9)+10)/(x^2)) - 
+    ((2*((sin(x^2))+exp(x-9)+(10*x)+2))/(x^3))}
+fprime(2) # eval x = 2
+```
+
+<br>
+
+- Optimization
+
+\[
+\text{argmax}\{f(x)\} = \frac{d}{dx}f(x) \overset{set}{=} 0
+\]
+
+\[
+f(x) = 2400x - 2x^2
+\]
+
+\[
+\begin{aligned}
+\text{argmax}\{f(x)\} = \frac{d}{dx} 2400x - 2x^2 = 2400 - 4x \overset{set}{=} 0 \\
+\\
+2400 = 4x \\
+\\
+600 = x
+\end{aligned}
+\]
+
+- Check second derivative
+
+\[
+\frac{d}{d^2 x} 2400x - 2x^2 = \frac{d}{dx} 2400 - 4x = -4 < 0
+\]
+
+- $x = 600$ is the absolute maximum of $f(x)$ 
+
+  - $f(x)$ is *concave down*
+  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){(2400*x) - 2*(x^2)}
+x = seq(-1900,3100,100)
+
+plot(x, fx(x),
+     ylab = "f(x)",
+     type="l",
+     lwd = 2,
+     ylim=c(fx(3000), 1500000))
+abline(v = 600, col = "red3", lwd = 2)
+abline(h = fx(600), col = "gold", lwd = 2)
+points(600, fx(600), cex = 2, lwd = 2)
+text(1000,-900000, "x = 600")
+text(1200,-2100000, "f(x) = 720000")
+```
+
+- Programming languages like Python and Wolfram can use `argmax()` and `argmin()` functions
+
+  - In R we use `optim()`
+  
+  - We'll discuss later
+  
+  - This is our "why do we care" for derivatives
+  
+<br>
+
+- Integrals
+
+  - "Anti-derivative"
+ 
+\[
+\frac{d}{dx}x^2 = 2x
+\qquad\qquad
+\int 2x \ dx = \frac{2x^2}{2} + C = x^2 + C
+\]
+
+- C is a constant
+
+  - "indefinite" integrals assume nothing about the derivative
+  
+\[
+\frac{d}{dx}x^2 + 1000 = 2x = \frac{d}{dx}x^2
+\]
+
+- Integrals are the area underneath a curve
+
+  - We can set definite boundaries to look at interval areas
+
+\[
+\int_{1}^2 \frac{1}{x} \ dx = \ln(|2|) - \ln(|1|) \approx 0.693
+\]
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){1/x}
+x = seq(0.1,3,0.01)
+
+plot(x,fx(x),ylab = "f(x)",type="l")
+segments(1,0,1,fx(1))
+segments(2,0,2,fx(2))
+x1_fill = seq(1, 2, length.out = 100)
+y1_fill = fx(x1_fill)
+polygon(c(1, x1_fill, 2), c(-0.1, y1_fill, -0.1), col = "#512885", border = NA)
+arrows(2,4,1.5,1,0.1, col = "#512885", lwd = 1.5)
+text(2.35,4.3,"Area = 0.693" ,col = "#512885", cex = 1.2)
+```
+
+- Why do we care?
+
+<br>
+
+\[
+X \sim \text{Exp}(\theta)
+\]
+
+<br>
+
+\[
+f_x(x) = \theta e^{-\theta x}
+\]
+
+<br>
+
+\[
+\mathbb{E}X = \int_0^{\infty} x f_x(x) \ dx  = \int_0^{\infty} x\theta e^{-\theta x} \ dx  = \frac{1}{\theta}
+\]
+
+<br>
+
+\[
+\mathbb{E}X^2 = \int_0^{\infty} x^2 f_x(x) \ dx  = \int_0^{\infty} x^2 \theta e^{-\theta x} \ dx  = \frac{2}{\theta^2}
+\]
+
+<br>
+
+\[
+\mathbb{V}X = \mathbb{E}X^2 - [\mathbb{E}X]^2 = \frac{2}{\theta^2} - \left( \frac{1}{\theta} \right)^2 = \frac{1}{\theta^2}
+\]
+
+<br>
+
+- Numerical integration
+
+- Riemann sums
+  
+  - Taught *before* integrals
+  
+  - Area of rectangles underneath integral
+  
+  - Accuracy is based on number of rectangles
+  
+  - Not great to implement
+  
+  - Only good for univariate
+  
+
+\[
+f(x) = x^2 - 2x + 3
+\]
+
+\[
+\begin{aligned}
+\int_1^3 x^2 - 2x + 3 \ dx = \left. \frac{x^3}{3}- x^2 + 3x \ \right|_1^3 =\\
+\\
+\left(\frac{3^3}{3} - 3^2 + 3(3) \right) - \left(\frac{1^3}{3}- 1^2 + 3(1) \right) =\\
+\\
+(3 - 9 + 9) - \left(\frac{1}{3} - 4 \right) =\\
+\\
+6 \frac{2}{3} \approx 6.67 \\
+\end{aligned}
+\]
+  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x) {
+  return(x^2 - 2*x + 3)
+}
+
+a = 1
+b = 3
+n = 10 
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = "black", lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+n = 50
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = "black", lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+n = 100
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = NA, lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+- Monte Carlo integration
+
+  - Simulate values within the interval
+  
+  - Evaluate the function at those values
+  
+  - Take their mean
+  
+  - Weight it by the interval
+  
+  - Very reliable, can handle multidimensional
+
+```{r}
+fx = function(x){x^2 - 2*x + 3}
+
+a = 1 # lower bound
+b = 3 # upper bound
+n = 100000 # n samples
+
+# random simulation between a and b
+x = runif(n, min = a, max = b)
+
+# evaluate f(x) at simulations
+mc_sim = fx(x)
+
+# mean weighted by difference
+mc_int = (b - a)*mean(mc_sim)
+mc_int
+```
+
+- Why do we care?
+
+\[
+X \sim \text{Beta}(4,10)
+\]
+
+\[
+\mathbb{E}X = ?
+\qquad\qquad
+\mathbb{V}X = ?
+\]
+
+```{r}
+# simulate 10000 beta(4,10) r.v. realizations
+mc_sim = rbeta(10000,4,10)
+mean(mc_sim) # empirical mean
+var(mc_sim) # variance
+```
+
+\[
+\mathbb{E}X = \frac{4}{4+10} = \frac{4}{14} \approx 0.285
+\]
+
+\[
+\mathbb{V}X = \frac{4 \times 10}{(4 + 10)^2 (4 + 10 + 1)} = \frac{40}{196 \times 15} = \frac{40}{2940} \approx 0.0136
+\]
+
+<br>
+
+## Advanced Math
+
+- Traditionally, statistics involves proofs
+
+  - Supplemental material includes them
+
+  - Not required (or really recommended)
+  
+  - Stats majors (?)
+  
+- Math focused "class choice" topics
+
+  - Differential equations
+  
+    - Worth discussing for the ecologists (a little for Epi students)
+    
+    - No calculus needed, algebraic "difference" equations 
+  
+  - Graph theory / Networks
+
+    - Very useful, very topical (AI/LLMs/ML)
+  
+    - More important for Agronomy/Plant path/Epi students
+    
+  - Bayesian
+  
+    - "Useful" to everyone
+    
+    - Difficult to understand
+    
+    - Need strong comprehension of integrals/expected values
+    
+## Next class
+
+- Bring laptops
+
+- Have R downloaded + RStudio
+
+  - Equivalent if you're using Python
+
+- Talk to me if any of the above is an issue
+
+- We will have a "Lab"
+    
+## Assignment 1
+    
+## Go away

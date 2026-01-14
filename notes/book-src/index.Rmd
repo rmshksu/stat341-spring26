@@ -1,0 +1,16 @@
+--- 
+title: "Biometrics II - STAT 341"
+author: "R. M. Sholl"
+date: Spring 2026
+site: bookdown::bookdown_site
+---
+
+# Bookdown
+
+This webpage is built using bookdown, an open-source R package that facilitates writing books and long-form articles/reports with R Markdown. 
+
+This specific bookdown acts as the lecture notes for STAT 341 - Biometrics 2 at Kansas State University.
+
+## Course Description
+
+This course serves as an introduction to applied statistical modeling for the biological sciences. Major topics include: regression analysis, uncertainty quantification, chi-square testing, and analysis of variance. We will cover more complex topics like generalized linear models and mixed models if time permits.

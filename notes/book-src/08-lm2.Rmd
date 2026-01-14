@@ -1,0 +1,589 @@
+# Day 8
+
+## Review
+
+- Multivariate Normal Distributions
+
+\[
+\boldsymbol{y} = \begin{bmatrix} y_1 \\ y_2 \\ y_3 \end{bmatrix} 
+\sim N\left(\begin{bmatrix} \mu_1 \\ \mu_2 \\ \mu_3 \end{bmatrix}, 
+\begin{bmatrix} \sigma^2 & 0 & 0 \\
+0 & \sigma^2 & 0 \\
+0 & 0 & \sigma^2 \\
+\end{bmatrix}\right)
+\]
+
+<br>
+
+\[
+\begin{bmatrix} \mu_1 \\ \mu_2 \\ \mu_3 \end{bmatrix} = \boldsymbol{\mu}
+\]
+
+\[
+\begin{bmatrix} \sigma^2 & 0 & 0 \\
+0 & \sigma^2 & 0 \\
+0 & 0 & \sigma^2 \\
+\end{bmatrix} = 
+\sigma^2 \begin{bmatrix} 1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+\end{bmatrix} = \sigma^2 \textbf{I}
+\]
+
+<br>
+
+\[
+\boldsymbol{y} \sim N(\boldsymbol{\mu},\sigma^2 \textbf{I})
+\]
+
+<br>
+
+- "i.i.d.": independent and identically distributed
+
+  - Sometimes referred to as a random sample
+  
+  - Assume that all observations of $y$ arise from the same mean and variance
+  
+<br>
+
+- Covariance 
+
+\[
+\text{Cov}(X,Y) = \mathbb{E}\left[(X - \mathbb{E}X)(Y - \mathbb{E}Y) \right] = \mathbb{E}XY - \mathbb{E}X \mathbb{E}Y
+\]
+
+<br>
+
+```{r}
+# covariance between two vectors
+x = runif(3)
+y = rnorm(3)
+cov(x,y)
+```
+
+<br>
+
+\[
+\boldsymbol{y} \sim N(\boldsymbol{\mu},\boldsymbol{\Sigma})
+\]
+
+\[
+\boldsymbol{\Sigma} = \begin{bmatrix}
+\sigma_{y_{11}} & \sigma_{y_{12}} & ... \sigma_{y_{1p}} \\
+\sigma_{y_{21}} & \sigma_{y_{22}} & ... \sigma_{y_{2p}} \\
+\vdots & \vdots & \vdots \\
+\sigma_{y_{n1}} & \sigma_{y_{n2}} ... & \sigma_{y_{np}}
+\end{bmatrix}
+\]
+
+\[
+\sigma_{y_{11}} = \sigma^2_{y_1}
+\]
+
+<br>
+
+```{r}
+# covariance of a matrix
+x = cbind(runif(3),runif(3),runif(3))
+cov(x)
+```
+
+<br>
+
+- Joint distributions
+
+\[
+y_1,y_2,...,y_n \overset{\text{iid}}{\sim} N(\mu,\sigma^2)
+\]
+
+- Think of the multiplication rule for independent events
+
+<br>
+
+\[
+f_{X,Y}(x,y) = N(\mu_{x,y},\sigma^2_{x,y})
+\]
+
+<br>
+
+- Conditional distributions
+
+\[
+f_{Y|X}(y|x) = \frac{f_{X,Y}(x,y)}{f_{Y}(y)}
+\]
+
+<br>
+
+- "Gelman" notation
+
+\[
+\left[ y|x \right] = \frac{\left[ x,y \right]}{\left[ y \right]}
+\]
+
+<br>
+
+```{r, warning=FALSE, message=FALSE, fig.align='center'}
+url = "https://www.ncei.noaa.gov/data/oceans/archive/arc0204/0254384/1.1/data/0-data/67350/Group_Sightings_2018.csv"
+dolphins = read.csv(url)
+```
+
+```{r, warning=FALSE, message=FALSE, fig.align='center'}
+par(mfrow = c(2,2), mar = c(4.5,4.5,3,1))
+hist(dolphins$Water.Depth..m.,
+     xlab = "Meters",
+     main = "Water depth", col = "cyan")
+hist(dolphins$Sequential.Sighting.Number,
+     xlab = "Count",
+     main = "Sequential Sighting Number",
+     col = "#51288590")
+hist(dolphins$Best.Estimate.of.Group.Size,
+     xlab = "Count",
+     main = "Best Estimate of Group Size",
+     col = "white")
+hist(dolphins$Temp...C., xlab = "Celcius",
+     main = "Temperature", col = "maroon")
+```
+
+<br>
+
+- Intercept-only
+  
+\[
+\boldsymbol{y} = \beta_0 + \boldsymbol{\epsilon}
+\]
+
+```{r}
+# sequential sighting
+x = dolphins$Sequential.Sighting.Number
+
+# estimated group size
+y = dolphins$Best.Estimate.of.Group.Size
+
+# intercept only model
+m1 = lm(y ~ 1)
+
+coef(m1)
+```
+
+<br>
+
+- What is the structure of $\boldsymbol{X}$ here?
+
+\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]
+
+<br>
+
+```{r}
+n = length(y) # sample size of y
+n
+
+j = matrix(1,n,1,T) # j vector
+
+# j'j = n
+t(j)%*%j
+
+# (j'j)^-1 = 1/n
+solve(t(j)%*%j)
+
+# j'y = sum(y)
+t(j)%*%y
+
+sum(y)
+
+# all together
+solve(t(j)%*%j)%*%t(j)%*%y
+
+# in a simpler form
+(y%*%j)/n
+
+mean(y)
+```
+
+  
+- Simple linear model
+  
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x} + \boldsymbol{\epsilon}
+\]
+
+\[
+\mathbb{E}(\boldsymbol{\epsilon}) = 0
+\]
+
+<br>
+
+\[
+\mathbb{E}(\boldsymbol{\epsilon}) = \boldsymbol{y} - \hat{\boldsymbol{y}} = \boldsymbol{y} - (\beta_0 + \beta_1 \boldsymbol{x}) = 0
+\]
+
+- $\mathbb{E}(\boldsymbol{y}) = \boldsymbol{\mu}$
+
+  - $\hat{\boldsymbol{y}} = \hat{\boldsymbol{\mu}} = \widehat{\mathbb{E}(\boldsymbol{y})}$
+  
+- Predicting an expected value of an unknown population parameter
+  
+<br>
+
+- Goal: propose a model that represents the data generating process of $\boldsymbol{y}$
+
+  - Ideal: capture the entire process
+  
+  - Reality: $\approx 50\%$ most of the time
+  
+<br>
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{t} + \boldsymbol{\epsilon}
+\]
+
+```{r}
+# simple linear regression
+m2 = lm(y ~ x) # seq sighting as sole predictor
+summary(m2)
+```
+
+```{r}
+par(mar = c(4.5,4.5,1,1))
+plot(x, y,
+     col = "#00000050",
+     pch = 19, cex = 1.1,
+     xlab = "Sequential Sighting Number",
+     ylab = "Estiamted Group Size")
+abline(h = mean(y),
+       col = "gold",
+       lwd = 3)
+abline(a = coef(m2)[1], b = coef(m2)[2],
+       col = "red",
+       lwd = 3)
+```
+
+- Why do we use an intercept only model?
+
+  - How much better is model 2 versus model 1?
+  
+  - Which are you choosing if you had to?
+  
+<br>
+
+**Any questions?**
+
+<br>
+
+## Adding complexity
+
+- Multiple linear regression
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x}_1 + \beta_2 \boldsymbol{x}_2 + ... + \beta_k \boldsymbol{x}_k + \boldsymbol{\epsilon}
+\]
+
+- Problems
+
+  - What does $\beta_0$ represent?
+  
+  - $\beta_1$?
+  
+  - $\beta_2$?
+  
+<br>
+
+\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]
+
+\[
+\widehat{\mathbb{E}(\boldsymbol{y})} = \hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
+\]
+
+<br>
+
+- Geometry (whiteboard)
+
+- How can we conceptualize so many dimensions?
+
+  - How do we explain the parameters? Predict?
+
+>We cannot simply assume that the coefficients are the sum of all their simple regressions.
+
+<br>
+
+## Model development
+
+```{r}
+# framingham heart study (long term cohort study on heart health)
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/framingham_heart_study.csv"
+framingham = read.csv(url)
+
+# reduce dimensions and throw out NA values
+df = na.omit(framingham[,c(1,2,5,10:15)])
+
+# first 6 rows of each column
+head(df) 
+
+# correlation between each variable and BMI
+cor(df)[7,]
+```
+
+- Propose a model for BMI (whiteboard)
+
+<br>
+
+<br>
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x}_1 + \boldsymbol{\epsilon}
+\]
+
+- sysBP
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x}_1 + \beta_2 \boldsymbol{x}_2 + \boldsymbol{\epsilon}
+\]
+
+- diaBP
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x}_1 + \beta_2 \boldsymbol{x}_2 + \beta_3 \boldsymbol{x}_3 + \boldsymbol{\epsilon}
+\]
+
+- age
+
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x}_1 + \beta_2 \boldsymbol{x}_2 + \beta_3 \boldsymbol{x}_3 + \beta_4 \boldsymbol{x}_4 + \boldsymbol{\epsilon}
+\]
+
+- cigsPerDay
+
+```{r}
+m1 = lm(BMI ~ sysBP, data = df)
+m2 = lm(BMI ~ sysBP + diaBP, data = df)
+m3 = lm(BMI ~ sysBP + diaBP + age, data = df)
+m4 = lm(BMI ~ sysBP + diaBP + age + cigsPerDay, data = df)
+```
+
+```{r}
+# matrix for tabling coefficient results
+cmat = matrix(c(mean(df$BMI), 0, 0, 0, 0,
+                coef(m1)[1], coef(m1)[2], 0, 0, 0,
+                coef(m2)[1], coef(m2)[2], coef(m2)[3], 0, 0,
+                coef(m3)[1], coef(m3)[2], coef(m3)[3], coef(m3)[4], 0,
+                coef(m4)[1], coef(m4)[2], coef(m4)[3], coef(m4)[4], coef(m4)[5]),
+              5,5,T)
+colnames(cmat) = c("b0", "b1", "b2", "b3", "b4")
+rownames(cmat) = c("IO", "M1", "M2", "M3", "M4")
+cmat
+```
+
+- What's happening as we add predictors?
+
+  - Are certain predictors "better" than others?
+  
+<br>
+
+```{r}
+par(mfrow = c(1, 2),
+    mar = c(4.5, 1, 1, 1),
+    oma = c(0, 4, 0, 0))
+plot(df$sysBP, df$BMI,
+     xlab = "Systolic",
+     ylab = "",
+     pch = 20,
+     col = "#00000050")
+plot(df$diaBP, df$BMI,
+     xlab = "Diastolic",
+     ylab = "",
+     yaxt = "n",
+     pch = 20,
+     col = "#00000050")
+mtext("BMI", side = 2, outer = TRUE, line = 2)
+```
+
+<br>
+
+```{r}
+par(mar = c(4.5,4.5,1,1))
+plot(df$sysBP,df$diaBP,
+     xlab = "Systolic",
+     ylab = "Diastolic",
+     pch = 20,
+     col = "#00000050")
+```
+
+## Confidence intervals 
+
+- Ogallala aquifer
+
+  - Major concern for KS/TX/NE
+  
+  - Drying up
+
+
+```{r}
+# historic water level data 1995-2013
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/KS_Water_Level_Monitoring_95to13.csv"
+wlev = read.csv(url, stringsAsFactors = F)
+wlev = wlev[,-1] # remove index column
+
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#00000030")
+```
+
+```{r}
+m1 = lm(lev_va_ft ~ day_i, data = wlev)
+summary(m1)
+```
+
+- There's usually three ways to work with a problem in R
+
+1. Throw math at it
+
+```{r}
+# degrees of freedom
+dfr = nrow(wlev) - 2
+
+# t value
+t_v = qt(0.975,dfr)
+
+# standard error of beta 1
+stde_b1 = diag(vcov(m1))[2]^0.5
+
+coef(m1)[2] - t_v*stde_b1 # lower
+coef(m1)[2] + t_v*stde_b1 # upper
+```
+
+2. Throw definitions / structures at it
+
+```{r}
+# standard error of beta 1
+summary(m1)$coefficients[,2][2]
+stde_b1
+
+# very close to z at 95%
+t_v
+
+# upper and lower ci
+coef(m1)[2] - 1.96 * summary(m1)$coefficients[,2][2]
+coef(m1)[2] + 1.96 * summary(m1)$coefficients[,2][2]
+```
+
+3. Throw functions / packages at it
+
+```{r}
+# base R function for ci
+confint(m1)[2,]
+```
+
+<br>
+
+- Interpreting confidence intervals
+
+  - Misconceptions
+  
+  - How to lie with statistics
+  
+<br>
+
+```{r}
+set.seed(73)
+# predictions with confidence bands
+pred = predict(m1, type = "response", interval = "confidence")
+
+# plot including conf bands
+or = order(wlev$day_i)
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#D1D1D170")
+polygon(c(wlev$day_i[or], rev(wlev$day_i[or])),
+        c(pred[,2][or], rev(pred[,3][or])),
+        col = "#51288570",
+        border = NA)
+lines(wlev$day_i[or], pred[,1][or], lwd = 2, col = "#512885")
+```
+
+```{r}
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#D1D1D170",
+     ylim = c(70,100))
+polygon(c(wlev$day_i[or], rev(wlev$day_i[or])),
+        c(pred[,2][or], rev(pred[,3][or])),
+        col = "#51288570",
+        border = NA)
+lines(wlev$day_i[or], pred[,1][or], lwd = 2, col = "#512885")
+```
+
+## Derived quantities
+
+- When will the Ogallala aquifer dry up?
+
+  - Probably a question we should ask
+  
+  - Not an answer that's nice to think about
+  
+<br>
+
+```{r}
+# solution for x intercept
+dry_day = as.numeric(-coef(m1)[1]/coef(m1)[2])
+dry_day # the day the aquifer will dry up
+```
+
+```{r}
+dry_year = dry_day/365
+dry_year # year aquifer dries up
+```
+
+```{r}
+# position at nov 1 1994
+dry_year + 1994.917
+```
+
+<br>
+
+## R programming Lab
+
+- Read these two pages from [Wood (2006)
+
+```{r}
+# install.packages("gamair")
+library(gamair)
+data(hubble)
+par(mar = c(4.5,4.5,2,1))
+plot(hubble$x,hubble$y,
+     xlab = "Distance in Mega parsecs",
+     ylab = "Velocity (km/s)",
+     pch = 19)
+```
+
+Using the `hubble` data in the `gamair` package:
+
+1. Write out a linear model for predicting the velocity of the Cepheid stars observed by the Hubble space telescope based on their distance in mega parsecs, based on Hubble's law. 
+
+2. State and briefly explain what the assumptions behind that model are.
+
+3. Fit the data in R using the matrix form of method of least squares. Save the results to a variable in R.
+
+$$
+\boldsymbol{\beta} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime y
+$$
+
+4. Fit the data in R using the `lm()` function. Save the model.
+
+5. Compare the coefficients from (3) and (4). Are they different?
+
+6. Add the fitted regression line from (4) to the plot of the original data. Set the line width to 2 and change the color to be different from the points. 
+
+7. Compute the confidence interval for the coefficients in (4) using any method you prefer. Save them. 
+
+8. Based off of the reading, predict the age of the universe. Note that the distance is measured in Mega parsecs, which are $3.09 \times 10^19$ km.
+
+<br>
+
+## Go away
+

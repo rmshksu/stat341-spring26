@@ -1,0 +1,375 @@
+# Day 4
+
+## Review
+
+- PSA: I'm teaching "bad programming"
+  
+  - Don't send me hate mail years later if you properly learn
+  
+  - I know I'm dis-servicing you all but we have limited time
+  
+  - For example: We won't discuss OOP, S3 vectors, vectorization
+  
+    - Leave it in the TEVAL if you think I should teach a course on it
+
+### Basic principles
+
+- Documentation/commenting code
+
+  - Every non-redundant line
+  
+```{r}
+# mtcars base R dataset
+data = mtcars
+
+y = data$mpg # mpg
+x1 = data$hp # horsepower 
+x2 = data$wt # weight
+
+# linear model predicting mpg with horsepower
+m1 = lm(y ~ x1)
+
+# predict mpg with weight
+m2 = lm(y ~ x2)
+
+# predict mpg with both
+m3 = lm(y ~ x1 + x2)
+
+# coefficients for each model
+coef(m1)
+coef(m2)
+coef(m3)
+```
+
+- Helper functions
+
+  - Build early, build often
+  
+```{r}
+library(dplyr) # tidyverse data wrangling
+
+# function to calculate means for x based on strata
+strata_means = function(data,strata,x){
+  out = data %>% 
+    # group by strata
+    group_by(.data[[strata]]) %>%
+    # calculate mean of x per strata
+    summarise(xbar = mean(.data[[x]]))
+  # rename columns
+  colnames(out) = c(strata,x)
+  return(out) # return dataframe of means
+}
+
+# run function
+strata_means(data,"vs","mpg")
+```
+
+- You would save this as `strata_means.R` and call it with `source("strata_means.R")`
+
+  - Then you could run the function
+  
+  - Prevents "How did I do that thing?"
+  
+  - Easier to troubleshoot errors
+  
+<br>
+
+- Explanatory code
+
+  - Objects/elements/function are named in ways that don't require comments
+
+- Naming conventions
+  
+  - camelCase
+  
+  - snake_case
+  
+  - PascalCase
+  
+  - kebab-case
+  
+  - UPPER_CASE
+  
+  - S.case (common in R)
+  
+- Just be consistent
+  
+```{r}
+# the right way to do snake_case in R
+
+# arrows to define objects
+cars_data     <- mtcars 
+
+# equals for inline definition + underscores on all separators
+mpg_model_1   <- lm(mpg ~ hp, data = cars_data) 
+
+# consistent spacing for code & comments
+model_1_coefs <- coef(mpg_model_1) 
+
+# clear and explanatory code
+print(model_1_coefs)
+```
+  
+<br>
+  
+- Error catching
+  
+```{r}
+# function to calculate means for x based on strata
+strata_means = function(data,strata,x){
+  
+  # error catch for non-numeric inputs
+  if(is.numeric(data[[x]]) == FALSE){
+    cat("Error: Variable input to be averaged is non-numeric.", "\n",
+        "Please check str(data[[x]]) and confirm.", "\n",
+        "Change to as.numeric(data[[x]]) if this is intended.")
+  }
+  else{
+    out = data %>% 
+      # group by strata
+      group_by(.data[[strata]]) %>%
+      # calculate mean of x per strata
+      summarise(xbar = mean(.data[[x]]))
+    # rename columns
+    colnames(out) = c(strata,x)
+    return(out) # return dataframe of means
+  }
+}
+
+# run function
+data$mpg = as.character(data$mpg)
+strata_means(data,"vs","mpg")
+```
+
+### R Basics
+
+- Data types
+
+```{r}
+# scalars/variables
+a = 5
+a
+
+# vectors
+x = c(1,2,3)
+x
+
+# matrices
+A = matrix(c(x,x-1,x+3),3,3,T)
+A
+
+# data frame
+df = data.frame(fruit = c("Apple", "Banana", "Orange"),
+                ID = c(111,112,113),
+                Count = c(5,12,2))
+df
+
+# list
+ls = list(x = x, A = A, df = df)
+ls
+```
+
+- Data elements
+
+```{r}
+# access vector elements by position
+x[1]
+x[3]
+
+# matrix elements: [row,column]
+A
+A[3,1]
+
+# dataframe$column or dataframe[["column"]]
+df$fruit
+df[["fruit"]]
+
+# list[[element]]
+ls[[2]]
+ls[[2]][3,1]
+```
+
+- Data actions
+
+```{r}
+# change the elements of a dataframe column
+df$ID = c(1,2,3)
+df$ID
+
+rownames(df) = c("R1","R2","R3") # rename rows
+colnames(df) = c("C1","C2","C3") # rename columns
+df
+```
+
+- Booleans
+
+```{r}
+df$C1
+df$C1 == "Apple" # print true where apple is present
+df$C1 != "Apple" # print true when not apple
+```
+
+- Extended print statements
+
+```{r}
+# single line
+cat("The mean of column 3 is:", mean(df$C3), "\n")
+
+# multiple lines using "\n" for breaks
+cat("The variance of column 3 is:", var(df$C3), "\n",
+    "The standard deviation of column 3 is:", sd(df$C3))
+```
+
+- Removing NA values
+
+```{r}
+df[1,1] = NA
+na.omit(df) # removes all rows with NAs
+df[,colSums(is.na(df)) == 0] # remove all columns with NAs
+```
+
+- Replacing NA values
+
+```{r}
+df[is.na(df)] = 0
+df
+```
+
+<br>
+
+**Any questions?**
+
+<br>
+
+## (More) Advanced stuff
+
+- For loops
+
+```{r}
+# mtcars data
+data = mtcars
+# split by vs
+splt = split(mtcars,mtcars$vs)
+# empty vector
+out = c()
+
+# "for each element of the list"
+for(i in 1:length(splt)){
+  # fill the vector with the mean mpg
+  # of each list element
+  out[i] = mean(splt[[i]]$mpg)
+}
+
+out # matches the strata_means() output
+```
+
+<br>
+
+- Concatenate
+
+```{r}
+# a way to push extended strings onto objects
+names(out) = paste0("vs = ", names(splt), sep = " ")
+
+out # labels better match strata_means()
+```
+
+<br>
+
+- Libraries/packages
+
+```{r message=FALSE, warning=FALSE}
+# install.packages("dplyr")
+library(dplyr) # we've seen this a lot
+
+# install.packages("readxl")
+library(readxl) # excel files can't be read by default in R
+
+# install.packages("nlme")
+library(nlme) # generalized least squares
+              # important for next week
+```
+
+- WARNING: If you use a package I haven't shown you in class
+
+  - Bad things occur
+  
+  - Exception: ggplot2 (don't use geom_smooth)
+  
+    - Queue soap box
+  
+<br>
+
+- That's the majority of it
+
+- We'll learn more over time
+
+<br>
+
+## Advanced Programming
+
+- We don't *need* strong skills to succeed here
+
+- AI/LLMs
+
+  - Don't let them write your code entirely
+  
+  - "Packing a suit case"
+  
+  - Use them like search engines
+  
+  - Good for "canned" solutions
+  
+- I always know when you use AI
+
+  - I rarely say anything unless its **bad**
+  
+  - Don't be bad if you decide to use them
+  
+  - Learning sometimes involves pain, programming requires it
+  
+  - The fastest way out is through
+
+- If you like this stuff, feel free to dive deep
+
+  - I'm happy to help
+  
+<br>
+  
+- Programming focused "class choice" topics
+
+  - High dimensional data analysis (more parameters than samples)
+  
+    - Very important for genetics/animal science
+    
+    - Convex optimization problems, nasty stuff
+    
+    - Abuse packages to survive
+  
+  - Neural networks
+  
+    - Agronomy/animal science
+    
+    - Fusion between "mathy" and "programming-y"
+    
+    - We'll talk about machine learning anyway, this is "advanced" ML
+    
+  - Monte Carlo / Markov Chain Monte Carlo
+  
+    - The programming solution to Bayesian
+    
+    - Sampling algorithm
+    
+    - Useful for anyone considering computational biology/genetics
+    
+<br>
+
+## In-class activity
+
+- R Markdown
+
+- Assignment 2
+
+<br>
+
+## Go away

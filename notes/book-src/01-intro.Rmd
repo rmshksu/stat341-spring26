@@ -1,0 +1,679 @@
+# Day 1
+
+## Welcome + Mandatory Formalities
+
+- [About me](https://rmshksu.github.io)
+
+- [Course website]()
+
+  - Canvas
+  
+  - Email, don't Canvas message
+
+- [Syllabus]()
+
+- What's this course about?
+  
+- Is it right for you?
+  
+- Statistical programming
+  
+- Reproducibility and academic honesty
+  
+- Since I only recognize 32 of you...
+  
+    - How I teach
+  
+    - Grades
+
+
+```{r , message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+
+card_kable <- function(
+  data,
+  title    = NULL,
+  subtitle = NULL,
+  caption  = NULL,
+  width    = "85%",
+  header_color = "#51288590"
+) {
+  # Build the kable table (HTML)
+  tbl <- knitr::kable(
+    data,
+    format = "html",
+    escape = FALSE
+  ) |>
+    kableExtra::kable_styling(
+      full_width = FALSE,
+      bootstrap_options = c("condensed", "hover")
+    )
+
+  tbl_html <- as.character(tbl)
+
+  # Title bar
+  header_html <- if (!is.null(title)) {
+    sprintf(
+      '<div style="background:%s; color:white; padding:6px 10px; font-weight:600; 
+                  border-radius:8px 8px 0 0;">%s</div>',
+      header_color, title
+    )
+  } else {
+    ""
+  }
+
+  # Subtitle text (optional)
+  subtitle_html <- if (!is.null(subtitle)) {
+    sprintf(
+      '<div style="padding:6px 10px; font-size:0.9em; color:#555;">%s</div>',
+      subtitle
+    )
+  } else {
+    ""
+  }
+
+  # Caption text (optional)
+  caption_html <- if (!is.null(caption)) {
+    sprintf(
+      '<div style="padding:6px 10px; font-size:0.8em; color:#777; border-top:1px solid #eee;">%s</div>',
+      caption
+    )
+  } else {
+    ""
+  }
+
+  card_html <- paste0(
+    '<div style="border:1px solid #ddd; border-radius:8px; margin:1em auto; width:', width, 
+    '; box-shadow:0 2px 5px rgba(0,0,0,0.06); background:white;">',
+      header_html,
+      subtitle_html,
+      '<div style="padding:8px 10px;">',
+        tbl_html,
+      '</div>',
+      caption_html,
+    '</div>'
+  )
+
+  knitr::asis_output(card_html)
+}
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+data = data.frame(Week = 1:17,
+                  Topics = c("Review and math overview",
+                               "Math and R programming",
+                               "Statistical modeling",
+                               "Linear models I",
+                               "Linear models II",
+                               "Hypothesis testing",
+                               "Prediction",
+                               "Inference",
+                               "SPRING BREAK",
+                               "Model checking",
+                               "Review and catch-up",
+                               "Assumptions and errors",
+                               "Generalized linear models",
+                               "Mixed Models",
+                               "Class choice I",
+                               "Class choice II",
+                               "Finals"),
+                  Assignments = c("HW 1 / Journal 1",
+                                  "Journal 2",
+                                  "HW 2 / Journal 3",
+                                  "Journal 4",
+                                  "HW 3 / Journal 5",
+                                  "Journal 6",
+                                  "HW 4 / Journal 7",
+                                  "Project proposal / Journal 8",
+                                  "",
+                                  "Literature review",
+                                  "Exploratory analysis",
+                                  "Model descriptions",
+                                  "Model fitting/checking",
+                                  "Results and inference",
+                                  "Rough draft",
+                                  "Presentation",
+                                  "Final Project + Report"))
+
+card_kable(
+  data    = data,
+  title   = "Content Schedule",
+  subtitle= "All dates are subject to change.",
+  width   = "85%",
+  header_color = "#51288590"
+)
+```
+
+- About you!
+
+```{r,echo=FALSE}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/students.csv"
+students = read.csv(url)
+majors=as.data.frame(table(students$degreeProgram))
+levels=as.data.frame(table(students$classLevel))
+levels=data.frame(Var1=c("Sophomore","Junior","Senior"),
+                  Freq=c(6,24,26))
+par(mar = c(5, 10, 4, 2))
+barplot(majors$Freq,
+        names.arg = majors$Var1,
+        horiz = TRUE,
+        las = 1,
+        xlim=c(0,36),
+        cex.names = 0.8,
+        col = "#51288899",
+        main = "Degree Programs",
+        xlab = "Count")
+```
+
+```{r,echo=FALSE}
+par(mar = c(3, 4, 3, 1))
+barplot(levels$Freq,
+        names.arg = levels$Var1,
+        las = 1,
+        cex.names = 0.8,
+        col = "#51288899",
+        main = "Class Levels",
+        ylab = "Count",
+        ylim=c(0,30))
+```
+
+## Texts and Literature
+
+- There's no required textbook for the course
+
+    - There are *heavily* recommended texts however
+
+<br>
+
+>Faraway, J. J. (2025). *Linear models with R (3rd ed.).* Chapman and Hall/CRC.
+
+>Weisberg, S. (2014). *Applied linear regression* (4th ed.). Wiley.
+
+>Fieller, N. (2016). *Basics of matrix algebra for statistics with R.* CRC Press.
+
+>Wickham, H., & Grolemund, G. (2017). *R for data science: Import, tidy, transform, visualize, and model data.* O’Reilly Media.
+
+<br>
+
+- There will be the occasional required reading
+
+    - I'll always provide those passages
+    
+- Additional reading and resources will be made available over time
+
+<br>
+
+## Homeworks
+
+- Project-based education
+
+- Group work/collaboration
+
+- Structure of homeworks:
+
+  - Due every other week*
+  
+  - (2 person) Group assignments*
+  
+  - Different partners each time
+  
+*Except this week
+  
+- Purpose of homeworks:
+
+  - Build comfort with R programming
+  
+  - Practice essential methods
+  
+  - "Interview" potential project partners
+  
+<br>
+  
+## Journals
+
+- Weekly writing assignment
+
+- 2-3 sentences answering each of the following:
+
+1. What's something you've learned this week?
+
+2. What's something you're struggling with?
+
+3. Is there anything else you'd like me to know?
+  
+<br>
+
+- These are "attendance"
+
+    - Graded on based on completion
+
+    - You can write about both classes that week
+    
+    - You can write about just one
+    
+- Getting in the habit of writing
+
+- Personal reflection and engagement with material
+
+- Honor system
+
+<br>
+  
+## Final Project
+
+- 2-3 person groups 
+
+  - Working alone ([softly] Don't.)
+  
+- Propose a project (Week 8)
+
+  - Academic research
+  
+  - Industry solutions
+  
+  - General interest
+  
+- Final presentation (Dead & Finals week)
+  
+- Final paper (Friday of finals)
+
+<br>
+
+## Checkpoint Assignments
+
+- Starting after spring break
+
+- Guide you through the process of building a project
+
+- Graded on a 0%, 50%, 100% scale
+
+    - Didn't do it, didn't try, or did it
+    
+- Don't let these overwhelm you
+
+    - Don't slack either
+    
+<br>
+
+## Review
+
+### General Intro Stats
+
+- Everyone *should* know these
+
+- Regardless of *who* your intro stats instructor was
+
+<br>
+
+- Mean and standard deviation
+
+\[
+\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
+\qquad\qquad
+s = \sqrt{s^2} = \sqrt{\frac{1}{n-1} \sum_{i=1}(x_i - \bar{x})^2}
+\]
+
+
+```{r}
+# base R dataset on fiji earthquakes
+quakes = datasets::quakes
+
+# mean magnitude
+mean(quakes$mag)
+
+# variance of magnitude
+var(quakes$mag)
+
+# standard deviation of magnitude
+sd(quakes$mag)
+```
+
+- Quantiles/Quartiles
+
+\[
+\begin{array}{|c|c|c|c|c|}
+\hline
+\text{Min} & \text{Q}_1 & \text{Median} & \text{Q}_3 & \text{Max} \\
+\hline
+0^{th} & 25^{th} & 50^{th} & 75^{th} & 100^{th} \\
+\hline
+\end{array}
+\]
+
+```{r}
+# five number summary as quantiles
+quantile(quakes$mag, c(0,0.25,0.5,0.75,1))
+
+# five number summary base R function
+fivenum(quakes$mag)
+```
+
+- Histograms and Boxplots
+
+```{r}
+# base R histogram
+hist(quakes$mag,
+     xlab = "Magnitude", # x axis label
+     main = "Earthquakes off Fiji", # title
+     col = "white") # bar color
+```
+
+```{r}
+hist(quakes$mag, # data
+     xlab = "Magnitude",
+     main = "Earthquakes off Fiji",
+     col = "white")
+abline(v = mean(quakes$mag), # vertical mean line
+       lty = 2, # line type (dashed)
+       lwd = 2, # line width
+       col = "gold") # line color
+```
+
+```{r}
+# margin control
+par(mar = c(3,1,1,1)) # bottom, left, top, right
+# base R boxplot
+boxplot(quakes$mag,
+        horizontal = T, # set as horizontal (T = TRUE)
+        col = "white") # central box color
+```
+
+```{r}
+par(mar = c(3,1,1,1))
+boxplot(quakes$mag,
+        horizontal = T,
+        col = "white")
+abline(v = c(4,4.3,4.6,4.9,5.7), # vertical quantile lines
+       lty = 2,
+       lwd = 2,
+       # color palette
+       col = c("#FED976","#FEB24C","#FD8D3C","#E31A1C","#800026"))
+text(c(4.1,4.24,4.5,4.82,5.5), # x position
+     c(0.9,1.15,0.9,1.15,0.9), # y position
+     c("Min","Q1","Med","Q3","Max"), # quantile labels
+     col = c("#FED976","#FEB24C","#FD8D3C","#E31A1C","#800026"))
+```
+
+- $z$-scores
+
+\[
+z = \frac{x - \bar{x}}{s}
+\]
+
+```{r}
+# transform the entire dataset into z-scores
+z = (quakes$mag - mean(quakes$mag))/sd(quakes$mag)
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+par(mfrow = c(1,2), mar = c(4.1,4,3.8,1))
+hist(quakes$mag,
+     xlab = "Magnitude",
+     main = "Earthquakes off Fiji",
+     col = "white")
+hist(z,
+     xlab = "Standard Deviations",
+     main = "Earthquake z-scores",
+     col = "white")
+```
+
+- Normal distributions
+
+\[
+X \sim N(\mu,\sigma^2)
+\qquad\qquad
+\frac{X - \mu}{\sigma} = Z \sim N(0,1)
+\]
+
+```{r}
+par(mar = c(4.5,4.5,1,1))
+curve(dnorm(x), # standard normal density
+      xlim = c(-4,4), # x axis limits
+      lwd = 2,
+      xlab = "X",
+      ylab = "P(X=x)") # y axis label
+```
+
+```{r}
+# z score for a 5.5 magnitude earthquake
+z_score = (5.5 - mean(quakes$mag))/sd(quakes$mag)
+1 - pnorm(z_score) # 1 - z probability (same as z-table)
+```
+
+- Scatterplots
+
+```{r}
+# base R scatterplot
+plot(quakes$stations,quakes$mag, # x then y 
+     xlab = "Number of stations reporting", # x axis label
+     ylab = "Magnitude", # y axis label
+     main = "Earthquakes off Fiji", # title
+     pch = 20, # point shape
+     col = "#00000080") # point color
+```
+
+- Least squares regression
+
+\[
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\]
+
+```{r}
+# predictor
+x = quakes$stations
+
+# response
+y = quakes$mag
+
+# base R linear model
+m = lm(y ~ x)
+coef(m) # coefficients
+```
+
+```{r}
+plot(quakes$stations,quakes$mag,
+     xlab = "Number of stations reporting",
+     ylab = "Magnitude",
+     main = "Earthquakes off Fiji",
+     pch = 20,
+     col = "#00000080")
+# add regression line
+lines(sort(quakes$stations),sort(m$fitted.values),
+      lwd = 2,
+      col = "gold") # line color
+```
+
+- Confidence intervals
+
+```{r}
+# 95% confidence interval
+
+# mean magnitude
+xbar_mag = mean(quakes$mag)
+# standard deviation of magnitude
+s_mag = sd(quakes$mag)
+# sample size
+n_mag = as.numeric(nrow(quakes))
+# margin of error
+moe_mag = 1.96*(s_mag/sqrt(n_mag))
+
+xbar_mag - moe_mag # lower bound
+xbar_mag # point estimate
+xbar_mag + moe_mag # upper bound
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+hist(quakes$mag,
+     xlab = "Magnitude",
+     main = "Earthquakes off Fiji",
+     col = "white")
+abline(v = c(xbar_mag - moe_mag, xbar_mag, xbar_mag + moe_mag),
+       lty = 2,
+       lwd = 2,
+       col = c("#FEB24C","#FD8D3C","#E31A1C"))
+```
+
+- Hypothesis tests
+
+```{r message=FALSE, warning=FALSE}
+# schizophrenic reaction time data
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/4c51b2017bb69c11d7ee918cac7d594c07b39549/schiz.txt"
+schiz = data.frame(time = scan(url,skip=5),
+                   schizophrenia = c(rep("no",30*11),rep("yes",30*6)))
+
+library(dplyr) # R data wrangling package
+sstats = schiz %>% 
+  # group by yes/no schiz
+  group_by(schizophrenia) %>% 
+  # mean/var/sample size for yes/no strata
+  summarise(xbar = mean(time),
+            s2 = var(time),
+            n = n())
+# print dataframe
+sstats
+```
+
+\[
+\begin{aligned}
+\text{H}_0: \mu_1 - \mu_2 = 0 \\
+\\
+\text{H}_a: \mu_1 - \mu_2 < 0
+\end{aligned}
+\]
+
+<br>
+
+\[
+t^* = \frac{(\bar{x}_1 - \bar{x}_2) + (\mu_1 - \mu_2)}{\sqrt{(s_1^2/n_1) + (s_2^2/n_2)}}
+\]
+
+```{r}
+# test statistics for independent difference in means
+tstar = as.numeric((sstats[1,2] - sstats[2,2])/
+                     sqrt((sstats[1,3]/sstats[1,4]) +
+                            (sstats[2,3]/sstats[2,4])))
+tstar
+
+# p-vale for t-pivot test statistic
+pt(tstar,min(sstats[,4])-1)
+```
+
+<br>
+
+### Biometrics I
+
+- Review for my students
+
+- Potentially everyone
+
+- It's okay to not know these
+
+  - Come to office hours though
+
+<br>
+
+- Discrete expected value
+
+\[
+\mathbb{E}X = \sum_x x P(X=x)
+\]
+
+- Binomial distribution
+
+  - Discrete, binary processes
+  
+  - Success/failure
+
+\[
+X \sim \text{Bin}(n,p)
+\qquad \qquad 
+\mathbb{E}X = np
+\qquad \qquad 
+\mathbb{V}X = np(1-p)
+\]
+
+- Poisson distribution
+
+  - Positive discrete counts
+  
+\[
+X \sim \text{Pois}(\lambda)
+\qquad \qquad 
+\mathbb{E}X = \mathbb{V}X = \lambda
+\]
+
+- Geometric distribution
+
+  - Number of trials to reach success
+  
+\[
+X \sim \text{Geom}(p) 
+\qquad \qquad
+\mathbb{E}X = 1/p
+\]
+
+- Hypergeometric distribution
+
+  - Geometric distribution
+  
+  - Sampling without replacement
+  
+\[
+X \sim \text{Hyper}(N,K,n) 
+\qquad \qquad
+\mathbb{E}X = n \frac{K}{N}
+\]
+
+<br>
+
+- Continuous expected values
+
+\[
+\mathbb{E}X = \int_{\chi}x f_x(x)
+\]
+
+- Gamma distribution
+
+  - Positive continuous values
+
+\[
+X \sim \text{Gamma}(\alpha,\theta)
+\qquad \qquad 
+\mathbb{E}X = \alpha \theta
+\qquad \qquad 
+\mathbb{V}X = \alpha \theta^2
+\]
+
+- Beta distribution
+
+  - Proportions/probabilities
+
+\[
+X \sim \text{Beta}(\alpha,\beta)
+\qquad \qquad 
+\mathbb{E}X = \frac{\alpha}{\alpha + \beta}
+\qquad \qquad 
+\mathbb{V}X = \frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}
+\]
+
+- Uniform distribution
+
+  - Equi-probable events
+  
+  - Defined boundaries (a and b)
+  
+\[
+X \sim \text{Unif}(a,b)
+\qquad \qquad 
+\mathbb{E}X = \frac{1}{2}(b-a)
+\qquad \qquad 
+\mathbb{V}X = \frac{1}{12}(b-a)^2
+\]
+
+<br>
+
+## Assignment 1
+
+## Go away
