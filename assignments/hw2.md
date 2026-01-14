@@ -1,19 +1,74 @@
 ---
 layout: page
-title: Assignment 2
+title: Homework 2
 permalink: /assignments/assignment-2
 parent: Assignments
 nav_order: 2
+nav_exclude: true
 ---
   
-# Assignment 2  
-  
-The goal of this assignment is to to review the concepts learned about treatment structure and design structure of an experiment.  
-Please complete exercises (1) and (2), download the `Rmd` file [here](https://stat720.github.io/summer2025/assignments/Assignment2_YourLastName.Rmd), 
-rename the `Rmd` file to "Assignment2_YourLastName.Rmd" (e.g., "Assignment2_Smith.Rmd"), put your name in the header, and knit the Rmd to an html file or pdf file. 
-Please submit that html or pdf file on CANVAS by Wednesday, July 2nd midnight. 
-Make sure that you have silenced all messages and warnings in your `Rmd` file. 
-You may work in pairs, but each one of you will have to submit your own file. 
+# Homework 2
 
-[Look at the pdf version.](https://stat720.github.io/summer2025/assignments/Assignment2_YourLastName.pdf)
+- In an R Markdown, complete problems 1-12 showing all relevant code and output. Please be sure to comment all non-redundant lines of code or fully explain each code block in the documentation itself. Title the document with you and your partner's last names. Name the document Lastname1_Lastname2_Assignment2 (Sholl_McKay_Assignment2.pdf) and upload it to Canvas by 11:59 pm on Friday 02/07/26. **Only one submission is needed per group**.
 
+---
+
+Set the seed to "73" (`set.seed(73)`).
+
+<br>
+
+1. Define 3 scalars:
+
+\[
+a = 3
+\qquad\qquad
+b = 5
+\qquad\qquad
+c = 0.25
+\]
+
+2. Define 3 vectors:
+
+\[
+\boldsymbol{x} = \begin{bmatrix} 5 \\ 3 \\ 6 \end{bmatrix}
+\qquad\qquad
+\boldsymbol{y} = \begin{bmatrix} 11.3 \\ 8.97 \\ 9.82 \end{bmatrix}
+\qquad\qquad
+\boldsymbol{z} = \begin{bmatrix} a \\ b \\ c \end{bmatrix}
+\]
+
+3. Generate 3 standard normal values and save them to a variable named w.
+
+4. Multiply w by a random uniform value bound between 1 and 5, then save it as the new w.
+
+5. Define the matrix:
+
+\[
+\textbf{A} = \begin{bmatrix} \boldsymbol{x} + w_1 \\ \boldsymbol{y} + w_2 \\ \boldsymbol{z} + w_3 \end{bmatrix}
+\]
+
+6. Confirm the following is true:
+
+\[
+\textbf{AA}^{-1} = \textbf{I}
+\]
+
+7. Add a row of 3 gamma distributed values with shape equal to 2 and rate equal to 1/5.
+
+8. Simulate 4 normally distributed data points with a mean equal to the trace of A and standard deviation of 5. Save them as a variable named q.
+
+9. Add a column of 1s to the matrix A and define:
+
+\[
+\hat{\boldsymbol{\theta}} = (\boldsymbol{A}^\prime \boldsymbol{A})^{-1} \boldsymbol{A}^\prime \boldsymbol{q}
+\]
+
+10. Calculate the predicted values of q:
+
+\[
+\hat{\boldsymbol{q}} = \boldsymbol{A} \boldsymbol{\hat{\theta}}
+\]
+
+11. Calculate the confidence interval for the mean of $\boldsymbol{q}$ and $\hat{\boldsymbol{q}}$. 
+
+12. Simulate 1000 normally distributed data points with the same mean and standard deviation as in question (8). Plot them on a histogram. Include vertical lines for the lower and upper bound on the mean of $\boldsymbol{q}$.
