@@ -1,8 +1,7 @@
 ---
 name: Phoebe B. McKay
 role: Teaching Assistant
-email: She's a cat
-website: Work in progress
+website: https://rmshksu.github.io/stat341-spring26/assets/images/phoebe2.png
 photo: phoebe.png
 meta:
   Office Hours: By appointment only

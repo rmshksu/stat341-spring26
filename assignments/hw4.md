@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Homework 4
-permalink: /assignments/assignment-4
+permalink: /assignments/homework-4
 parent: Assignments
 nav_order: 4
 nav_exclude: true

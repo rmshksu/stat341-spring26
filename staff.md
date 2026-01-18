@@ -13,6 +13,9 @@ nav_order: 7
 {% for staffer in instructors %}
 {{ staffer }}
 {% endfor %}
+
+## Teaching Assistant
+
 {% assign ta = site.staffers | where: 'role', 'Teaching Assistant' %}
 {% for staffer in ta %}
 {{ staffer }}

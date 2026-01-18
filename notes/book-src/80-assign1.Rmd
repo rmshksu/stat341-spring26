@@ -1,4 +1,4 @@
-# Assignment 1
+# Homework 1
 
 The goal of this assignment is to introduce you to R, RStudio, and R markdown. We will be using these three programs throughout the course. You will be using these programs to make assignments (and other documents) that involve reporting the results obtained from R easily reproducible. In the most basic sense, this is equivalent to “showing your work” as you would for assignments with analytical components.
 

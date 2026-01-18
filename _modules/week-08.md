@@ -3,11 +3,11 @@ title: Inference
 ---
 
 Mar 10
-: Model Prediction   
+: Assumptions and violations
   : [html]()
 
 Mar 12 
-: Prediction Intervals
+: Inference in spite of adjustments
   : [html]()
 
 Mar 13

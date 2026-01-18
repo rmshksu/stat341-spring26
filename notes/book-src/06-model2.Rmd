@@ -479,15 +479,16 @@ P(t) = P_0 e^{rt}
 
 ```{r}
 url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/heart.csv"
-heart = read.csv(url)
-y = heart$chol
-x1 = heart$age
+heart = read.csv(url) # heart biometrics data
+y = heart$chol # serum cholesterol
+x1 = heart$age # subject age
 ```
 
 - Ordinary least squares
 
 ```{r}
-X = cbind(1,x1)
+X = cbind(1,x1) # design matrix
+# matrix form of ordinary least squares
 bhat = solve(t(X)%*%X)%*%t(X)%*%y
 bhat
 ```
@@ -497,6 +498,7 @@ bhat
 - Optimization
 
 ```{r}
+# nelder mead optimization of least squares
 optim(par=c(0,0),method = c("Nelder-Mead"),fn=function(beta){sum((y-(beta[1]+beta[2]*x1))^2)})
 ```
 
@@ -505,6 +507,7 @@ optim(par=c(0,0),method = c("Nelder-Mead"),fn=function(beta){sum((y-(beta[1]+bet
 - Using R's `lm()` method
 
 ```{r}
+# linear model in R
 lm(y ~ x1)
 ```
 
@@ -524,6 +527,7 @@ abline(a = bhat[1], b = bhat[2], col = "gold", lwd = 3)
 - Maximum Likelihood Estimation
 
 ```{r}
+# negative log-likelihood of normal model
 nll = function(par){
 beta = par[1:2]
 sig2 = par[3]
@@ -537,6 +541,7 @@ optim(par=c(0,0,2),fn=nll,method = "Nelder-Mead")
 - `lm()`
 
 ```{r}
+# all basic summaries of R linear model
 summary(lm(y ~ x1))
 ```
 

@@ -533,8 +533,6 @@ plot(hubble$x,hubble$y,
      xlab = "Distance in Mega parsecs",
      ylab = "Velocity (km/s)",
      pch = 19)
-m = lm(hubble$y ~ hubble$x - 1)
-abline(m)
 ```
 
 Using the `hubble` data in the `gamair` package:

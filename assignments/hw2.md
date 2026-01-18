@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Homework 2
-permalink: /assignments/assignment-2
+permalink: /assignments/homework-2
 parent: Assignments
 nav_order: 2
 nav_exclude: true
@@ -19,23 +19,23 @@ Set the seed to "73" (`set.seed(73)`).
 
 1. Define 3 scalars:
 
-\[
+$$
 a = 3
 \qquad\qquad
 b = 5
 \qquad\qquad
 c = 0.25
-\]
+$$
 
 2. Define 3 vectors:
 
-\[
+$$
 \boldsymbol{x} = \begin{bmatrix} 5 \\ 3 \\ 6 \end{bmatrix}
 \qquad\qquad
 \boldsymbol{y} = \begin{bmatrix} 11.3 \\ 8.97 \\ 9.82 \end{bmatrix}
 \qquad\qquad
 \boldsymbol{z} = \begin{bmatrix} a \\ b \\ c \end{bmatrix}
-\]
+$$
 
 3. Generate 3 standard normal values and save them to a variable named w.
 
@@ -43,15 +43,15 @@ c = 0.25
 
 5. Define the matrix:
 
-\[
+$$
 \textbf{A} = \begin{bmatrix} \boldsymbol{x} + w_1 \\ \boldsymbol{y} + w_2 \\ \boldsymbol{z} + w_3 \end{bmatrix}
-\]
+$$
 
 6. Confirm the following is true:
 
-\[
+$$
 \textbf{AA}^{-1} = \textbf{I}
-\]
+$$
 
 7. Add a row of 3 gamma distributed values with shape equal to 2 and rate equal to 1/5.
 
@@ -59,15 +59,15 @@ c = 0.25
 
 9. Add a column of 1s to the matrix A and define:
 
-\[
+$$
 \hat{\boldsymbol{\theta}} = (\boldsymbol{A}^\prime \boldsymbol{A})^{-1} \boldsymbol{A}^\prime \boldsymbol{q}
-\]
+$$
 
 10. Calculate the predicted values of q:
 
-\[
+$$
 \hat{\boldsymbol{q}} = \boldsymbol{A} \boldsymbol{\hat{\theta}}
-\]
+$$
 
 11. Calculate the confidence interval for the mean of $\boldsymbol{q}$ and $\hat{\boldsymbol{q}}$. 
 

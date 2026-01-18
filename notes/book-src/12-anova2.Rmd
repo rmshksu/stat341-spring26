@@ -1,0 +1,321 @@
+# Day 12
+
+- T-tests
+
+- Test of the difference between two tests
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/deer_body_mass.csv"
+deer = read.csv(url, stringsAsFactors = FALSE)
+deer = subset(deer, deer$Location.of.harvest == "desoto")
+```
+
+```{r}
+aggregate(Body.mass.in.kg ~ Sex, data = deer, FUN = mean)
+```
+
+```{r}
+t.test(Body.mass.in.kg ~ Sex, data = deer, var.equal = TRUE)
+```
+
+```{r}
+summary(lm(Body.mass.in.kg ~ Sex, data = deer))
+```
+
+```{r}
+summary(lm(Body.mass.in.kg ~ Sex-1, data = deer))
+```
+
+<br>
+
+- Hypothesis tests are a common tool of designed experiments
+
+    - They're easy to explain in the context
+
+<br>
+
+- Chi-squared
+
+- $\chi^2$ distribution
+
+$$
+Z \sim N(0,1) \qquad \qquad Z_1^2 \sim \chi^2_1
+$$
+
+$$
+Z_1, Z_2,...,Z_k \sim N(0,1)
+$$
+
+$$
+\sum_{i=1}^k Z_k^2 \sim \chi^2_k
+$$
+
+- Popular due to its asymptotic properties ($n \rightarrow \infty$)
+
+- Two major $\chi^2$ tests
+
+    - Test of independence
+
+    - Goodness of fit
+
+<br>
+
+- Test of independence
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/CWD_simple.csv"
+cwd_simple = read.csv(url, stringsAsFactors = FALSE)
+cwd_simple$CWD_Status = ifelse(cwd_simple$CWD_Status == "Negative", 0, 1)
+```
+
+```{r}
+cwd_table = with(cwd_simple, table(Sex, CWD_Status))
+```
+
+```{r}
+cwd_table
+```
+
+```{r}
+chisq.test(cwd_table)
+```
+
+- [ASA statement on p-values](https://www.tandfonline.com/doi/full/10.1080/00031305.2016.1154108)
+
+<br>
+
+- Goodness of fit
+
+```{r}
+aggregate(CWD_Status ~ Year, data = cwd_simple, FUN = sum)
+```
+
+```{r}
+x = aggregate(CWD_Status ~ Year, data = cwd_simple, FUN = sum)[,2]
+p = rep(1/3,3)
+
+chisq.test(x = x, p = p)
+```
+
+```{r}
+x = aggregate(CWD_Status ~ Year + Species, data = cwd_simple, FUN = sum)[,3]
+x
+
+p = c(0.25,0.25,0.25,0.08333333,0.08333333,0.08333333)
+
+chisq.test(x = x, p = p)
+```
+
+<br>
+
+- F-tests
+
+```{r}
+potato = agridat::cochran.crd
+head(potato)
+```
+
+```{r}
+boxplot(inf ~ trt, data = potato,
+        xlab = "Treatment",ylab = "Infected",
+        col = "beige")
+```
+
+```{r}
+aggregate(inf ~ trt, data = potato, FUN = mean)
+```
+
+```{r}
+aggregate(inf ~ trt, data = potato, FUN = sd)
+```
+
+- How do we handle this many treatments?
+
+<br>
+
+- "Piecewise"
+
+    - This isn't particularly sustainable (or valid)
+
+```{r}
+test_data = subset(potato, potato$trt == "F12" | potato$trt == "O")
+t.test(inf ~ trt, test_data, var.equal = TRUE)
+```
+
+$$
+X_1 \sim \chi^2_k \qquad \qquad X_2 \sim \chi^2_d
+$$
+
+$$
+\frac{X_1/k}{X_2/d} \sim F(k,d)
+$$
+
+<br>
+
+- The F-test is how we can handle these "multi-means" hypotheses
+
+```{r}
+dairy = agridat::lucas.switchback
+boxplot(yield ~ trt, data = dairy,
+        col = "white", xlab = "Treatment",
+        ylab = "FCM Yield (lbs/day)", las = 1)
+```
+
+- How do we determine effect of treatment?
+
+    - Is there a control present?
+    
+- Let's notate treatment effects with $\tau$ (we'll break this convention later)
+    
+$$
+\text{H}_0: \tau_1 = \tau_2 = \tau_3 = 0 \qquad \text{H}_a: \tau_1 \neq 0 \text{ or } \tau_2 \neq 0 \text{ or } \tau_3 \neq 0
+$$
+
+We want to test if the observed values of $\hat{\tau_i}$ are as or more extreme than the assumed values under the null. A traditional ANOVA class would then proceed with:
+
+$$
+\text{TSS} = (\boldsymbol{y} - \bar{\boldsymbol{y}})^\prime(\boldsymbol{y} - \bar{\boldsymbol{y}})
+$$
+
+$$
+\text{RSS} = (\boldsymbol{y} - \boldsymbol{X}\hat{\boldsymbol{\tau}})^\prime(\boldsymbol{y} - \boldsymbol{X}\hat{\boldsymbol{\tau}})
+$$
+
+Probability is our assessment tool for any hypothesis test. If the probability of observing these values under the assumption of the null is **so low** that it's unreasonable, we contradict the null (thus rejecting it). 
+
+$$
+\frac{\text{TSS} - \text{RSS} / (p-1)}{\text{RSS}/(n-1)} \sim F(p-1,n-1),
+$$
+
+$$
+P\left( \frac{\text{TSS} - \text{RSS} / (p-1)}{\text{RSS}/(n-1)} < F\right).
+$$
+
+- This probability (area under the curve of the central F-distribution) is our p-value and the rejection rule comes from our tolerance for type 1 error (falsely rejecting the null).
+
+<br>
+
+- The value of linear theory
+
+    - Anytime we use a general linear model we know what we've done
+    
+    - Inference is clear and problems are easily resolved
+    
+- The problems with linear models
+
+```{r}
+hist(potato$inf,
+     xlab = "Count",
+     main = "Potato scab infection",
+     col = "beige")
+```
+
+- What distribution can we assign to this data?
+
+<br>
+
+- F-tests are sensitive to non-normal data
+
+    - Most of these classic tests are
+    
+<br>
+
+- Law of total variance
+    
+    - The variance of a random variable can be split into components of explained and unexplained when conditioned on other random variables:
+    
+$$
+\mathbb{V}Y = \mathbb{E}\left[ \mathbb{V}(Y|X)  \right]+ \mathbb{V}(\mathbb{E}\left[ Y|X \right]).
+$$
+
+- Analysis of variance
+
+    - Since we can decompose the variance in $Y$
+    
+    - We can look at all other random variables in the probability space of $Y$
+    
+    - "Explain" $Y$ with $X$, $Z$, $W$, ...
+    
+<br>
+
+```{r}
+m1 = lm(inf ~ trt, data = potato)
+summary(m1)
+```
+
+```{r}
+anova(m1)
+```
+
+```{r}
+bhat = coef(m1)
+X = model.matrix(m1)
+y = potato$inf
+ybar = mean(y)
+n = nrow(potato)
+p = length(unique(potato$trt))
+
+RSS = t(y - X%*%bhat)%*%(y - X%*%bhat)
+RSS
+
+TSS = t(y-ybar)%*%(y-ybar)
+TSS
+
+TSS-RSS
+
+# please never assign F as a variable
+Fstar = ((TSS-RSS)/(p-1))/(RSS/(n-p))
+Fstar
+
+pf(Fstar,p-1,n-p,lower.tail=FALSE)
+```
+
+<br>
+
+- Can we do this with observational studies?
+
+```{r}
+cwd_agg = aggregate(CWD_Status ~ Year + Species + Sex, data = cwd_simple, FUN = sum)
+cwd_agg
+
+par(mar = c(4.5,12,2,1))
+boxplot(CWD_Status ~ Species + Sex, data = cwd_agg,
+        horizontal = TRUE, las = 1, ylab = "",
+        xlab = "CWD+ Count", col = "#A5907E95")
+```
+
+```{r}
+m2 = lm(CWD_Status ~ Species + Sex, data = cwd_agg)
+summary(m2)
+```
+
+```{r}
+anova(m2)
+```
+
+- Statistics on statistics
+
+    - "Inheriting" variance
+
+    - Eating up degrees of freedom
+
+```{r}
+m3 = lm(CWD_Status ~ Species + Sex, data = cwd_simple)
+summary(m3)
+```
+
+```{r}
+anova(m3)
+```
+
+<br>
+
+**Any questions?**
+
+## Live example
+
+- R code
+
+## In-class activity
+
+## Go away

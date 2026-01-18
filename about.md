@@ -53,6 +53,10 @@ Journals will be due every friday until week 8. Students will be asked to write 
 
 - Is there anything else you'd like me to know?
 
+## Checkpoints
+
+Starting week 10 there will be weekly checkpoint assignments aimed at guiding students through the process of building their final project. These will act as a way to check in on progress and incentivize proper pacing of project development. Each checkpoint will involve a different prompt that contributes to the overall project with the final checkpoint being a rough draft of the final report. 
+
 ## Final project  
 Semester projects may deal with any topic that interests the student and is approved by the instructor. Projects are expected to identify a research problem, acquire data related to that research problem, analyze the data using basic summary methods, propose a statistical model to further explore the research problem in the context of the data, fit the model to data and provide a write-up as well as a presentation covering the results.
 

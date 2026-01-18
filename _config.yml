@@ -28,6 +28,7 @@ exclude:
   - node_modules
   - .sass-cache
   - .jekyll-cache
+math: katex
 
 # Theme settings
 remote_theme: just-the-docs/just-the-docs@v0.10.1

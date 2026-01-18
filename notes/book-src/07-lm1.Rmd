@@ -111,11 +111,12 @@ card_kable <- function(
 - Ordinary least squares
 
 ```{r}
-url = "https://raw.githubusercontent.com/rmshksu/teaching-data/4c51b2017bb69c11d7ee918cac7d594c07b39549/heart.csv"
-heart = read.csv(url)
-y = heart$chol
-x1 = heart$age
-X = cbind(1,x1)
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/heart.csv"
+heart = read.csv(url) # heart biometrics data
+y = heart$chol # serum cholesterol
+x1 = heart$age # subject age
+X = cbind(1,x1) # design matrix
+# matrix form of ordinary least squares
 bhat = solve(t(X)%*%X)%*%t(X)%*%y
 bhat
 ```
@@ -125,6 +126,7 @@ bhat
 - Using R's `lm()` method
 
 ```{r}
+# linear model in R
 lm(y ~ x1)
 ```
 
@@ -144,6 +146,7 @@ abline(a = bhat[1], b = bhat[2], col = "gold", lwd = 3)
 - `summary(lm(y ~ x))`
 
 ```{r}
+# all basic summaries of R linear model
 summary(lm(y ~ x1))
 ```
 
@@ -285,7 +288,7 @@ f_{Y|X}(y|x) = \frac{f_{X,Y}(x,y)}{f_{Y}(y)}
 
 ```{r, warning=FALSE, message=FALSE, fig.align='center'}
 url = "https://www.ncei.noaa.gov/data/oceans/archive/arc0204/0254384/1.1/data/0-data/67350/Group_Sightings_2018.csv"
-dolphins = read.csv(url)
+dolphins = read.csv(url) # noaa dolphin sightings
 ```
 
 ```{r, warning=FALSE, message=FALSE, fig.align='center'}
@@ -442,7 +445,7 @@ abline(h = mean(y),
 <br>
 
 \[
-\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{t} + \boldsymbol{\epsilon}
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x} + \boldsymbol{\epsilon}
 \]
 
 ```{r}

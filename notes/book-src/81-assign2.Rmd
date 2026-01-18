@@ -1,4 +1,4 @@
-# Assignment 2
+# Homework 2
 
 - In an R Markdown, complete problems 1-12 showing all relevant code and output. Please be sure to comment all non-redundant lines of code or fully explain each code block in the documentation itself. Title the document with you and your partner's last names. Name the document Lastname1_Lastname2_Assignment2 (Sholl_McKay_Assignment2.pdf) and upload it to Canvas by 11:59 pm on Friday 02/07/26. **Only one submission is needed per group**.
 

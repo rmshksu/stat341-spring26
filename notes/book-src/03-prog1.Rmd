@@ -629,7 +629,7 @@ strata_means(data,"vs","mpg")
 
 ### Live example
 
-- Code
+- R Code
 
 ## R Programming Lab
 

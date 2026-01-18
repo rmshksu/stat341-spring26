@@ -4,13 +4,13 @@
 
 - [About me](https://rmshksu.github.io)
 
-- [Course website]()
+- [Course website](https://rmshksu.github.io/stat341-spring26/about/)
 
   - Canvas
   
   - Email, don't Canvas message
 
-- [Syllabus]()
+- [Syllabus](https://rmshksu.github.io/stat341-spring26/misce/Syllabus.epub)
 
 - What's this course about?
   
