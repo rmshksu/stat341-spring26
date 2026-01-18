@@ -8,7 +8,7 @@ nav_order: 10
   
 # Final project
 
-The purpose of this project is for you to gain applied experience using linear models. The final project will include: 1) a written report; 2) a tutorial with reproducible results; 3) a professional presentation.
+The purpose of this project is for you to gain applied experience using statistical models or tests. The final project will include: 1) a written report; 2) a tutorial with reproducible results; 3) a professional presentation.
 
 You may work alone or with another person. If you choose to work with another person, include a few short paragraph that details your contribution to the work and person’s contributions to the work.
 
