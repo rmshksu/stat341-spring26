@@ -237,6 +237,274 @@ df
 
 <br>
 
+- Derivatives
+
+\[
+\frac{d}{dx} x^2 = 2x
+\qquad\qquad 
+\frac{d}{dx} 8x = 8
+\qquad\qquad
+\frac{d}{dx} 9 = 0
+\]
+
+\[
+\frac{d}{dx} x^2 - 8x + 9 = 2x - 8
+\]
+
+
+```{r}
+#limit definition of derivative
+lim_diff = function(f, x, h = 1e-5) { 
+  # h should always be a small step size
+  ddx = (f(x + h) - f(x)) / h
+  return(ddx)
+}
+
+fx = function(x){x^2 - 8*x + 9}
+lim_diff(fx,2) # evaluate at x = 2
+```
+
+- Optimization
+
+\[
+\text{argmax}\{f(x)\} = \frac{d}{dx}f(x) \overset{set}{=} 0
+\]
+
+\[
+f(x) = 2400x - 2x^2
+\]
+
+\[
+\begin{aligned}
+\text{argmax}\{f(x)\} = \frac{d}{dx} 2400x - 2x^2 = 2400 - 4x \overset{set}{=} 0 \\
+\\
+2400 = 4x \\
+\\
+600 = x
+\end{aligned}
+\]
+
+- Check second derivative
+
+\[
+\frac{d}{d^2 x} 2400x - 2x^2 = \frac{d}{dx} 2400 - 4x = -4 < 0
+\]
+
+- $x = 600$ is the absolute maximum of $f(x)$ 
+
+  - $f(x)$ is *concave down*
+  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){(2400*x) - 2*(x^2)}
+x = seq(-1900,3100,100)
+
+plot(x, fx(x),
+     ylab = "f(x)",
+     type="l",
+     lwd = 2,
+     ylim=c(fx(3000), 1500000))
+abline(v = 600, col = "red3", lwd = 2)
+abline(h = fx(600), col = "gold", lwd = 2)
+points(600, fx(600), cex = 2, lwd = 2)
+text(1000,-900000, "x = 600")
+text(1200,-2100000, "f(x) = 720000")
+```
+
+- Integrals
+
+\[
+\frac{d}{dx}x^2 = 2x
+\qquad\qquad
+\int 2x \ dx = \frac{2x^2}{2} + C = x^2 + C
+\]
+
+\[
+\int_{1}^2 \frac{1}{x} \ dx = \ln(|2|) - \ln(|1|) \approx 0.693
+\]
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x){1/x}
+x = seq(0.1,3,0.01)
+
+plot(x,fx(x),ylab = "f(x)",type="l")
+segments(1,0,1,fx(1))
+segments(2,0,2,fx(2))
+x1_fill = seq(1, 2, length.out = 100)
+y1_fill = fx(x1_fill)
+polygon(c(1, x1_fill, 2), c(-0.1, y1_fill, -0.1), col = "#512885", border = NA)
+arrows(2,4,1.5,1,0.1, col = "#512885", lwd = 1.5)
+text(2.35,4.3,"Area = 0.693" ,col = "#512885", cex = 1.2)
+```
+
+<br>
+
+\[
+X \sim \text{Exp}(\theta)
+\]
+
+<br>
+
+\[
+f_x(x) = \theta e^{-\theta x}
+\]
+
+<br>
+
+\[
+\mathbb{E}X = \int_0^{\infty} x f_x(x) \ dx  = \int_0^{\infty} x\theta e^{-\theta x} \ dx  = \frac{1}{\theta}
+\]
+
+<br>
+
+\[
+\mathbb{E}X^2 = \int_0^{\infty} x^2 f_x(x) \ dx  = \int_0^{\infty} x^2 \theta e^{-\theta x} \ dx  = \frac{2}{\theta^2}
+\]
+
+<br>
+
+\[
+\mathbb{V}X = \mathbb{E}X^2 - [\mathbb{E}X]^2 = \frac{2}{\theta^2} - \left( \frac{1}{\theta} \right)^2 = \frac{1}{\theta^2}
+\]
+
+<br>
+
+- Numerical integration
+
+\[
+f(x) = x^2 - 2x + 3
+\]
+
+\[
+\begin{aligned}
+\int_1^3 x^2 - 2x + 3 \ dx = \left. \frac{x^3}{3}- x^2 + 3x \ \right|_1^3 =\\
+\\
+\left(\frac{3^3}{3} - 3^2 + 3(3) \right) - \left(\frac{1^3}{3}- 1^2 + 3(1) \right) =\\
+\\
+(3 - 9 + 9) - \left(\frac{1}{3} - 4 \right) =\\
+\\
+6 \frac{2}{3} \approx 6.67 \\
+\end{aligned}
+\]
+  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+fx = function(x) {
+  return(x^2 - 2*x + 3)
+}
+
+a = 1
+b = 3
+n = 10 
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = "black", lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+n = 100
+
+delta_x = (b - a) / n
+
+x_left = seq(a, b - delta_x, by = delta_x)
+
+x_curve = seq(-2, 5, length.out = 1000)
+y_curve = fx(x_curve)
+
+plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
+     main = paste("Riemann Sum with n =", n),
+     xlab = "x", ylab = "f(x)",
+     xlim = c(-2,5),
+     ylim = c(1, max(y_curve) * 1.1))
+
+for (i in 1:n) {
+  
+  x_start = x_left[i]
+  x_end = x_start + delta_x
+  height = fx(x_start)
+  
+  rect(x_start, 0, x_end, height,
+       col = "#51288595", border = NA, lwd = 1)
+}
+
+lines(x_curve, y_curve, col = "black", lwd = 2)
+
+
+riemann_sum_val = sum(fx(x_left) * delta_x)
+legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
+       bty = "n")
+```
+
+- Monte Carlo integration
+
+```{r}
+fx = function(x){x^2 - 2*x + 3}
+
+a = 1 # lower bound
+b = 3 # upper bound
+n = 100000 # n samples
+
+# random simulation between a and b
+x = runif(n, min = a, max = b)
+
+# evaluate f(x) at simulations
+mc_sim = fx(x)
+
+# mean weighted by difference
+mc_int = (b - a)*mean(mc_sim)
+mc_int
+```
+
+\[
+X \sim \text{Beta}(4,10)
+\]
+
+\[
+\mathbb{E}X = ?
+\qquad\qquad
+\mathbb{V}X = ?
+\]
+
+```{r}
+# simulate 10000 beta(4,10) r.v. realizations
+mc_sim = rbeta(10000,4,10)
+mean(mc_sim) # empirical mean
+var(mc_sim) # variance
+```
+
+\[
+\mathbb{E}X = \frac{4}{4+10} = \frac{4}{14} \approx 0.285
+\]
+
+\[
+\mathbb{V}X = \frac{4 \times 10}{(4 + 10)^2 (4 + 10 + 1)} = \frac{40}{196 \times 15} = \frac{40}{2940} \approx 0.0136
+\]
+
 **Any questions?**
 
 <br>

@@ -1,112 +1,102 @@
 # Day 3
 
-## Review
+## Announcements
 
-\[
-\text{Matrix: } \textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
-\qquad\qquad
-\text{Vector: } \boldsymbol{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}
-\qquad\qquad
-\text{Scalar: } a = 5
-\]
+Journals
 
-- Sums
+- Needing assistance with R programming/separate course
+    
+    - Intro to R (STAT 726) exists and I think it's a good course. If you're concerned about your ability to learn the language for your career then it's a great option. If you're only concerned about passing the course then I don't recommend it.
+    
+    - Today's lecture is R programing and a lab, we'll go over things in detail.
+    
+    - *Relax*. Learning is sometimes accompanied with pain and frustration. I remove grades to allow you to handle those things without stress. 
+    
+    - If you're failing it's because you're learning. 
+    
+<br>
 
-\[
-\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
-\qquad\qquad
-\textbf{B} = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix}
-\]
+- Scattered lectures (Very good feedback!)
 
-\[
-\textbf{A} + \textbf{B} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} + \begin{bmatrix}1 & 0 \\ 1 & 0\end{bmatrix} = 
-\begin{bmatrix}2 & 2 \\ 4 & 4\end{bmatrix}
-\]
+    - It'll be "fast" a little longer. The sooner we get out of "fundamentals of R and math" the sooner we can slow down and focus.
+    
+    - Most of the math stuff is meant for you to worry about later. It exists, you've seen it, now when you hit a snag you can refer back to it.
+    
+    - This is also the first time *this* course version has been offered so I ask your patience while I figure out what 75 minute lectures should contain.
+    
+<br>
 
-- Vectors/Matrices multiplied by Scalars
+- Why is there calculus/concerns over math
 
-\[
-3 \times \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} = \begin{bmatrix}3 & 6 \\ 9 & 12\end{bmatrix}
-\qquad\qquad
-10 \times \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} = \begin{bmatrix}10 \\ 20 \\ 30\end{bmatrix}
-\]
+    - This is best shown as an example
+    
+<br>
 
-- Transpose
+>Error catching/illegal algebra
 
-\[
-\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4 \\ 5 & 6 \end{bmatrix}
-\qquad\qquad
-\textbf{A}^\prime = \begin{bmatrix}1 & 3  & 5\\ 2 & 4 & 6 \end{bmatrix}
-\]
+```
+A <- matrix(c(1, 2, 3, 4), 2, 2, TRUE)
+B <- matrix(c(1, 2, 3, 4, 5, 6), 3, 2, TRUE)
 
-- Matrix products
+Error in A %*% B  : 
+  non-conformable arguments
+```
 
-\[
-\begin{bmatrix}
-1 & 3 & 5 \\
-2 & 4 & 6
-\end{bmatrix}
-\begin{bmatrix}
-1 & 2 \\
-3 & 4 \\
-5 & 6
-\end{bmatrix} =
-\begin{bmatrix}
-(1 \cdot 1) + (3 \cdot 3) + (5 \cdot 5)
-    & 
-(1 \cdot 2) + (3 \cdot 4) + (5 \cdot 6)
-\\
-(2 \cdot 1) + (4 \cdot 3) + (6 \cdot 5)
-    &
-(2 \cdot 2) + (4 \cdot 4) + (6 \cdot 6)
-\end{bmatrix} =
-\begin{bmatrix}
-35 & 44 \\
-44 & 56
-\end{bmatrix}
-\]
+- What happened here?
 
-- Determinants
+<br>
 
-\[
-\textbf{A} = \begin{bmatrix}
-    0 & -2 \\
-    2 & 0
-\end{bmatrix}
-\]
+Maximum Likelihood Estimation
 
-\[
-\text{det}(\textbf{A}) = \text{det} \left(\begin{bmatrix}
-    0 & -2 \\
-    2 & 0
-\end{bmatrix} \right) = ad - bc = (0 \times 0) - (-2 \times 2) = 4
-\]
+```
+model <- lm(y ~ x)
+```
 
-- Matrix inverse
+- What is this code doing?
 
-\[
-\textbf{A} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}
-\qquad\qquad
-\textbf{A}^{-1} = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}
-\]
+$$
+y = \beta_0 + \beta_1x + \epsilon
+$$
 
-\[
-\textbf{AA}^{-1} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}\begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix} = \begin{bmatrix}1 & 0 \\ 0 & 1\end{bmatrix} = \textbf{I}
-\]
+***That's not it***
 
-- Method of least squares
+$$
+y \sim N(\beta_0 + \beta_1 x, \sigma^2 \boldsymbol{I})
+$$
 
-\[
-y_i = \beta_0 + \beta_1x_i + \beta_2z_i + \epsilon_i
-\]
+- If you know matrices and you know distributional assumptions
 
-\[
-\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
-\]
+    - This makes sense
+    
+- If you know what a derivative is then optimization isn't a far stretch
 
-\[
-\hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
-\]
+    - Which means this will make more sense
+    
+$$
+\hat{\beta} = \frac{\partial L}{\partial \beta} L(y|\beta,\sigma^2)
+$$
+
+    - *This doesn't mean you're expected to do this it just means you're expected to not be lost when I say Maximum Likelihood Estimation* (You should be lost right now though because we haven't actually discussed it)
+    
+<br>
+
+- Integral calculus
+
+    - For this class: If I say "area under the curve" your instinct should be "integration"
+    
+    - You don't need to do it. You shouldn't be head first in the sauce if I say that something requires integration though. 
+    
+    - For future stats classes/anything to do with bayesian: To get the expected value of a continuous random variable we have to integrate. Often times this is done numerically but if you don't know how to take a univariate integral of a tractable function you probably are SOL in a math stats/bayesian classroom.
+
+<br>
+
+- Course expectations
+
+    - This is a hard one.
+
+    - "Regression analysis and statistical modeling familiarity"
+
+    - Reality is often simpler:
 
 ```{r}
 url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/cruisedata.csv"
@@ -114,286 +104,148 @@ cruise = read.csv(url)
 x1 = cruise$start_month # predictor 1
 x2 = cruise$voyage_duration # predictor 2
 y = cruise$infected # response
-X = cbind(1,x1,x2) # design matrix
 
-# matrix method of least squares
-solve(t(X)%*%X)%*%t(X)%*%y
-
-# base R multiple regression
-coef(lm(y ~ x1 + x2))
+# by the end of this class 
+# everything that outputs from this should make sense
+model = lm(y ~ x1 + x2)
+summary(model)
 ```
 
-- Derivatives
+- If you get more than that out of this class... bonus?
 
-\[
-\frac{d}{dx} x^2 = 2x
-\qquad\qquad 
-\frac{d}{dx} 8x = 8
-\qquad\qquad
-\frac{d}{dx} 9 = 0
-\]
-
-\[
-\frac{d}{dx} x^2 - 8x + 9 = 2x - 8
-\]
-
-
-```{r}
-#limit definition of derivative
-lim_diff = function(f, x, h = 1e-5) { 
-  # h should always be a small step size
-  ddx = (f(x + h) - f(x)) / h
-  return(ddx)
-}
-
-fx = function(x){x^2 - 8*x + 9}
-lim_diff(fx,2) # evaluate at x = 2
-```
-
-- Optimization
-
-\[
-\text{argmax}\{f(x)\} = \frac{d}{dx}f(x) \overset{set}{=} 0
-\]
-
-\[
-f(x) = 2400x - 2x^2
-\]
-
-\[
-\begin{aligned}
-\text{argmax}\{f(x)\} = \frac{d}{dx} 2400x - 2x^2 = 2400 - 4x \overset{set}{=} 0 \\
-\\
-2400 = 4x \\
-\\
-600 = x
-\end{aligned}
-\]
-
-- Check second derivative
-
-\[
-\frac{d}{d^2 x} 2400x - 2x^2 = \frac{d}{dx} 2400 - 4x = -4 < 0
-\]
-
-- $x = 600$ is the absolute maximum of $f(x)$ 
-
-  - $f(x)$ is *concave down*
-  
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-fx = function(x){(2400*x) - 2*(x^2)}
-x = seq(-1900,3100,100)
-
-plot(x, fx(x),
-     ylab = "f(x)",
-     type="l",
-     lwd = 2,
-     ylim=c(fx(3000), 1500000))
-abline(v = 600, col = "red3", lwd = 2)
-abline(h = fx(600), col = "gold", lwd = 2)
-points(600, fx(600), cex = 2, lwd = 2)
-text(1000,-900000, "x = 600")
-text(1200,-2100000, "f(x) = 720000")
-```
-
-- Integrals
-
-\[
-\frac{d}{dx}x^2 = 2x
-\qquad\qquad
-\int 2x \ dx = \frac{2x^2}{2} + C = x^2 + C
-\]
-
-\[
-\int_{1}^2 \frac{1}{x} \ dx = \ln(|2|) - \ln(|1|) \approx 0.693
-\]
-
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-fx = function(x){1/x}
-x = seq(0.1,3,0.01)
-
-plot(x,fx(x),ylab = "f(x)",type="l")
-segments(1,0,1,fx(1))
-segments(2,0,2,fx(2))
-x1_fill = seq(1, 2, length.out = 100)
-y1_fill = fx(x1_fill)
-polygon(c(1, x1_fill, 2), c(-0.1, y1_fill, -0.1), col = "#512885", border = NA)
-arrows(2,4,1.5,1,0.1, col = "#512885", lwd = 1.5)
-text(2.35,4.3,"Area = 0.693" ,col = "#512885", cex = 1.2)
-```
+    - Kansas wants you to know this. You will know it by the end, *trust in that*.
 
 <br>
 
-\[
-X \sim \text{Exp}(\theta)
-\]
+- Final projects
+
+    - Let's do a brief example!
+    
+<br>
+
+## Final project
+
+Water quality
+
+- [Introduction to the problem](https://rmshksu.github.io/stat341-spring26/misce/st341_fp_context.html)
 
 <br>
 
-\[
-f_x(x) = \theta e^{-\theta x}
-\]
+Steps to getting a decent project together
+
+- Step 1: Have data
+
+    - CSIMS and Ambient tracking
+
+- Step 2: Have a problem you can solve with that data
+
+    - What did these stations do differently that contributed to them reaching acceptable levels?
+    
+- Step 3: Come up with a statistical method that would resolve or make progress on the problem
+
+    - I'm going to slowly work through more complex methods at observing the causal factors in the data related to these changes. I'll start with basic linear models and put a hard stop at Generalized Linear Mixed Models. Then I can assess whether something else is needed.
+    
+- Step 4: Check if someone's done the hard work for you
+
+    - This is a really common problem in econometrics and wildlife biology. Most of the time they solve the "problem" with GLMMs, so I'm certain that's a good avenue to explore. 
+    
+- Step 5: Explore the data
+
+    - Summary statistics, basic graphics, simple model outputs
+    
+- Step 6: Propose your model
+
+    - I know what my data has, I know how other people have worked through my problem in the past, thus I can now consider some options for modeling the process. 
+    
+- Step 7: Get results
+
+    - The model either worked or it didn't. Here's how I know which it is.
+    
+- Step 8: Write about it!!
+
+    - Even if the results are "null" (your efforts weren't "rewarded") you should record what you did and put it out there. That way when someone else hits Step 4 they can stop before they spend more time on it (or try a different way).
 
 <br>
 
-\[
-\mathbb{E}X = \int_0^{\infty} x f_x(x) \ dx  = \int_0^{\infty} x\theta e^{-\theta x} \ dx  = \frac{1}{\theta}
-\]
+- Undergraduate research
 
-<br>
+    - The hiring market seeks this out more and more
+    
+    - We're in a freeze nationwide. When it ends they'll be hiring on qualification since everyone with "experience" will be fully employed.
+    
+    - Two things prevent success in scientific publications: Writing and results.
+    
+    - This is an opportunity to manage one of those barriers with ease (Hello)
+    
+- After the class
 
-\[
-\mathbb{E}X^2 = \int_0^{\infty} x^2 f_x(x) \ dx  = \int_0^{\infty} x^2 \theta e^{-\theta x} \ dx  = \frac{2}{\theta^2}
-\]
-
-<br>
-
-\[
-\mathbb{V}X = \mathbb{E}X^2 - [\mathbb{E}X]^2 = \frac{2}{\theta^2} - \left( \frac{1}{\theta} \right)^2 = \frac{1}{\theta^2}
-\]
-
-<br>
-
-- Numerical integration
-
-\[
-f(x) = x^2 - 2x + 3
-\]
-
-\[
-\begin{aligned}
-\int_1^3 x^2 - 2x + 3 \ dx = \left. \frac{x^3}{3}- x^2 + 3x \ \right|_1^3 =\\
-\\
-\left(\frac{3^3}{3} - 3^2 + 3(3) \right) - \left(\frac{1^3}{3}- 1^2 + 3(1) \right) =\\
-\\
-(3 - 9 + 9) - \left(\frac{1}{3} - 4 \right) =\\
-\\
-6 \frac{2}{3} \approx 6.67 \\
-\end{aligned}
-\]
-  
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-fx = function(x) {
-  return(x^2 - 2*x + 3)
-}
-
-a = 1
-b = 3
-n = 10 
-
-delta_x = (b - a) / n
-
-x_left = seq(a, b - delta_x, by = delta_x)
-
-x_curve = seq(-2, 5, length.out = 1000)
-y_curve = fx(x_curve)
-
-plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
-     main = paste("Riemann Sum with n =", n),
-     xlab = "x", ylab = "f(x)",
-     xlim = c(-2,5),
-     ylim = c(1, max(y_curve) * 1.1))
-
-for (i in 1:n) {
-  
-  x_start = x_left[i]
-  x_end = x_start + delta_x
-  height = fx(x_start)
-  
-  rect(x_start, 0, x_end, height,
-       col = "#51288595", border = "black", lwd = 1)
-}
-
-lines(x_curve, y_curve, col = "black", lwd = 2)
-
-
-riemann_sum_val = sum(fx(x_left) * delta_x)
-legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
-       bty = "n")
-```
-
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-n = 100
-
-delta_x = (b - a) / n
-
-x_left = seq(a, b - delta_x, by = delta_x)
-
-x_curve = seq(-2, 5, length.out = 1000)
-y_curve = fx(x_curve)
-
-plot(x_curve, y_curve, type = "l", col = "blue", lwd = 2,
-     main = paste("Riemann Sum with n =", n),
-     xlab = "x", ylab = "f(x)",
-     xlim = c(-2,5),
-     ylim = c(1, max(y_curve) * 1.1))
-
-for (i in 1:n) {
-  
-  x_start = x_left[i]
-  x_end = x_start + delta_x
-  height = fx(x_start)
-  
-  rect(x_start, 0, x_end, height,
-       col = "#51288595", border = NA, lwd = 1)
-}
-
-lines(x_curve, y_curve, col = "black", lwd = 2)
-
-
-riemann_sum_val = sum(fx(x_left) * delta_x)
-legend("center", legend = paste("Sum =", round(riemann_sum_val, 4)),
-       bty = "n")
-```
-
-- Monte Carlo integration
-
-```{r}
-fx = function(x){x^2 - 2*x + 3}
-
-a = 1 # lower bound
-b = 3 # upper bound
-n = 100000 # n samples
-
-# random simulation between a and b
-x = runif(n, min = a, max = b)
-
-# evaluate f(x) at simulations
-mc_sim = fx(x)
-
-# mean weighted by difference
-mc_int = (b - a)*mean(mc_sim)
-mc_int
-```
-
-\[
-X \sim \text{Beta}(4,10)
-\]
-
-\[
-\mathbb{E}X = ?
-\qquad\qquad
-\mathbb{V}X = ?
-\]
-
-```{r}
-# simulate 10000 beta(4,10) r.v. realizations
-mc_sim = rbeta(10000,4,10)
-mean(mc_sim) # empirical mean
-var(mc_sim) # variance
-```
-
-\[
-\mathbb{E}X = \frac{4}{4+10} = \frac{4}{14} \approx 0.285
-\]
-
-\[
-\mathbb{V}X = \frac{4 \times 10}{(4 + 10)^2 (4 + 10 + 1)} = \frac{40}{196 \times 15} = \frac{40}{2940} \approx 0.0136
-\]
-
+    - Opportunity to continue onwards (p u b l i s h)
+    
+    - Portfolio for hiring
+    
+    - URA
+    
 <br>
 
 **Any questions?**
+
+<br>
+
+## R Programming Lab
+
+Partner up if you so choose. Complete the following with the seed "73":
+
+1. Define 3 scalars
+
+\[
+a = 3
+\qquad\qquad
+b = 5
+\qquad\qquad
+c = 0.25
+\]
+
+2. Define 3 vectors
+
+\[
+\boldsymbol{x} = \begin{bmatrix} 5 \\ 3 \\ 6 \end{bmatrix}
+\qquad\qquad
+\boldsymbol{y} = \begin{bmatrix} 11.3 \\ 8.97 \\ 9.82 \end{bmatrix}
+\qquad\qquad
+\boldsymbol{z} = \begin{bmatrix} a \\ b \\ c \end{bmatrix}
+\]
+
+3. Generate 3 standard normal values and save them to a variable named w.
+
+4. Multiply w by a random uniform value bound between 1 and 5, then save it as the new w.
+
+5. Define the matrix:
+
+\[
+\textbf{A} = \begin{bmatrix} \boldsymbol{x} + w_1 \\ \boldsymbol{y} + w_2 \\ \boldsymbol{z} + w_3 \end{bmatrix}
+\]
+
+6. Confirm the following is true:
+
+\[
+\textbf{AA}^{-1} = \textbf{I}
+\]
+
+7. Add a row of 3 gamma distributed values with shape equal to 2 and rate equal to 1/5.
+
+8. Simulate 4 normally distributed data points with a mean equal to the trace of A and standard deviation of 5. Save them as a variable named q.
+
+9. Add a column of 1s to the matrix A and define:
+
+\[
+\hat{\boldsymbol{\theta}} = (\boldsymbol{A}^\prime \boldsymbol{A})^{-1} \boldsymbol{A}^\prime \boldsymbol{q}
+\]
+
+10. Calculate the predicted values of q:
+
+\[
+\hat{\boldsymbol{q}} = \boldsymbol{A} \boldsymbol{\hat{\theta}}
+\]
 
 <br>
 
@@ -626,66 +478,6 @@ strata_means = function(data,strata,x){
 data$mpg = as.character(data$mpg)
 strata_means(data,"vs","mpg")
 ```
-
-### Live example
-
-- R Code
-
-## R Programming Lab
-
-Partner up if you so choose. Complete the following with the seed "73":
-
-1. Define 3 scalars
-
-\[
-a = 3
-\qquad\qquad
-b = 5
-\qquad\qquad
-c = 0.25
-\]
-
-2. Define 3 vectors
-
-\[
-\boldsymbol{x} = \begin{bmatrix} 5 \\ 3 \\ 6 \end{bmatrix}
-\qquad\qquad
-\boldsymbol{y} = \begin{bmatrix} 11.3 \\ 8.97 \\ 9.82 \end{bmatrix}
-\qquad\qquad
-\boldsymbol{z} = \begin{bmatrix} a \\ b \\ c \end{bmatrix}
-\]
-
-3. Generate 3 standard normal values and save them to a variable named w.
-
-4. Multiply w by a random uniform value bound between 1 and 5, then save it as the new w.
-
-5. Define the matrix:
-
-\[
-\textbf{A} = \begin{bmatrix} \boldsymbol{x} + w_1 \\ \boldsymbol{y} + w_2 \\ \boldsymbol{z} + w_3 \end{bmatrix}
-\]
-
-6. Confirm the following is true:
-
-\[
-\textbf{AA}^{-1} = \textbf{I}
-\]
-
-7. Add a row of 3 gamma distributed values with shape equal to 2 and rate equal to 1/5.
-
-8. Simulate 4 normally distributed data points with a mean equal to the trace of A and standard deviation of 5. Save them as a variable named q.
-
-9. Add a column of 1s to the matrix A and define:
-
-\[
-\hat{\boldsymbol{\theta}} = (\boldsymbol{A}^\prime \boldsymbol{A})^{-1} \boldsymbol{A}^\prime \boldsymbol{q}
-\]
-
-10. Calculate the predicted values of q:
-
-\[
-\hat{\boldsymbol{q}} = \boldsymbol{A} \boldsymbol{\hat{\theta}}
-\]
 
 <br>
 

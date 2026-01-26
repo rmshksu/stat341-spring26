@@ -673,7 +673,283 @@ X \sim \text{Unif}(a,b)
 \]
 
 <br>
+## Math overview
 
-## Assignment 1
+- Not a "math class"
+
+  - Applied statistics class
+  
+  - Math is a tool
+  
+  - So we need to *understand* it
+  
+- Today only covers the *essentials*
+  
+- Supplemental material
+
+  - If you want it
+  
+  - Not required (but recommended)
+  
+  - Final project *can* be math focused
+  
+<br>
+
+## Matrix algebra
+
+\[
+\text{Matrix: } \textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
+\qquad\qquad
+\text{Vector: } \boldsymbol{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}
+\qquad\qquad
+\text{Scalar: } a = 5
+\]
+
+```{r}
+# 2x2 matrix
+A = matrix(c(1,2,3,4), nrow = 2, ncol = 2, byrow = TRUE)
+
+# 1x3 vector
+x = c(1,2,3)
+
+# scalar (1x1 matrix/vector)
+a = 5
+
+A
+x
+a
+```
+
+- Sums
+
+\[
+\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix}
+\qquad\qquad
+\textbf{B} = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix}
+\]
+
+\[
+\textbf{A} + \textbf{B} = \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} + \begin{bmatrix}1 & 0 \\ 1 & 0\end{bmatrix} = 
+\begin{bmatrix}2 & 2 \\ 4 & 4\end{bmatrix}
+\]
+
+```{r}
+B = matrix(c(1,1,1,0),2,2,T)
+
+# adding two matrices
+A + B
+
+# scalar + matrix
+a + A
+
+# scalar + vector
+a + x
+```
+
+- Scalar Products of Vector/Matrix
+
+\[
+3 \times \begin{bmatrix}1 & 2 \\ 3 & 4\end{bmatrix} = \begin{bmatrix}3 & 6 \\ 9 & 12\end{bmatrix}
+\qquad\qquad
+10 \times \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} = \begin{bmatrix}10 \\ 20 \\ 30\end{bmatrix}
+\]
+
+```{r}
+# scalar * matrix
+3*A
+
+# scalar * vector
+10*x
+```
+
+- Transpose
+
+\[
+\textbf{A} = \begin{bmatrix}1 & 2 \\ 3 & 4 \\ 5 & 6 \end{bmatrix}
+\qquad\qquad
+\textbf{A}^\prime = \begin{bmatrix}1 & 3  & 5\\ 2 & 4 & 6 \end{bmatrix}
+\]
+
+```{r}
+A = matrix(c(1,2,3,4,5,6),3,2,T)
+
+A # 2x3 matrix
+
+t(A) # 3x2 when transposed
+```
+
+- Matrix Products
+
+\[
+\begin{bmatrix}
+1 & 3 & 5 \\
+2 & 4 & 6
+\end{bmatrix}
+\begin{bmatrix}
+1 & 2 \\
+3 & 4 \\
+5 & 6
+\end{bmatrix} =
+\begin{bmatrix}
+(1 \cdot 1) + (3 \cdot 3) + (5 \cdot 5)
+    & 
+(1 \cdot 2) + (3 \cdot 4) + (5 \cdot 6)
+\\
+(2 \cdot 1) + (4 \cdot 3) + (6 \cdot 5)
+    &
+(2 \cdot 2) + (4 \cdot 4) + (6 \cdot 6)
+\end{bmatrix} =
+\begin{bmatrix}
+35 & 44 \\
+44 & 56
+\end{bmatrix}
+\]
+
+```{r}
+# inner product (dimension reducing)
+t(A)%*%A
+
+# out product (dimension increasing)
+A%*%t(A)
+```
+
+
+- Determinants
+
+\[
+\textbf{A} = \begin{bmatrix}
+    0 & -2 \\
+    2 & 0
+\end{bmatrix}
+\]
+
+\[
+\text{det}(\textbf{A}) = \text{det} \left(\begin{bmatrix}
+    0 & -2 \\
+    2 & 0
+\end{bmatrix} \right) = ad - bc = (0 \times 0) - (-2 \times 2) = 4
+\]
+
+```{r}
+A = matrix(c(0,-2,2,0),2,2,T)
+A
+
+# determinant
+det(A)
+```
+
+- Matrix inverse
+
+\[
+\textbf{A} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}
+\qquad\qquad
+\textbf{A}^{-1} = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}
+\]
+
+\[
+\textbf{AA}^{-1} = \begin{bmatrix}0 & -1 \\ 1 & 0\end{bmatrix}\begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix} = \begin{bmatrix}1 & 0 \\ 0 & 1\end{bmatrix} = \textbf{I}
+\]
+
+```{r}
+A = matrix(c(0,-1,1,0),2,2,T)
+A
+
+# inverse of A
+solve(A)
+
+# A * inv(A) = identity
+A%*%solve(A)
+```
+
+- Special matrices
+
+```{r}
+# identity matrix
+A%*%solve(A)
+
+# acts as a matrix equivalent to scalar 1
+A%*%A%*%solve(A)
+
+# zero matrix
+O = matrix(c(0,0,0,0),2,2,T)
+O%*%B
+
+# diagonal matrix
+`diag<-`(O,c(1,2))
+diag(1,2,2,T)
+
+# J matrix
+J = matrix(1,2,2,T)
+J
+
+# useful for expansions
+J*a
+
+# cdc vsp data
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/cruisedata.csv"
+cruise = read.csv(url) 
+x1 = cruise$infected # total infected w/ norovirus
+x2 = cruise$total_population # total on ship
+X = cbind(1,x1,x2) # design matrix
+n = nrow(cruise) # sample size
+J = matrix(1,1,n,T) # 1xn J "matrix"
+
+# matrix form of mean
+(1/n)*(J%*%X)
+
+mean(x1)
+mean(x2)
+```
+
+- Trace
+
+\[
+\text{tr}(\textbf{A}) =  \sum_{i=1}^n a_{ii}
+\]
+
+```{r}
+A = matrix(c(1,2,3,4,5,6,7,8,9),3,3,T)
+A
+# trace() won't give you this
+sum(diag(A)) # sum of diagonals
+```
+
+- Eigenvalues & eigenvectors
+
+```{r}
+A = matrix(c(3,1,0,2),2,2,T)
+eigen(A) # spectral decomp
+```
+
+<br>
+
+- Why do we care?
+
+\[
+y_i = \beta_0 + \beta_1x_i + \beta_2z_i + \epsilon_i
+\]
+
+\[
+\boldsymbol{y} = \boldsymbol{X \beta} + \boldsymbol{\epsilon}
+\]
+
+\[
+\hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\prime \boldsymbol{X})^{-1} \boldsymbol{X}^\prime \boldsymbol{y}
+\]
+
+```{r}
+x1 = cruise$start_month # predictor 1
+x2 = cruise$voyage_duration # predictor 2
+y = cruise$infected # response
+X = cbind(1,x1,x2) # design matrix
+
+# matrix method of least squares
+solve(t(X)%*%X)%*%t(X)%*%y
+
+# base R multiple regression
+coef(lm(y ~ x1 + x2))
+```
+
+<br>
 
 ## Go away
