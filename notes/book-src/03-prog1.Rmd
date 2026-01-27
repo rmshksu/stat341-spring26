@@ -76,7 +76,7 @@ $$
 \hat{\beta} = \frac{\partial L}{\partial \beta} L(y|\beta,\sigma^2)
 $$
 
-    - *This doesn't mean you're expected to do this it just means you're expected to not be lost when I say Maximum Likelihood Estimation* (You should be lost right now though because we haven't actually discussed it)
+- *This doesn't mean you're expected to do this it just means you're expected to not be lost when I say Maximum Likelihood Estimation* (You should be lost right now though because we haven't actually discussed it)
     
 <br>
 
