@@ -11,7 +11,7 @@ If you were to choose any piece to jump into, I'd recommend any of the 3Blue1Bro
 
 **Math related**
 
-- [Matrix algebra extended notes](https://raw.githubusercontent.com/stat341-spring26/main/misce/matrix_notes.pdf)
+- [Matrix algebra extended notes](https://github.com/rmshksu/stat341-spring26/blob/main/misce/matrix_notes.pdf)
 
 - [Linear Models in Statistics, Alvin C. Rencher](https://utstat.utoronto.ca/brunner/books/LinearModelsInStatistics.pdf)
 
