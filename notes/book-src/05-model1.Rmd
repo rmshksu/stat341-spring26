@@ -1,246 +1,40 @@
 # Day 5
 
+## Announcements
+
+- Office hours for this week:
+
+    - Wednesday: 9:00 AM - 10:59 AM
+    
+    - Thursday: 11:30 AM - 12:30 PM
+    
+    - Friday: 9:00 AM - 10:59 AM
+    
+- "Open door policy"
+
+- By-appointment is always available
+
+<br>
+
+Journals
+
+- 50/50 split on math/R
+
+    - Learning 2 languages at once
+    
+    - We're done with the "programming" part
+    
+    - Homework 2 is by far the most intensive one for R
+    
+    - If you can do 100% of it you're set for the semester
+    
+- Re: Homeworks/missed journals/grades
+
+- Purpose of the lecture notes/code blocks
+
+<br>
+
 ## Review
-
-- Documentation/commenting code
-  
-```{r, eval=FALSE}
-# mtcars base R dataset
-data = mtcars
-
-y = data$mpg # mpg
-x1 = data$hp # horsepower 
-x2 = data$wt # weight
-
-# linear model predicting mpg with horsepower
-m1 = lm(y ~ x1)
-
-# predict mpg with weight
-m2 = lm(y ~ x2)
-
-# predict mpg with both
-m3 = lm(y ~ x1 + x2)
-
-# coefficients for each model
-coef(m1)
-coef(m2)
-coef(m3)
-```
-
-- Helper functions
-
-```{r, eval=FALSE}
-library(dplyr) # tidyverse data wrangling
-
-# function to calculate means for x based on strata
-strata_means = function(data,strata,x){
-  out = data %>% 
-    # group by strata
-    group_by(.data[[strata]]) %>%
-    # calculate mean of x per strata
-    summarise(xbar = mean(.data[[x]]))
-  # rename columns
-  colnames(out) = c(strata,x)
-  return(out) # return dataframe of means
-}
-
-# run function
-strata_means(data,"vs","mpg")
-```
-  
-<br>
-
-- Explanatory code
-
-  - Objects/elements/function are named in ways that don't require comments
-
-- Naming conventions
-  
-  - camelCase
-  
-  - snake_case
-  
-  - PascalCase
-  
-  - kebab-case
-  
-  - UPPER_CASE
-  
-  - S.case (common in R)
-  
-<br>
-  
-- Error catching
-  
-```{r}
-# function to calculate means for x based on strata
-strata_means = function(data,strata,x){
-  
-  # error catch for non-numeric inputs
-  if(is.numeric(data[[x]]) == FALSE){
-    cat("Error: Variable input to be averaged is non-numeric.", "\n",
-        "Please check str(data[[x]]) and confirm.", "\n",
-        "Change to as.numeric(data[[x]]) if this is intended.")
-  }
-  else{
-    out = data %>% 
-      # group by strata
-      group_by(.data[[strata]]) %>%
-      # calculate mean of x per strata
-      summarise(xbar = mean(.data[[x]]))
-    # rename columns
-    colnames(out) = c(strata,x)
-    return(out) # return dataframe of means
-  }
-}
-
-# run function
-data$mpg = as.character(data$mpg)
-strata_means(data,"vs","mpg")
-```
-
-- Data types
-
-```{r, eval=FALSE}
-# scalars/variables
-a = 5
-a
-
-# vectors
-x = c(1,2,3)
-x
-
-# matrices
-A = matrix(c(x,x-1,x+3),3,3,T)
-A
-
-# data frame
-df = data.frame(fruit = c("Apple", "Banana", "Orange"),
-                ID = c(111,112,113),
-                Count = c(5,12,2))
-df
-
-# list
-ls = list(x = x, A = A, df = df)
-ls
-```
-
-- Data elements
-
-```{r, eval=FALSE}
-# access vector elements by position
-x[1]
-x[3]
-
-# matrix elements: [row,column]
-A
-A[3,1]
-
-# dataframe$column or dataframe[["column"]]
-df$fruit
-df[["fruit"]]
-
-# list[[element]]
-ls[[2]]
-ls[[2]][3,1]
-```
-
-- Data actions
-
-```{r, eval=FALSE}
-# change the elements of a dataframe column
-df$ID = c(1,2,3)
-df$ID
-
-rownames(df) = c("R1","R2","R3") # rename rows
-colnames(df) = c("C1","C2","C3") # rename columns
-df
-```
-
-- Booleans
-
-```{r, eval=FALSE}
-df$C1
-df$C1 == "Apple" # print true where apple is present
-df$C1 != "Apple" # print true when not apple
-```
-
-- Extended print statements
-
-```{r, eval=FALSE}
-# single line
-cat("The mean of column 3 is:", mean(df$C3), "\n")
-
-# multiple lines using "\n" for breaks
-cat("The variance of column 3 is:", var(df$C3), "\n",
-    "The standard deviation of column 3 is:", sd(df$C3))
-```
-
-- Removing NA values
-
-```{r, eval=FALSE}
-df[1,1] = NA
-na.omit(df) # removes all rows with NAs
-df[,colSums(is.na(df)) == 0] # remove all columns with NAs
-```
-
-- Replacing NA values
-
-```{r, eval=FALSE}
-df[is.na(df)] = 0
-df
-```
-
-<br>
-
-- For loops (Note on C programming)
-
-```{r, eval=FALSE}
-# mtcars data
-data = mtcars
-# split by vs
-splt = split(mtcars,mtcars$vs)
-# empty vector
-out = c()
-
-# "for each element of the list"
-for(i in 1:length(splt)){
-  # fill the vector with the mean mpg
-  # of each list element
-  out[i] = mean(splt[[i]]$mpg)
-}
-
-out # matches the strata_means() output
-```
-
-<br>
-
-- Concatenate
-
-```{r, eval=FALSE}
-# a way to push extended strings onto objects
-names(out) = paste0("vs = ", names(splt), sep = " ")
-
-out # labels better match strata_means()
-```
-
-<br>
-
-- Libraries/packages
-
-```{r message=FALSE, warning=FALSE}
-# install.packages("dplyr")
-library(dplyr) # we've seen this a lot
-
-# install.packages("readxl")
-library(readxl) # excel files can't be read by default in R
-
-# install.packages("nlme")
-library(nlme) # generalized least squares
-              # important for next week
-```
-
-<br>
 
 - R Markdown
 
@@ -291,361 +85,6 @@ a. Letter bullet
   - `\begin{array}`, `\begin{bmatrix}`, `\begin{aligned}`
   
   - `\vspace{3mm}`, `\newpage`
-
-<br>
-
-- Mean and standard deviation
-
-\[
-\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
-\qquad\qquad
-s = \sqrt{s^2} = \sqrt{\frac{1}{n-1} \sum_{i=1}(x_i - \bar{x})^2}
-\]
-
-
-```{r}
-# base R dataset on fiji earthquakes
-quakes = datasets::quakes
-
-# mean magnitude
-mean(quakes$mag)
-
-# variance of magnitude
-var(quakes$mag)
-
-# standard deviation of magnitude
-sd(quakes$mag)
-```
-
-- Quantiles/Quartiles
-
-\[
-\begin{array}{|c|c|c|c|c|}
-\hline
-\text{Min} & \text{Q}_1 & \text{Median} & \text{Q}_3 & \text{Max} \\
-\hline
-0^{th} & 25^{th} & 50^{th} & 75^{th} & 100^{th} \\
-\hline
-\end{array}
-\]
-
-```{r}
-# five number summary as quantiles
-quantile(quakes$mag, c(0,0.25,0.5,0.75,1))
-
-# five number summary base R function
-fivenum(quakes$mag)
-```
-
-- Histograms and Boxplots
-
-```{r}
-# base R histogram
-hist(quakes$mag,
-     xlab = "Magnitude", # x axis label
-     main = "Earthquakes off Fiji", # title
-     col = "white") # bar color
-```
-
-```{r}
-hist(quakes$mag, # data
-     xlab = "Magnitude",
-     main = "Earthquakes off Fiji",
-     col = "white")
-abline(v = mean(quakes$mag), # vertical mean line
-       lty = 2, # line type (dashed)
-       lwd = 2, # line width
-       col = "gold") # line color
-```
-
-```{r}
-# margin control
-par(mar = c(3,1,1,1)) # bottom, left, top, right
-# base R boxplot
-boxplot(quakes$mag,
-        horizontal = T, # set as horizontal (T = TRUE)
-        col = "white") # central box color
-```
-
-```{r}
-par(mar = c(3,1,1,1))
-boxplot(quakes$mag,
-        horizontal = T,
-        col = "white")
-abline(v = c(4,4.3,4.6,4.9,5.7), # vertical quantile lines
-       lty = 2,
-       lwd = 2,
-       # color palette
-       col = c("#FED976","#FEB24C","#FD8D3C","#E31A1C","#800026"))
-text(c(4.1,4.24,4.5,4.82,5.5), # x position
-     c(0.9,1.15,0.9,1.15,0.9), # y position
-     c("Min","Q1","Med","Q3","Max"), # quantile labels
-     col = c("#FED976","#FEB24C","#FD8D3C","#E31A1C","#800026"))
-```
-
-- $z$-scores
-
-\[
-z = \frac{x - \bar{x}}{s}
-\]
-
-```{r}
-# transform the entire dataset into z-scores
-z = (quakes$mag - mean(quakes$mag))/sd(quakes$mag)
-```
-
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-par(mfrow = c(1,2), mar = c(4.1,4,3.8,1))
-hist(quakes$mag,
-     xlab = "Magnitude",
-     main = "Earthquakes off Fiji",
-     col = "white")
-hist(z,
-     xlab = "Standard Deviations",
-     main = "Earthquake z-scores",
-     col = "white")
-```
-
-- Normal distributions
-
-\[
-X \sim N(\mu,\sigma^2)
-\qquad\qquad
-\frac{X - \mu}{\sigma} = Z \sim N(0,1)
-\]
-
-```{r}
-par(mar = c(4.5,4.5,1,1))
-curve(dnorm(x), # standard normal density
-      xlim = c(-4,4), # x axis limits
-      lwd = 2,
-      xlab = "X",
-      ylab = "P(X=x)") # y axis label
-```
-
-```{r}
-# z score for a 5.5 magnitude earthquake
-z_score = (5.5 - mean(quakes$mag))/sd(quakes$mag)
-1 - pnorm(z_score) # 1 - z probability (same as z-table)
-```
-
-- Scatterplots
-
-```{r}
-# base R scatterplot
-plot(quakes$stations,quakes$mag, # x then y 
-     xlab = "Number of stations reporting", # x axis label
-     ylab = "Magnitude", # y axis label
-     main = "Earthquakes off Fiji", # title
-     pch = 20, # point shape
-     col = "#00000080") # point color
-```
-
-- Least squares regression
-
-\[
-y_i = \beta_0 + \beta_1 x_i + \epsilon_i
-\]
-
-```{r}
-# predictor
-x = quakes$stations
-
-# response
-y = quakes$mag
-
-# base R linear model
-m = lm(y ~ x)
-coef(m) # coefficients
-```
-
-```{r}
-plot(quakes$stations,quakes$mag,
-     xlab = "Number of stations reporting",
-     ylab = "Magnitude",
-     main = "Earthquakes off Fiji",
-     pch = 20,
-     col = "#00000080")
-# add regression line
-lines(sort(quakes$stations),sort(m$fitted.values),
-      lwd = 2,
-      col = "gold") # line color
-```
-
-- Confidence intervals
-
-```{r}
-# 95% confidence interval
-
-# mean magnitude
-xbar_mag = mean(quakes$mag)
-# standard deviation of magnitude
-s_mag = sd(quakes$mag)
-# sample size
-n_mag = as.numeric(nrow(quakes))
-# margin of error
-moe_mag = 1.96*(s_mag/sqrt(n_mag))
-
-xbar_mag - moe_mag # lower bound
-xbar_mag # point estimate
-xbar_mag + moe_mag # upper bound
-```
-
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-hist(quakes$mag,
-     xlab = "Magnitude",
-     main = "Earthquakes off Fiji",
-     col = "white")
-abline(v = c(xbar_mag - moe_mag, xbar_mag, xbar_mag + moe_mag),
-       lty = 2,
-       lwd = 2,
-       col = c("#FEB24C","#FD8D3C","#E31A1C"))
-```
-
-- Hypothesis tests
-
-```{r message=FALSE, warning=FALSE}
-# schizophrenic reaction time data
-url = "https://raw.githubusercontent.com/rmshksu/teaching-data/4c51b2017bb69c11d7ee918cac7d594c07b39549/schiz.txt"
-schiz = data.frame(time = scan(url,skip=5),
-                   schizophrenia = c(rep("no",30*11),rep("yes",30*6)))
-
-library(dplyr) # R data wrangling package
-sstats = schiz %>% 
-  # group by yes/no schiz
-  group_by(schizophrenia) %>% 
-  # mean/var/sample size for yes/no strata
-  summarise(xbar = mean(time),
-            s2 = var(time),
-            n = n())
-# print dataframe
-sstats
-```
-
-\[
-\begin{aligned}
-\text{H}_0: \mu_1 - \mu_2 = 0 \\
-\\
-\text{H}_a: \mu_1 - \mu_2 < 0
-\end{aligned}
-\]
-
-<br>
-
-\[
-t^* = \frac{(\bar{x}_1 - \bar{x}_2) + (\mu_1 - \mu_2)}{\sqrt{(s_1^2/n_1) + (s_2^2/n_2)}}
-\]
-
-```{r}
-# test statistics for independent difference in means
-tstar = as.numeric((sstats[1,2] - sstats[2,2])/
-                     sqrt((sstats[1,3]/sstats[1,4]) +
-                            (sstats[2,3]/sstats[2,4])))
-tstar
-
-# p-vale for t-pivot test statistic
-pt(tstar,min(sstats[,4])-1)
-```
-
-<br>
-
-- Discrete expected value
-
-\[
-\mathbb{E}X = \sum_x x P(X=x)
-\]
-
-- Binomial distribution
-
-  - Discrete, binary processes
-  
-  - Success/failure
-
-\[
-X \sim \text{Bin}(n,p)
-\qquad \qquad 
-\mathbb{E}X = np
-\qquad \qquad 
-\mathbb{V}X = np(1-p)
-\]
-
-- Poisson distribution
-
-  - Positive discrete counts
-  
-\[
-X \sim \text{Pois}(\lambda)
-\qquad \qquad 
-\mathbb{E}X = \mathbb{V}X = \lambda
-\]
-
-- Geometric distribution
-
-  - Number of trials to reach success
-  
-\[
-X \sim \text{Geom}(p) 
-\qquad \qquad
-\mathbb{E}X = 1/p
-\]
-
-- Hypergeometric distribution
-
-  - Geometric distribution
-  
-  - Sampling without replacement
-  
-\[
-X \sim \text{Hyper}(N,K,n) 
-\qquad \qquad
-\mathbb{E}X = n \frac{K}{N}
-\]
-
-<br>
-
-- Continuous expected values
-
-\[
-\mathbb{E}X = \int_{\chi}x f_x(x)
-\]
-
-- Gamma distribution
-
-  - Positive continuous values
-
-\[
-X \sim \text{Gamma}(\alpha,\theta)
-\qquad \qquad 
-\mathbb{E}X = \alpha \theta
-\qquad \qquad 
-\mathbb{V}X = \alpha \theta^2
-\]
-
-- Beta distribution
-
-  - Proportions/probabilities
-
-\[
-X \sim \text{Beta}(\alpha,\beta)
-\qquad \qquad 
-\mathbb{E}X = \frac{\alpha}{\alpha + \beta}
-\qquad \qquad 
-\mathbb{V}X = \frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}
-\]
-
-- Uniform distribution
-
-  - Equi-probable events
-  
-  - Defined boundaries (a and b)
-  
-\[
-X \sim \text{Unif}(a,b)
-\qquad \qquad 
-\mathbb{E}X = \frac{1}{2}(b-a)
-\qquad \qquad 
-\mathbb{V}X = \frac{1}{12}(b-a)^2
-\]
 
 <br>
 
@@ -890,13 +329,13 @@ samp = samp[,-1]
 
 - How do scientific inquiries happen?
 
-  - By accident (Grokking)
+  - By accident ([Grokking](https://arxiv.org/pdf/2201.02177))
   
-  - By madness (Game theory)
+  - General madness ([Game theory](https://www.cs.upc.edu/~ia/nash51.pdf))
   
-  - Taking risks (Chemotherapy)
+  - Taking risks ([Chemotherapy and Emil Freireich](https://laskerfoundation.org/winners/combination-chemotherapy-for-lymphoma-and-acute-leukemia/#_))
   
-  - Via spite (Scale-free networks)
+  - Spite ([Scale-free networks](https://liorpachter.wordpress.com/2014/02/10/the-network-nonsense-of-albert-laszlo-barabasi/))
   
   - "Things breaking" (?)
   
@@ -905,6 +344,32 @@ samp = samp[,-1]
 - Is Fred Olsen a potent vector of norovirus?
 
   - Are Carnival cruises really that *safe* of an option?
+  
+<br>
+
+- Bayesian methods
+
+    - Information deficiency
+    
+    - "Automatic inference"
+    
+    - Assumptions $\approx$ data
+    
+$$
+\begin{aligned}
+& y \sim \text{Beta}(\alpha,\beta), \\
+\\
+&\alpha = \mu \phi, \\
+\\
+& \beta = (1- \mu) \phi, \\
+\\
+& g(\mu) = a + bx, \\
+\\
+& a,b \sim N(0,0.1), \\
+\\
+& \phi \sim \text{Gamma}(1,0.01).
+\end{aligned}
+$$
 
 ```{r realcruisechunk5, eval=FALSE, fig.align='center', message=FALSE, warning=FALSE}
 bbreg = function(){
