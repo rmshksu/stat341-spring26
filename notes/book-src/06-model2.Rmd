@@ -116,11 +116,7 @@ for (i in 1:length(levs)) {
 legend("topright", legend = levs, lwd = 1, col = cols, bty = "n")
 ```
 
-- Where are we headed?
-
 <br>
-
-## Stringing sentences
 
 - Correlative inference
 
@@ -206,10 +202,6 @@ samp = samp[,-1]
 
 <br>
 
-## Telling stories
-
-- What just happened?
-
 - Are these results a problem? 
 
   - Is the context behind them bad?
@@ -229,20 +221,6 @@ samp = samp[,-1]
   - Having an idea for the plot
   
 - What makes a good plot?
-
-<br>
-
-- How do scientific inquiries happen?
-
-  - By accident (Grokking)
-  
-  - By madness (Game theory)
-  
-  - Taking risks (Chemotherapy)
-  
-  - Via spite (Scale-free networks)
-  
-  - "Things breaking" (?)
   
 <br>
 
@@ -381,32 +359,6 @@ par(op)
   
 <br>
 
-- In a writing course:
-
-  - Of Mice and Men
-  
-  - To Kill a Mockingbird
-  
-  - Frankenstein
-  
-- Theater
-
-  - Oedipus
-  
-  - Hamlet
-  
-  - MacBeth
-  
-- History
-
-  - Fall of the Roman Empire
-  
-  - Holy Crusades
-  
-  - Transition between WW1 to WW2
-  
-<br>
-
 - For statistics, we use linear models
 
 \[
@@ -454,6 +406,8 @@ P(t) = P_0 e^{rt}
 <br>
 
 ## Parameter estimation
+
+- Whiteboard
 
 - Estimating $\boldsymbol{\beta}$ 
 
@@ -550,6 +504,12 @@ summary(lm(y ~ x1))
 ## Live example
 
 - R code
+
+    - Not linked for now
+    
+    - I'm very lazy and have not removed the sensitive information from the data
+    
+    - Maybe I'll do that this weekend...
 
 <br>
 
