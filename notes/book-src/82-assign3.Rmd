@@ -1,0 +1,25 @@
+# Homework 3
+
+- In an R Markdown, complete problems 1-12 showing all relevant code and output. Please be sure to comment all non-redundant lines of code or fully explain each code block in the documentation itself. Title the document with you and your partner's last names. Name the document Lastname1_Lastname2_Assignment2 (Sholl_McKay_Assignment3.pdf) and upload it to Canvas by 11:59 pm on Friday 02/07/26. **Only one submission is needed per group**.
+
+---
+
+Using the `hubble` data in the `gamair` package:
+
+1. Write out a linear model for predicting the velocity of the Cepheid stars observed by the Hubble space telescope based on their distance in mega parsecs, based on Hubble's law. 
+
+2. State and briefly explain what the assumptions behind that model are.
+
+3. Fit the data in R to the model you've proposed and save it.
+
+4. Estimate the confidence interval for the coefficients in your model.
+
+5. Based off of the reading, predict the age of the universe. Note that the distance is measured in Mega parsecs, which are $3.09 \times 10^19$ km.
+
+6. Using the confidence interval from (4), estimate the lower and upper bound for the age of the universe.
+
+7. Estimate the lower and upper bound using the Delta Method instead.
+
+8. Estimate the lower and upper bound using non-parametric bootstrapping.
+
+9. Compare the three confidence intervals. Which of the three is widest? Which of the three is valid?
