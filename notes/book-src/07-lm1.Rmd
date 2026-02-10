@@ -479,7 +479,7 @@ abline(a = coef(m2)[1], b = coef(m2)[2],
 
 ## Live example
 
-- R code
+- [R code](https://github.com/rmshksu/teaching-data/blob/main/r_programs/stat341_live_example_1.R)
 
 <br>
 
