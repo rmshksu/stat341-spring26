@@ -1,5 +1,49 @@
 # Day 8
 
+## Announcements
+
+- I was sick. Everyone is getting attendance credit for last week.
+
+    - Don't come to class sick. Get your flu/covid shots.
+    
+<br>
+
+- [ASA Datafest](https://www.k-state.edu/datafest/)
+
+- Group participation $=$ no final project
+
+- Conditions:
+
+    - Attend every workshop (provide reasonable excuse otherwise)
+    
+    - Participate to the fullest extent in the actual event as a team
+    
+    - Don't give a shitty product/presentation (I know the judges) (I'll be there too)
+    
+- Results:
+
+    - Final project is chalked up to time served
+    
+    - Parole conditional on weekly attendance and journal entries
+    
+    - Each group member will submit a 2-3 page reflection of the event
+    
+<br>
+
+Journals
+
+- "What does `%*%` mean?"
+
+    - Matrix vs pairwise multiplication (whiteboard maybe?)
+    
+- Keeping up with math
+
+    - Example: periodic table
+
+- "How do I take notes?"
+
+<br>
+
 ## Review
 
 - Multivariate Normal Distributions
@@ -548,7 +592,7 @@ dry_year + 1994.917
 
 ## R programming Lab
 
-- Read these two pages from [Wood (2006)
+- Read these two pages from [Wood (2006)](https://github.com/rmshksu/teaching-data/blob/main/literature/Wood_2006.pdf)
 
 ```{r}
 # install.packages("gamair")
