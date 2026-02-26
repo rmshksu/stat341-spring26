@@ -1,0 +1,42 @@
+## Day 11
+
+## Announcements
+
+- Homework 4
+
+- Project proposal meetings
+
+- Class progress
+
+<br>
+
+## Hypothesis test review
+
+- Whiteboard
+
+<br>
+
+## In-class activity
+
+- Work together with your partner to find data from [Dryad](https://datadryad.org), [Kaggle](https://www.kaggle.com), or another valid data repository.
+
+- Select at least $3$ and at most $6$ variables from the data.
+
+1. Compute the mean, standard deviation, and five number summary for those variables.
+
+2. Create at least 2 different graphics from those variables, describing their distributions or relationships with one another.
+
+3. Select a response variable, then write out a linear model for predicting that response.
+
+4. Fit the model to the data using the `lm()` function in R.
+
+5. Produce a summary, coefficients, and confidence intervals for that model. 
+
+6. Plot the fitted regression line for the model onto a scatterplot for each variable with the response.
+
+<br>
+
+
+## In-class work day
+
+<br>
