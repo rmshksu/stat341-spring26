@@ -1,0 +1,17 @@
+# Homework 4
+
+- In an R Markdown, complete problems 1-7. Title the document with you and your partner's last names. Name the document Lastname1_Lastname2_Assignment2 (Sholl_McKay_Assignment4.pdf) and upload it to Canvas by 11:59 pm on Thursday 03/26/26. **Only one submission is needed per group**.
+
+1. Search for an academic article within your field (degree program) that uses at least one statistical method you're familiar with from class.
+
+2. Write 4-5 sentences summarizing the topic and goal of the study.
+
+3. Explain the statistical methods used in the study. 
+
+4. For the methods you recognize from class, write out their formulas/models. 
+
+5. If there are any methods you don't recognize, try to describe them from just the context given in the article. If the article doesn't provide enough context to describe the methods then write 3-4 sentences over why that might be.
+
+6. Propose an alternate method for one or more of the methods you recognize. Write out the formulas/models and describe the method. 
+
+7. Provide an APA style citation of the article.
