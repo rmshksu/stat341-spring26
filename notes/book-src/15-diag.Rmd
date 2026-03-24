@@ -1,0 +1,283 @@
+# Day 15
+
+## Model Diagnostics
+
+- What are the 4 assumptions of the linear model?
+
+<br>
+
+- Simulating data
+
+```{r}
+# simulating data for testing
+set.seed(1)
+n = 120
+x = runif(n, 1, 5)
+y = 3 + runif(1,1,3)*x + rnorm(n,0,2)
+mtest = lm(y ~ x)
+plot(x,y)
+points(x, mtest$fitted.values, type = "l", lwd = 2, col = "red")
+```
+
+<br>
+
+- Our real data (for the day)
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/framingham_heart_study.csv"
+framingham = read.csv(url, stringsAsFactors = FALSE)
+framingham = na.omit(framingham)
+m1 = lm(currentSmoker ~ age + male + BMI + prevalentHyp, data = framingham)
+```
+
+<br>
+
+### Linearity
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 1)
+plot(m1, which = 1)
+```
+
+### Independence
+
+- Tests of independence vary
+
+    - What is the suspected dependence structure?
+    
+<br>
+
+- Dependence on the response (see: Residuals vs Fit plots)
+
+    - Residuals spread evenly around zero = assumed independence
+
+<br>
+
+- Dependence on a predictor
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(x, mtest$residuals)
+plot(framingham$age, m1$residuals)
+```
+
+<br>
+
+- Another useful quick check
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+hist(mtest$residuals)
+hist(m1$residuals)
+```
+
+<br>
+
+
+### Homoskedasticity
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 3)
+plot(m1, which = 3)
+```
+
+<br>
+
+### Normality
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 2)
+plot(m1, which = 2)
+```
+
+<br>
+
+### Outliers
+
+- Ralph Dennis Cook
+
+    - M.S. & Ph.D. (Statistics) from K-State
+    
+    - Well known for developing an estimator for outlier influence
+
+- Cook's D
+
+    - What changes in $\boldsymbol{\beta}$ if we remove a random point from the data?
+
+<br>
+
+```{r}
+# generating new data with some extreme outliers
+ynew = c(y,300,250,188,500)
+xnew = c(x,0,1,3,2)
+mtest2 = lm(ynew ~ xnew)
+
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 5)
+plot(mtest2, which = 5)
+```
+
+```{r}
+plot(m1, which = 5)
+```
+
+<br>
+
+## Nonlinear models
+
+```{r}
+plot(m1, which = 1)
+```
+
+- Logistic regression
+
+$$
+p(y) = \frac{1}{1 + \exp\{-(\beta_0 + \beta_1 x\}}
+$$
+
+- Fitting the model requires a different algorithm
+
+    - "Convergence" 
+    
+    - Concave vs. convex functions
+
+```{r}
+m2 = nls(currentSmoker ~ 1 / 
+           (1 + exp(-(b0 + b1 * age +
+                        b2 * male +
+                        b3 * BMI +
+                        b4 * prevalentHyp))),
+         data  = framingham,
+         start = list(b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0))
+summary(m2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+
+means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
+
+age_seq = seq(min(framingham$age, na.rm = TRUE), max(framingham$age, na.rm = TRUE), length.out = 200)
+age_new = data.frame(age = age_seq, male = means["male"],
+                      BMI = means["BMI"], prevalentHyp = means["prevalentHyp"])
+age_pred = predict(fit_nls, newdata = age_new)
+
+plot(framingham$age, framingham$currentSmoker,
+     pch = 16,
+     xlab = "Age", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(age_seq, age_pred, col = "firebrick", lwd = 2)
+
+bmi_seq = seq(min(framingham$BMI, na.rm = TRUE), max(framingham$BMI, na.rm = TRUE), length.out = 200)
+bmi_new = data.frame(age = means["age"], male = means["male"],
+                      BMI = bmi_seq, prevalentHyp = means["prevalentHyp"])
+bmi_pred = predict(fit_nls, newdata = bmi_new)
+
+plot(framingham$BMI, framingham$currentSmoker,
+     pch = 16,
+     xlab = "BMI", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(bmi_seq, bmi_pred, col = "firebrick", lwd = 2)
+
+par(mfrow = c(1, 1))
+```
+
+<br>
+
+- Additive models
+
+$$
+y_i = f(x_i) + \epsilon_i
+$$
+
+$$
+\epsilon_i \sim N(0, \sigma^2)
+$$
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+library(mgcv)
+m3 = gam(currentSmoker ~ s(age) + male + s(BMI) + prevalentHyp, data = framingham)
+summary(m3)
+```
+
+
+<br>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
+
+age_seq = seq(min(framingham$age, na.rm = TRUE), max(framingham$age, na.rm = TRUE), length.out = 200)
+age_new = data.frame(age = age_seq, male = means["male"],
+                     BMI = means["BMI"], prevalentHyp = means["prevalentHyp"])
+age_pred = predict(m3, newdata = age_new)
+plot(framingham$age, framingham$currentSmoker,
+     pch = 16,
+     xlab = "Age", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(age_seq, age_pred, col = "firebrick", lwd = 2)
+
+bmi_seq = seq(min(framingham$BMI, na.rm = TRUE), max(framingham$BMI, na.rm = TRUE), length.out = 200)
+bmi_new = data.frame(age = means["age"], male = means["male"],
+                     BMI = bmi_seq, prevalentHyp = means["prevalentHyp"])
+bmi_pred = predict(m3, newdata = bmi_new)
+plot(framingham$BMI, framingham$currentSmoker,
+     pch = 16,
+     xlab = "BMI", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(bmi_seq, bmi_pred, col = "firebrick", lwd = 2)
+
+par(mfrow = c(1, 1))
+```
+
+<br>
+
+- How do we compare these models?
+
+<br>
+
+## Coefficient of Determination
+
+$$
+R^2 = \frac{\sum_{i=1}^n (\hat{y} - \bar{y})^2}{\sum_{i=1}^n (y - \bar{y})^2}
+$$
+
+<br>
+
+- The most common model check in traditional science
+
+    - Squared correlation between predictions and observations
+    
+    - Uses exclusively in-sample data
+    
+    - Inherently improves as more variables are added
+    
+<br>
+
+- Adjusted R-squared attempts to resolve that last problem
+
+$$
+R^2_{adj} = 1- (1 - R^2)\frac{n-1}{n-p-1}
+$$
+
+<br>
+
+>"One difficulty is that all the proposed measures are attempting to perform what is, in general, an impossible task: to obtain an unbiased (or approximately unbiased) and accurate measure of out-of-sample prediction error that … requires minimal computation beyond that needed to fit the model in the first place. When framed this way, it should be no surprise to learn that no such ideal method exists." -- Gelman, Hwang, and Vehtari
+
+<br>
+
+```{r}
+summary(m1)$r.squared
+# logistic regression needs a psuedo r squared (pain)
+summary(m3)$r.sq
+```
+
+<br>
+
+# Go away
+
