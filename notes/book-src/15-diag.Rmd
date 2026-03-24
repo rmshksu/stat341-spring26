@@ -163,7 +163,7 @@ means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
 age_seq = seq(min(framingham$age, na.rm = TRUE), max(framingham$age, na.rm = TRUE), length.out = 200)
 age_new = data.frame(age = age_seq, male = means["male"],
                       BMI = means["BMI"], prevalentHyp = means["prevalentHyp"])
-age_pred = predict(fit_nls, newdata = age_new)
+age_pred = predict(m2, newdata = age_new)
 
 plot(framingham$age, framingham$currentSmoker,
      pch = 16,
@@ -174,7 +174,7 @@ lines(age_seq, age_pred, col = "firebrick", lwd = 2)
 bmi_seq = seq(min(framingham$BMI, na.rm = TRUE), max(framingham$BMI, na.rm = TRUE), length.out = 200)
 bmi_new = data.frame(age = means["age"], male = means["male"],
                       BMI = bmi_seq, prevalentHyp = means["prevalentHyp"])
-bmi_pred = predict(fit_nls, newdata = bmi_new)
+bmi_pred = predict(m2, newdata = bmi_new)
 
 plot(framingham$BMI, framingham$currentSmoker,
      pch = 16,
@@ -208,7 +208,7 @@ summary(m3)
 
 <br>
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r}
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
 means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
 
@@ -280,4 +280,3 @@ summary(m3)$r.sq
 <br>
 
 # Go away
-
