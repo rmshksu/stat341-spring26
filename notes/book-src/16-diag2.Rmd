@@ -1,0 +1,549 @@
+# Day 16
+
+## Review
+
+- Model Diagnostics
+
+<br>
+
+- Simulating data
+
+```{r}
+# simulating data for testing
+set.seed(1)
+n = 120
+x = runif(n, 1, 5)
+y = 3 + runif(1,1,3)*x + rnorm(n,0,2)
+mtest = lm(y ~ x)
+plot(x,y)
+points(x, mtest$fitted.values, type = "l", lwd = 2, col = "red")
+```
+
+<br>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/framingham_heart_study.csv"
+framingham = read.csv(url, stringsAsFactors = FALSE)
+framingham = na.omit(framingham)
+m1 = lm(currentSmoker ~ age + male + BMI + prevalentHyp, data = framingham)
+```
+
+<br>
+
+- Linearity
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 1)
+plot(m1, which = 1)
+```
+
+- Independence
+
+    - What is the suspected dependence structure?
+    
+<br>
+
+- Dependence on the response
+
+<br>
+
+- Dependence on a predictor
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(x, mtest$residuals)
+plot(framingham$age, m1$residuals)
+```
+
+<br>
+
+- Another useful quick check
+
+<br>
+
+
+- Homoskedasticity
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 3)
+plot(m1, which = 3)
+```
+
+<br>
+
+- Normality
+
+```{r}
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 2)
+plot(m1, which = 2)
+```
+
+<br>
+
+- Outliers
+
+<br>
+
+```{r}
+# generating new data with some extreme outliers
+ynew = c(y,300,250,188,500)
+xnew = c(x,0,1,3,2)
+mtest2 = lm(ynew ~ xnew)
+
+par(mfrow = c(1,2), mar = c(4,4,2,1))
+plot(mtest, which = 5)
+plot(mtest2, which = 5)
+```
+
+```{r}
+plot(m1, which = 5)
+```
+
+<br>
+
+## Nonlinear models
+
+```{r}
+plot(m1, which = 1)
+```
+
+- Logistic regression
+
+$$
+p(y) = \frac{1}{1 + \exp\{-(\beta_0 + \beta_1 x\}}
+$$
+
+- Fitting the model requires a different algorithm
+
+    - "Convergence" (and [failure to converge](https://en.wikipedia.org/wiki/Rastrigin_function))
+
+```{r}
+m2 = nls(currentSmoker ~ 1 / 
+           (1 + exp(-(b0 + b1 * age +
+                        b2 * male +
+                        b3 * BMI +
+                        b4 * prevalentHyp))),
+         data  = framingham,
+         start = list(b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0))
+summary(m2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+
+means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
+
+age_seq = seq(min(framingham$age, na.rm = TRUE), max(framingham$age, na.rm = TRUE), length.out = 200)
+age_new = data.frame(age = age_seq, male = means["male"],
+                      BMI = means["BMI"], prevalentHyp = means["prevalentHyp"])
+age_pred = predict(m2, newdata = age_new)
+
+plot(framingham$age, framingham$currentSmoker,
+     pch = 16,
+     xlab = "Age", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(age_seq, age_pred, col = "firebrick", lwd = 2)
+
+bmi_seq = seq(min(framingham$BMI, na.rm = TRUE), max(framingham$BMI, na.rm = TRUE), length.out = 200)
+bmi_new = data.frame(age = means["age"], male = means["male"],
+                      BMI = bmi_seq, prevalentHyp = means["prevalentHyp"])
+bmi_pred = predict(m2, newdata = bmi_new)
+
+plot(framingham$BMI, framingham$currentSmoker,
+     pch = 16,
+     xlab = "BMI", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(bmi_seq, bmi_pred, col = "firebrick", lwd = 2)
+
+par(mfrow = c(1, 1))
+```
+
+<br>
+
+- Additive models
+
+$$
+y_i = f(x_i) + \epsilon_i
+$$
+
+$$
+\epsilon_i \sim N(0, \sigma^2)
+$$
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+library(mgcv)
+m3 = gam(currentSmoker ~ s(age) + male + s(BMI) + prevalentHyp, data = framingham)
+summary(m3)
+```
+
+<br>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
+
+age_seq = seq(min(framingham$age, na.rm = TRUE), max(framingham$age, na.rm = TRUE), length.out = 200)
+age_new = data.frame(age = age_seq, male = means["male"],
+                     BMI = means["BMI"], prevalentHyp = means["prevalentHyp"])
+age_pred = predict(m3, newdata = age_new)
+plot(framingham$age, framingham$currentSmoker,
+     pch = 16,
+     xlab = "Age", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(age_seq, age_pred, col = "firebrick", lwd = 2)
+
+bmi_seq = seq(min(framingham$BMI, na.rm = TRUE), max(framingham$BMI, na.rm = TRUE), length.out = 200)
+bmi_new = data.frame(age = means["age"], male = means["male"],
+                     BMI = bmi_seq, prevalentHyp = means["prevalentHyp"])
+bmi_pred = predict(m3, newdata = bmi_new)
+plot(framingham$BMI, framingham$currentSmoker,
+     pch = 16,
+     xlab = "BMI", ylab = "P(Smoker)",
+     main = "", ylim = c(0, 1))
+lines(bmi_seq, bmi_pred, col = "firebrick", lwd = 2)
+
+par(mfrow = c(1, 1))
+```
+
+<br>
+
+- How do we compare these models?
+
+<br>
+
+- Coefficient of Determination
+
+$$
+R^2 = \frac{\sum_{i=1}^n (\hat{y} - \bar{y})^2}{\sum_{i=1}^n (y - \bar{y})^2}
+$$
+
+<br>
+
+$$
+R^2_{adj} = 1- (1 - R^2)\frac{n-1}{n-p-1}
+$$
+
+<br>
+
+```{r}
+summary(m1)$r.squared
+# logistic regression needs a psuedo r squared (pain)
+summary(m3)$r.sq
+```
+
+<br>
+
+<br>
+
+**Any questions?**
+
+<br>
+
+<br>
+
+## Correlated Errors
+
+- Dependence structures
+
+    - Dependent on predictions
+    
+    - Dependent on a predictor
+
+- The most common predictors to see dependenc in?
+
+    - Spatial location
+    
+    - Time
+    
+    
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/TN05.csv"
+TN15 = read.csv(url)
+TN15a = TN15 %>%
+  filter(!is.na(Long), !is.na(Total_N)) %>%
+  group_by(SITE_NAME) %>%
+  summarise(Total_N = sum(Total_N),
+            across(everything(), first),
+            .groups = "drop")
+
+
+par(mfrow = c(2,1), mar = c(4.5,4.5,1,1))
+plot(TN15a$Lat, TN15a$Total_N, xlab = "Latitude", ylab = "Total Nitrogen")
+plot(TN15a$Long, TN15a$Total_N, xlab = "Longitude", ylab = "Total Nitrogen")
+```
+
+<br>
+
+- Assuming one dimension
+
+<br>
+
+- Intercept-only linear model
+
+```{r}
+m1 = lm(Total_N ~ 1, data = TN15a)
+plot(sort(TN15a$Long), residuals(m1), col = "#D1D1D1")
+abline(h = 0)
+```
+
+<br>
+
+- Intercept only spatial linear model
+
+```{r}
+library(nlme)
+m2 = gls(Total_N ~ 1, data = TN15a, correlation = corGaus(form = ~ Long, nugget = TRUE, value = c(1, 0.05), fixed = FALSE), method = "ML")
+summary(m2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+phi_TN15    = exp(m2$modelStruct$corStruct[1])^2
+nugget_TN15 = 1 / (1 + exp(-m2$modelStruct$corStruct[2]))
+X_TN15 = rep(1, length(TN15a$Total_N))
+y_TN15 = TN15a$Total_N
+ 
+D_TN15 = as.matrix(dist(TN15a$Long, diag = TRUE, upper = TRUE))
+ 
+sigma2.eta_TN15 = (m2$sigma^2) * (1 - nugget_TN15)
+sigma2.e_TN15   = (m2$sigma^2) * nugget_TN15
+ 
+R_TN15 = exp(-D_TN15^2 / phi_TN15)
+I_TN15 = diag(1, length(y_TN15))
+V_TN15 = sigma2.eta_TN15 * R_TN15 + sigma2.e_TN15 * I_TN15
+beta_TN15 = solve(t(X_TN15) %*% solve(V_TN15) %*% X_TN15) %*%
+             t(X_TN15) %*% solve(V_TN15) %*% y_TN15
+ 
+eta_TN15  = sigma2.eta_TN15 * R_TN15 %*% solve(V_TN15) %*%
+             (y_TN15 - X_TN15 %*% beta_TN15)
+ 
+fitted_TN15 = X_TN15 %*% beta_TN15 + eta_TN15
+e.hat_TN15  = y_TN15 - fitted_TN15
+
+par(mar = c(5.1, 4.1, 2.1, 2.1), oma = c(0, 0, 0, 0))
+par(mfrow = c(1, 2))
+par(pch = 19)
+ 
+plot(TN15a$Long, TN15a$Total_N,
+     xlab = "Longitude", ylab = "Total Nitrogen (mg/L)",
+     las = 1, col = rgb(0, 0, 0, 0.25))
+lines(TN15a$Long[order(TN15a$Long)], fitted_TN15[order(TN15a$Long)], col = "black")
+abline(h = beta_TN15, col = "purple", lty = 2)
+ 
+plot(TN15a$Long, e.hat_TN15,
+     xlab = "Longitude", ylab = expression(hat(epsilon)),
+     las = 1, col = rgb(0, 0, 0, 0.25))
+abline(h = 0, col = "grey50", lty = 2)
+```
+
+<br>
+
+- 2D Models
+
+<br>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(sf)
+library(maps)
+library(dplyr)
+
+kansas_map = map_data("state") |>
+  filter(region == "kansas")
+
+kansas_sf = st_as_sf(
+  kansas_map,
+  coords = c("long", "lat"),
+  crs    = 4326
+)
+
+points_sf = st_as_sf(
+  TN15a,
+  coords = c("Long", "Lat"),
+  crs    = 4326
+)
+
+ggplot() +
+    geom_polygon(
+    data    = kansas_map,
+    aes(x = long, y = lat, group = group),
+    fill    = "white",
+    colour  = "#9e9e9e",
+    linewidth = 0.5
+  ) +
+  
+  geom_point(
+    data  = TN15a,
+    aes(x = Long, y = Lat,
+        colour = Total_N),
+    alpha = 0.85
+  ) +
+  
+  scale_colour_gradient(
+    low    = "#D3D3FF",
+    high   = "#512885",
+    name   = "Total Nitrogen"
+  ) +
+  
+  scale_size_continuous(
+    range = c(3, 9),
+    name  = "Total Nitrogen"
+  ) +
+  
+  coord_fixed(
+    ratio  = 1.3,
+    xlim   = c(-102.5, -94.5),
+    ylim   = c(36.8,   40.2)
+  ) +
+  
+  labs(
+    title    = "",
+    subtitle = "",
+    caption  = "",
+    x        = "Longitude",
+    y        = "Latitude"
+  ) +
+  
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 15),
+    plot.subtitle   = element_text(colour = "grey40", size = 11),
+    legend.position = "right",
+    panel.grid      = element_line(colour = "grey90", linewidth = 0.3)
+  )
+```
+
+<br>
+
+- Kriging
+
+    - Result of a South African statistician working for a mining corporation
+    
+    - "How many bore holes do we need before we're certain where the gold is?"
+    
+- Weighting regression by distance
+
+- Assumes space arises from a Gaussian Process
+
+- Computationally expensive (cubic time)
+
+    - We just approximate it
+    
+<br>
+
+- GAMs make a return!
+
+```{r}
+library(mgcv)
+m3 = gam(Total_N ~ te(Lat, Long, bs = "gp"), data = TN15a)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+pred_grid = expand.grid(
+  Long = seq(-102.5, -94.5, length.out = 200),
+  Lat  = seq(36.8,   40.2,  length.out = 200)
+)
+
+pred_grid$Total_N = predict(m3, newdata = pred_grid)
+
+kansas_map = map_data("state") |> filter(region == "kansas")
+
+kansas_poly = st_polygon(
+  list(cbind(kansas_map$long, kansas_map$lat))
+) |>
+  st_sfc(crs = 4326)
+
+grid_sf = st_as_sf(pred_grid, coords = c("Long", "Lat"), crs = 4326)
+inside  = st_within(grid_sf, kansas_poly, sparse = FALSE)[ , 1]
+
+pred_clipped = pred_grid[inside, ]
+
+ggplot() +
+
+  geom_tile(
+    data = pred_clipped,
+    aes(x = Long, y = Lat, fill = Total_N)
+  ) +
+
+  geom_polygon(
+    data      = kansas_map,
+    aes(x = long, y = lat, group = group),
+    fill      = NA,
+    colour    = "grey30",
+    linewidth = 0.5
+  ) +
+
+  scale_fill_gradient(
+    low  = "#D3D3FF",
+    high = "#512885",
+    name = "Total Nitrogen"
+  ) +
+
+  coord_fixed(
+    ratio = 1.3,
+    xlim  = c(-102.5, -94.5),
+    ylim  = c(36.8,   40.2)
+  ) +
+
+  labs(
+    title = "Interpolated Total Nitrogen",
+    x     = "Longitude",
+    y     = "Latitude"
+  ) +
+
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 15),
+    legend.position = "right",
+    panel.grid      = element_line(colour = "grey90", linewidth = 0.3)
+  )
+```
+
+<br>
+
+<br>
+
+## Information Criterion
+
+- AIC, BIC, CIC, DIC, ..., ZIC
+
+- These are different from $R^2$ 
+
+    - Diet coke is different from coke
+    
+- These are methods of assessing models under *certain shared assumptions*
+
+<br>
+
+**Akaike's Information Criterion (AIC)**
+
+- Log-likelihood scoring rule
+
+    - You cannot log transform your data and compare it using AIC the same way as untransformed
+    
+- AIC is best at scoring similar families and structures of models
+
+- Variable rejection/selection? Good.
+
+- Difference between binomial regression with an inverse logit link vs poisson with a log link? 
+
+<br>
+
+```{r}
+# "lower is better"
+AIC(m1)
+AIC(m2)
+AIC(m3)
+```
+
+<br>
+
+## Go away
+
+
+

@@ -208,7 +208,7 @@ summary(m3)
 
 <br>
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
 means = colMeans(na.omit(framingham[, c("age", "male", "BMI", "prevalentHyp")]))
 
