@@ -1,0 +1,480 @@
+# Day 13
+
+## Review
+
+- Linear models
+
+```{r, warning=FALSE, message=FALSE, fig.align='center'}
+url = "https://www.ncei.noaa.gov/data/oceans/archive/arc0204/0254384/1.1/data/0-data/67350/Group_Sightings_2018.csv"
+dolphins = read.csv(url)
+```
+
+- Intercept-only
+  
+\[
+\boldsymbol{y} = \beta_0 + \boldsymbol{\epsilon}
+\]
+
+```{r}
+# sequential sighting
+x = dolphins$Sequential.Sighting.Number
+
+# estimated group size
+y = dolphins$Best.Estimate.of.Group.Size
+
+# intercept only model
+m1 = lm(y ~ 1)
+
+coef(m1)
+```
+
+- Simple linear model
+  
+\[
+\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x} + \boldsymbol{\epsilon}
+\]
+
+\[
+\mathbb{E}(\boldsymbol{\epsilon}) = 0
+\]
+
+<br>
+
+\[
+\mathbb{E}(\boldsymbol{\epsilon}) = \boldsymbol{y} - \hat{\boldsymbol{y}} = \boldsymbol{y} - (\beta_0 + \beta_1 \boldsymbol{x}) = 0
+\]
+
+- What is $\hat{\boldsymbol{y}}$?
+
+  - The prediction of $\mathbb{E}(\boldsymbol{y})$
+  
+\[
+\boldsymbol{y} \sim N(\beta_0 + \beta_1 \boldsymbol{x}, \sigma^2 \textbf{I})
+\]
+
+- $\mathbb{E}(\boldsymbol{y}) = \boldsymbol{\mu}$
+
+  - $\hat{\boldsymbol{y}} = \hat{\boldsymbol{\mu}} = \widehat{\mathbb{E}(\boldsymbol{y})}$
+  
+<br>
+
+```{r}
+# simple linear regression
+m2 = lm(y ~ x) # seq sighting as sole predictor
+summary(m2)
+```
+
+```{r}
+par(mar = c(4.5,4.5,1,1))
+plot(x, y,
+     col = "#00000050",
+     pch = 19, cex = 1.1,
+     xlab = "Sequential Sighting Number",
+     ylab = "Estiamted Group Size")
+abline(h = mean(y),
+       col = "gold",
+       lwd = 3)
+abline(a = coef(m2)[1], b = coef(m2)[2],
+       col = "red",
+       lwd = 3)
+```
+
+
+- Multivariate Normal
+
+\[
+\boldsymbol{y} = \begin{bmatrix} y_1 \\ y_2 \\ y_3 \end{bmatrix} 
+\sim N\left(\begin{bmatrix} \mu_1 \\ \mu_2 \\ \mu_3 \end{bmatrix}, 
+\begin{bmatrix} \sigma^2 & 0 & 0 \\
+0 & \sigma^2 & 0 \\
+0 & 0 & \sigma^2 \\
+\end{bmatrix}\right)
+\]
+
+<br>
+
+\[
+\begin{bmatrix} \mu_1 \\ \mu_2 \\ \mu_3 \end{bmatrix} = \boldsymbol{\mu}
+\]
+
+\[
+\begin{bmatrix} \sigma^2 & 0 & 0 \\
+0 & \sigma^2 & 0 \\
+0 & 0 & \sigma^2 \\
+\end{bmatrix} = 
+\sigma^2 \begin{bmatrix} 1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+\end{bmatrix} = \sigma^2 \textbf{I}
+\]
+
+<br>
+
+\[
+\boldsymbol{y} \sim N(\boldsymbol{\mu},\sigma^2 \textbf{I})
+\]
+
+<br>
+
+- "i.i.d.": independent and identically distributed
+
+  - Sometimes referred to as a random sample
+  
+  - Assume that all observations of $y$ arise from the same mean and variance
+  
+<br>
+
+- Covariance 
+
+\[
+\text{Cov}(X,Y) = \mathbb{E}\left[(X - \mathbb{E}X)(Y - \mathbb{E}Y) \right] = \mathbb{E}XY - \mathbb{E}X \mathbb{E}Y
+\]
+
+<br>
+
+```{r}
+# covariance between two vectors
+x = runif(3)
+y = rnorm(3)
+cov(x,y)
+```
+
+<br>
+
+\[
+\boldsymbol{y} \sim N(\boldsymbol{\mu},\boldsymbol{\Sigma})
+\]
+
+\[
+\boldsymbol{\Sigma} = \begin{bmatrix}
+\sigma_{y_{11}} & \sigma_{y_{12}} & ... \sigma_{y_{1p}} \\
+\sigma_{y_{21}} & \sigma_{y_{22}} & ... \sigma_{y_{2p}} \\
+\vdots & \vdots & \vdots \\
+\sigma_{y_{n1}} & \sigma_{y_{n2}} ... & \sigma_{y_{np}}
+\end{bmatrix}
+\]
+
+\[
+\sigma_{y_{11}} = \sigma^2_{y_1}
+\]
+
+<br>
+
+```{r}
+# covariance of a matrix
+x = cbind(runif(3),runif(3),runif(3))
+cov(x)
+```
+
+<br>
+
+- Joint distributions
+
+\[
+y_1,y_2,...,y_n \overset{\text{iid}}{\sim} N(\mu,\sigma^2)
+\]
+
+- Think of the multiplication rule for independent events
+
+<br>
+
+\[
+f_{X,Y}(x,y) = N(\mu_{x,y},\sigma^2_{x,y})
+\]
+
+<br>
+
+- Conditional distributions
+
+\[
+f_{Y|X}(y|x) = \frac{f_{X,Y}(x,y)}{f_{Y}(y)}
+\]
+
+<br>
+
+- "Gelman" notation
+
+\[
+\left[ y|x \right] = \frac{\left[ x,y \right]}{\left[ y \right]}
+\]
+
+<br>
+
+- Confidence intervals
+
+```{r}
+# historic water level data 1995-2013
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/KS_Water_Level_Monitoring_95to13.csv"
+wlev = read.csv(url, stringsAsFactors = F)
+wlev = wlev[,-1] # remove index column
+
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#00000030")
+```
+
+```{r}
+# predictions with confidence bands
+pred = predict(m1, type = "response", interval = "confidence")
+plot(wlev$day_i,wlev$lev_va_ft,
+     xlab = "Days since 11-01-94",
+     ylab = "Water level (ft)",
+     pch = 20, col = "#D1D1D170",
+     ylim = c(70,100))
+polygon(c(wlev$day_i[or], rev(wlev$day_i[or])),
+        c(pred[,2][or], rev(pred[,3][or])),
+        col = "#51288570",
+        border = NA)
+lines(wlev$day_i[or], pred[,1][or], lwd = 2, col = "#512885")
+```
+
+- ANOVA
+
+$$
+y_{i} = \beta_0 + \beta_1 x_{i} + \epsilon_{i} \qquad \qquad \epsilon_i \sim N(0, \sigma^2 \boldsymbol{I})
+$$
+
+$$
+x_{i} = \begin{cases} 1 & \text{if treatment 1} \\
+0 & \text{otherwise} \\ \end{cases}
+$$
+
+<br>
+
+```{r}
+potato = agridat::cochran.crd
+hist(potato$inf,
+     xlab = "Count",
+     main = "Potato scab infection",
+     col = "beige")
+```
+
+```{r}
+m1 = lm(inf ~ trt, data = potato)
+summary(m1)
+```
+
+```{r}
+anova(m1)
+```
+
+<br>
+
+**Any questions?**
+
+<br>
+
+## Model Prediction
+
+- Within sample versus out of sample prediction
+
+<br>
+
+- We can break these up further
+
+    - Predicting things that aren't there
+    
+    - Predicting things that were never there
+    
+- Differentiating can be difficult for those
+
+    - What is a slope? Can we observe it?
+    
+    - What's something that isn't present that could be?
+    
+<br>
+
+A better definition is to separate inference and prediction:
+
+- Inference: Using unobservable results to learn about what you did observe.
+
+- Prediction: Using observable results to learn about what you didn't observe.
+
+<br>
+
+- The highest magnitude earthquake ever recorded was a 9.5 on the moment-magnitude scale
+    
+- A few facts about this scale
+
+    - It's exponential, as values get higher the effect increases *significantly*
+    
+    - It's measured in seismic energy, which is a unit of joules
+    
+    - This means we can measure it with tons of TNT (just like with explosives)
+    
+    - The scale caps out at 10.6, because at that point we assume the Earth's crust breaks apart
+    
+<br>
+
+- Our existential question of the day:
+
+    - Can we predict the wave height of a tsunami cause by [Tsar Bomba](https://en.wikipedia.org/wiki/Tsar_Bomba)
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/tsunami.tsv"
+tsunami = (read.delim(url, sep = "\t")[-1,])[,-1]
+tsunami=data.frame(year=tsunami$Year,
+                   month=tsunami$Mo,
+                   country=tsunami$Country,
+                   lat=tsunami$Latitude,
+                   long=tsunami$Longitude,
+                   valid=tsunami$Tsunami.Event.Validity,
+                   cause=tsunami$Tsunami.Cause.Code,
+                   magnitude=tsunami$Earthquake.Magnitude,
+                   wave_height=tsunami$Maximum.Water.Height..m.)
+tsunami=subset(tsunami,tsunami$valid>2 & tsunami$cause==1)
+tsunami=na.omit(tsunami)
+```
+
+```{r}
+plot(tsunami$magnitude,tsunami$wave_height,
+     pch = 19, col = "#00000070", las = 1,
+     xlab = "Earthquake Magnitude",
+     ylab = "Tsunami Wave Height (m)")
+```
+
+- Polynomial regression
+
+    - We see an exponential trend
+    
+    - We should model it
+    
+$$
+y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \beta_3 x_i^3 + \beta_4 x_i^4 + \beta_5 x_i^5 + \epsilon_i 
+$$
+
+$$
+\epsilon_i \sim N(0,\sigma^2 \boldsymbol{I})
+$$
+
+- From an inference perspective:
+
+```{r}
+m1 = lm(wave_height ~ poly(magnitude,5), data = tsunami)
+coef(m1)
+```
+
+- Within-sample prediction
+
+```{r}
+ord = order(tsunami$magnitude)
+plot(tsunami$magnitude,tsunami$wave_height,
+     pch = 19, col = "#00000070", las = 1,
+     xlab = "Earthquake Magnitude",
+     ylab = "Tsunami Wave Height (m)")
+points(tsunami$magnitude[ord],predict(m1)[ord],type="l",lwd=2,col="red")
+```
+
+<br>
+
+- Tsar Bomba was a 50 *mega-ton* blast
+
+    - This produced roughly 210 petajoules or $2.1 \times 10^17$ joules
+    
+    - Roughly an 8.3 $M_w$ earthquake equivalent
+    
+```{r}
+predict(m1, newdata = data.frame(magnitude = 8.3))
+```
+    
+```{r}
+plot(tsunami$magnitude,tsunami$wave_height,
+     pch = 19, col = "#00000070", las = 1,
+     xlab = "Earthquake Magnitude",
+     ylab = "Tsunami Wave Height (m)")
+points(tsunami$magnitude[ord],predict(m1)[ord],type="l",lwd=2,col="red")
+points(8.3, predict(m1, newdata = data.frame(magnitude = 8.3)),
+       pch = 7, col = "maroon", lwd = 2, cex = 1.5)
+```
+
+The Russians didn't detonate it on the ground (thankfully?) so the true magnitude resulting from it was roughly 5 $M_w$.
+
+- For reference, the Chicxulub impact event (the reason dinosaurs aren't tax paying citizens) is estimated to have 72 *teratons* of kinetic energy
+
+    - This is a magnitude 12.5
+    
+<br>
+
+## Prediction intervals
+
+- The regression line represents $\widehat{\mathbb{E}y}$
+
+    - A confidence interval then represents our uncertainty of $\mathbb{E}y$
+    
+$$
+P\left(\boldsymbol{X}^\prime \boldsymbol{\beta} - t_{\alpha/2,n-p} \sqrt{\frac{SSE}{n-p} \text{diag}\left( \boldsymbol{X}^\prime \boldsymbol{X}\right)^- } < \boldsymbol{X}^\prime \boldsymbol{\beta} < \boldsymbol{X}^\prime \boldsymbol{\beta} + t_{\alpha/2,n-p} \sqrt{\frac{SSE}{n-p} \text{diag}\left( \boldsymbol{X}^\prime \boldsymbol{X}\right)^- } \right) = 1 - \alpha,
+$$
+
+$$
+\boldsymbol{X}^\prime \boldsymbol{\beta} \pm t_{\alpha/2,n-p} \sqrt{\frac{SSE}{n-p} \text{diag}\left( \boldsymbol{X}^\prime \boldsymbol{X}\right)^- }.
+$$
+
+
+
+```{r}
+Eyhat = predict(m1, interval = "confidence")
+ord = order(tsunami$magnitude)
+plot(tsunami$magnitude,tsunami$wave_height,
+     pch = 19, col = "#00000070", las = 1,
+     xlab = "Earthquake Magnitude",
+     ylab = "Tsunami Wave Height (m)")
+points(tsunami$magnitude[ord],Eyhat[,1][ord],type="l",lwd=2,col="red")
+points(tsunami$magnitude[ord],Eyhat[,2][ord],type="l",lty=3,col="red")
+points(tsunami$magnitude[ord],Eyhat[,3][ord],type="l",lty=3,col="red")
+```
+
+- Why does this interval not cover $95\%$ of the data?
+
+<br>
+
+- What is the interval for predicting values of $y$, $\hat{y}$, instead of $\mathbb{E}y$?
+
+- Let $\boldsymbol{x}^\star$ be the values of the predictors we want to use to predict $y$
+
+    - It doesn't have to be all of them
+    
+- The prediction interval of $\hat{y}$ is:
+
+$$
+\hat{y} \pm t_{\alpha/2,n-p} \sqrt{1 + \boldsymbol{x}^\star(\boldsymbol{X}^\prime \boldsymbol{X})^- (\boldsymbol{x}^\star)^\prime}.
+$$
+
+```{r message=FALSE, warning=FALSE}
+yhat = predict(m1, interval = "prediction")
+ord = order(tsunami$magnitude)
+plot(tsunami$magnitude,tsunami$wave_height,
+     pch = 19, col = "#00000070", las = 1,
+     xlab = "Earthquake Magnitude",
+     ylab = "Tsunami Wave Height (m)")
+points(tsunami$magnitude[ord],yhat[,1][ord],type="l",lwd=2,col="red")
+points(tsunami$magnitude[ord],yhat[,2][ord],type="l",lty=3,col="red")
+points(tsunami$magnitude[ord],yhat[,3][ord],type="l",lty=3,col="red")
+```
+
+- Polynomial regression isn't a worthwhile venture to do "by hand"
+
+    - Numerical instabilities, non-invetable matrices, etc.
+
+```{r}
+# tsar bomba
+predict(m1, newdata = data.frame(magnitude = 8.3), interval = "prediction")
+
+# world nuclear stockpile
+predict(m1, newdata = data.frame(magnitude = 9.3), interval = "prediction")
+
+# chicxulub impact event
+predict(m1, newdata = data.frame(magnitude = 12.5), interval = "prediction")
+```
+
+- Note on forecasting voodoo
+
+<br>
+
+## Live example
+
+- R code
+
+<br>
+
+## Go away

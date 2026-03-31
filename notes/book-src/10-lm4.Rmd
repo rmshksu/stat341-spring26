@@ -1,31 +1,5 @@
 # Day 10
 
-## Announcements
-
-- Office hours (change): 
-
-    - Tuesday 2:20 - 3:30 PM, Leasure 013
-
-    - Thursday 11:15 AM - 12:15 PM Dickens 009C
-
-    - By-appointment / open door policy 
-    
-    - i.e., Students have taken a liking to 10:00 AM on Friday
-
-- Project proposals
-
-    - Please schedule a meeting with me to review your proposal idea (or attend office hours)
-
-    - If you plan on doing Datafest then you need to provide proof of registration by March 10
-
-    - You don't need data to have a proposal
-
-    - Today we'll go over how to find data a little
-
-    - Even more on Thursday
-
-- Donut day Thursday
-
 ## Review
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -287,14 +261,6 @@ quantile(((theta_hat/365) + 1994.917), c(0.025,0.975))
 
 <br>
 
-## Homework 3
-
-- Due tonight at 11:59 PM
-
-- If you have questions now is the time to ask
-
-<br>
-
 ## In-class activity
 
 - Work together with your partner to find data from [Dryad](https://datadryad.org), [Kaggle](https://www.kaggle.com), or another valid data repository.
@@ -312,6 +278,12 @@ quantile(((theta_hat/365) + 1994.917), c(0.025,0.975))
 5. Produce a summary, coefficients, and confidence intervals for that model. 
 
 6. Plot the fitted regression line for the model onto a scatterplot for each variable with the response.
+
+<br>
+
+## Assignment 3
+
+- hilarious
 
 <br>
 
