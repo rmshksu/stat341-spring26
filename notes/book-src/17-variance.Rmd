@@ -1,0 +1,489 @@
+# Day 17
+
+## Review
+
+- Spatial models
+
+```{r}
+library(nlme)
+m2 = gls(Total_N ~ 1, data = TN15a, correlation = corGaus(form = ~ Long, nugget = TRUE, value = c(1, 0.05), fixed = FALSE), method = "ML")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+phi_TN15    = exp(m2$modelStruct$corStruct[1])^2
+nugget_TN15 = 1 / (1 + exp(-m2$modelStruct$corStruct[2]))
+X_TN15 = rep(1, length(TN15a$Total_N))
+y_TN15 = TN15a$Total_N
+ 
+D_TN15 = as.matrix(dist(TN15a$Long, diag = TRUE, upper = TRUE))
+ 
+sigma2.eta_TN15 = (m2$sigma^2) * (1 - nugget_TN15)
+sigma2.e_TN15   = (m2$sigma^2) * nugget_TN15
+ 
+R_TN15 = exp(-D_TN15^2 / phi_TN15)
+I_TN15 = diag(1, length(y_TN15))
+V_TN15 = sigma2.eta_TN15 * R_TN15 + sigma2.e_TN15 * I_TN15
+beta_TN15 = solve(t(X_TN15) %*% solve(V_TN15) %*% X_TN15) %*%
+             t(X_TN15) %*% solve(V_TN15) %*% y_TN15
+ 
+eta_TN15  = sigma2.eta_TN15 * R_TN15 %*% solve(V_TN15) %*%
+             (y_TN15 - X_TN15 %*% beta_TN15)
+ 
+fitted_TN15 = X_TN15 %*% beta_TN15 + eta_TN15
+e.hat_TN15  = y_TN15 - fitted_TN15
+
+par(mar = c(5.1, 4.1, 2.1, 2.1), oma = c(0, 0, 0, 0))
+par(mfrow = c(1, 2))
+par(pch = 19)
+ 
+plot(TN15a$Long, TN15a$Total_N,
+     xlab = "Longitude", ylab = "Total Nitrogen (mg/L)",
+     las = 1, col = rgb(0, 0, 0, 0.25))
+lines(TN15a$Long[order(TN15a$Long)], fitted_TN15[order(TN15a$Long)], col = "black")
+abline(h = beta_TN15, col = "purple", lty = 2)
+ 
+plot(TN15a$Long, e.hat_TN15,
+     xlab = "Longitude", ylab = expression(hat(epsilon)),
+     las = 1, col = rgb(0, 0, 0, 0.25))
+abline(h = 0, col = "grey50", lty = 2)
+```
+
+- 2D models
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(sf)
+library(maps)
+library(dplyr)
+
+kansas_map = map_data("state") |>
+  filter(region == "kansas")
+
+kansas_sf = st_as_sf(
+  kansas_map,
+  coords = c("long", "lat"),
+  crs    = 4326
+)
+
+points_sf = st_as_sf(
+  TN15a,
+  coords = c("Long", "Lat"),
+  crs    = 4326
+)
+
+ggplot() +
+    geom_polygon(
+    data    = kansas_map,
+    aes(x = long, y = lat, group = group),
+    fill    = "white",
+    colour  = "#9e9e9e",
+    linewidth = 0.5
+  ) +
+  
+  geom_point(
+    data  = TN15a,
+    aes(x = Long, y = Lat,
+        colour = Total_N),
+    alpha = 0.85
+  ) +
+  
+  scale_colour_gradient(
+    low    = "#D3D3FF",
+    high   = "#512885",
+    name   = "Total Nitrogen"
+  ) +
+  
+  scale_size_continuous(
+    range = c(3, 9),
+    name  = "Total Nitrogen"
+  ) +
+  
+  coord_fixed(
+    ratio  = 1.3,
+    xlim   = c(-102.5, -94.5),
+    ylim   = c(36.8,   40.2)
+  ) +
+  
+  labs(
+    title    = "",
+    subtitle = "",
+    caption  = "",
+    x        = "Longitude",
+    y        = "Latitude"
+  ) +
+  
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 15),
+    plot.subtitle   = element_text(colour = "grey40", size = 11),
+    legend.position = "right",
+    panel.grid      = element_line(colour = "grey90", linewidth = 0.3)
+  )
+```
+
+- Kriging
+    
+    - Weighting regression by distance
+
+    - Assumes space arises from a Gaussian Process
+
+    - Computationally expensive (cubic time)
+
+```{r}
+library(mgcv)
+m3 = gam(Total_N ~ te(Lat, Long, bs = "gp"), data = TN15a)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+pred_grid = expand.grid(
+  Long = seq(-102.5, -94.5, length.out = 200),
+  Lat  = seq(36.8,   40.2,  length.out = 200)
+)
+
+pred_grid$Total_N = predict(m3, newdata = pred_grid)
+
+kansas_map = map_data("state") |> filter(region == "kansas")
+
+kansas_poly = st_polygon(
+  list(cbind(kansas_map$long, kansas_map$lat))
+) |>
+  st_sfc(crs = 4326)
+
+grid_sf = st_as_sf(pred_grid, coords = c("Long", "Lat"), crs = 4326)
+inside  = st_within(grid_sf, kansas_poly, sparse = FALSE)[ , 1]
+
+pred_clipped = pred_grid[inside, ]
+
+ggplot() +
+
+  geom_tile(
+    data = pred_clipped,
+    aes(x = Long, y = Lat, fill = Total_N)
+  ) +
+
+  geom_polygon(
+    data      = kansas_map,
+    aes(x = long, y = lat, group = group),
+    fill      = NA,
+    colour    = "grey30",
+    linewidth = 0.5
+  ) +
+
+  scale_fill_gradient(
+    low  = "#D3D3FF",
+    high = "#512885",
+    name = "Total Nitrogen"
+  ) +
+
+  coord_fixed(
+    ratio = 1.3,
+    xlim  = c(-102.5, -94.5),
+    ylim  = c(36.8,   40.2)
+  ) +
+
+  labs(
+    title = "Interpolated Total Nitrogen",
+    x     = "Longitude",
+    y     = "Latitude"
+  ) +
+
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 15),
+    legend.position = "right",
+    panel.grid      = element_line(colour = "grey90", linewidth = 0.3)
+  )
+```
+
+<br>
+
+- Food for thought
+
+    - Geographic coordinates take up 2 dimensions (x and y)
+    
+    - Height / elevation typically takes the third (z)
+    
+    - What about a 2D object across multiple time steps?
+    
+<br>
+
+## Temporal Statistics
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/GlobalLandTemperaturesByState.csv"
+land_temp_state = na.omit(read.csv(url, stringsAsFactors = FALSE))
+ks_temps = subset(land_temp_state, land_temp_state$State == "Kansas")
+ks_temps = ks_temps[order(ks_temps$dt), ]
+head(ks_temps)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(lubridate)
+ks_temps$dt = as.Date(ks_temps$dt)
+ks_temps$difft = as.numeric(difftime(ks_temps$dt, min(ks_temps$dt), units = "days"))
+ks_temps$month = as.integer(format(ks_temps$dt, "%m"))
+plot(ks_temps$difft, ks_temps$AverageTemperature, pch = 16, col  = "#D1D1D1",
+     xlab = "Days since 09-01-1768", ylab = "Avg Temp (°C)")
+```
+
+```{r}
+y = ks_temps$AverageTemperature
+x = ks_temps$difft
+lm(y ~ x)
+```
+
+- Moving (rolling) average
+
+$$
+\frac{1}{k} \sum_{i = n - k + 1}^n p_i
+$$
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+rolling_avg = function(x, k) {
+  n = length(x)
+  half_k = floor(k / 2)
+  out = rep(NA, n)
+  for (i in (half_k + 1):(n - half_k)) {
+    out[i] = mean(x[(i - half_k):(i + half_k)])
+  }
+  out
+}
+
+window_size = 12
+ks_roll_avg = rolling_avg(y, k = window_size)
+
+plot(x, y,
+     col  = "#D1D1D1", pch = 16,
+     xlab = "Days since 09-01-1768",
+     ylab = "Avg Temp (°C)")
+lines(x, ks_roll_avg, col = "red", lwd = 2)
+```
+
+- Footnote on Autoregression / white noise / stationarity
+    
+<br>
+
+## Collinearity
+
+```{r}
+library(httr)
+library(readxl)
+
+url = "https://doi.org/10.1371/journal.pone.0148743.s005"    
+GET(url, write_disk(path <- tempfile(fileext = ".xls")))
+```
+
+```{r}
+df1 = read_excel(path=path,sheet = "Data", col_names=TRUE,col_types="numeric")
+notes = read_excel(path=path,sheet = "Notes", col_names=FALSE)
+```
+
+```{r}
+head(df1)
+```
+
+```{r}
+notes
+```
+
+```{r}
+m1 = lm(CDEP ~ NCAT + WPOP,data=df1)
+summary(m1)
+```
+
+```{r}
+m2 = lm(CDEP ~ NCAT + WPOP + WKIL,data=df1)
+summary(m2)
+```
+
+```{r}
+cor(df1[,c(4,5,7)],use="complete.obs")
+```
+
+<br>
+
+## More about variance
+
+- Centered data
+
+```{r}
+head(faithful)
+y = faithful$eruptions
+x = faithful$waiting
+summary(lm(y ~ x)) # model with no centering
+
+xc = scale(x, center = TRUE, scale = FALSE)
+mean(xc) # zero mean 
+summary(lm(y ~ xc)) # centered model
+```
+
+- What's going on here?
+
+```{r}
+Xc = cbind(1,xc)
+solve(t(Xc)%*%Xc)%*%t(Xc)%*%y
+mean(y)
+```
+
+<br>
+
+## Constant variance
+
+```{r}
+library(gamair)
+data(hubble)
+
+m1 = lm(y ~ x - 1, data = hubble)
+confint(m1)
+```
+
+```{r}
+# Plot data and E(y)
+plot(hubble$x,hubble$y,xlab="Distance (Mpc)",
+ylab=expression("Velocity (km"*s^{-1}*")"),pch=20)
+abline(m1)
+```
+
+```{r}
+# Plot residuals vs. x
+e.hat = residuals(m1)
+hist(e.hat,col="grey",breaks=15,main="",xlab=expression(hat(epsilon)))  
+plot(hubble$x,e.hat,xlab="Distance(Mpc)",ylab=expression(hat(epsilon)),pch=20)
+```
+
+```{r}
+# Plot prediction intervals
+y.pi = predict(m1,newdata=data.frame(x = 0:25),interval = "predict")
+plot(hubble$x,hubble$y,xlab="Distance (Mpc)",
+ylab=expression("Velocity (km"*s^{-1}*")"),xlim=c(0,25),ylim=c(0,2500),pch=20)
+points(0:25,y.pi[,2],typ="l",lwd=2,col="purple")
+points(0:25,y.pi[,3],typ="l",lwd=2,col="purple")
+```
+
+<br>
+
+```{r}
+library(nlme)
+m2 = gls(y~x-1,weights = varExp(form=~x),data=hubble)
+summary(m2)
+confint(m2)
+```
+
+```{r}
+# Plot prediction intervals
+X = model.matrix(y~x-1,data=hubble)
+sigma2.hat = summary(m1)$sigma^2
+sigma2.hat*solve(t(X)%*%X)
+vcov(m1)
+```
+
+```{r echo=FALSE}
+X = model.matrix(y~x-1,data=hubble)
+beta.hat = coef(m2)
+sigma2.hat = summary(m2)$sigma^2
+theta.hat = summary(m2)$modelStruct$varStruct
+V = diag(c(sigma2.hat*exp(2*X%*%theta.hat)))
+X.new = model.matrix(~x-1,data=data.frame(x = 1:25))
+y.pi = cbind(X.new%*%beta.hat - qt(0.975,24-1)*sqrt(X.new^2%*%solve(t(X)%*%solve(V)%*%X) + sigma2.hat*exp(2*X.new%*%theta.hat)),
+X.new%*%beta.hat + qt(0.975,24-1)*sqrt(X.new^2%*%solve(t(X)%*%solve(V)%*%X) + sigma2.hat*exp(2*X.new%*%theta.hat)))
+
+plot(hubble$x,hubble$y,xlab="Distance (Mpc)",
+ ylab=expression("Velocity (km"*s^{-1}*")"),xlim=c(0,25),ylim=c(0,2500),pch=20)
+points(1:25,y.pi[,1],typ="l",lwd=2,col="purple")
+points(1:25,y.pi[,2],typ="l",lwd=2,col="purple")
+```
+
+<br>
+
+## Prediction Interval Coverage
+
+```{r message=FALSE, warning=FALSE}
+library(mgcv)
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/SOL_PHOS.csv"
+SOL_PHOS = read.csv(url)[,-1]
+
+SOL_PHOSTET = SOL_PHOS[SOL_PHOS$year %in% seq(1973, 2024, 2), ] # odd yrs
+SOL_PHOSTRT = SOL_PHOS[SOL_PHOS$year %in% seq(1974, 2024, 2), ] # even yrs
+
+lat_mid = median(SOL_PHOS$Lat_j)
+
+SOL_PHOSTEH = SOL_PHOS[SOL_PHOS$Lat_j >= lat_mid, ]
+SOL_PHOSTRH = SOL_PHOS[SOL_PHOS$Lat_j <  lat_mid, ]
+
+
+coverage_mlr = function(model, test_data, alpha = 0.05) {
+  preds = predict(model, newdata = test_data, interval = "prediction", 
+                   level = 1 - alpha)
+  covered = test_data$PHOSPHU >= preds[, "lwr"] & 
+    test_data$PHOSPHU <= preds[, "upr"]
+  mean(covered, na.rm = TRUE)
+}
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+coverage_gam = function(model, test_data, alpha = 0.05, n_sim = 1000) {
+  preds  = predict(model, newdata = test_data, type = "link", se.fit = TRUE)
+  
+  
+  set.seed(42)
+  sims = matrix(
+    rnorm(nrow(test_data) * n_sim, mean = preds$fit, sd = preds$se.fit),
+    nrow = nrow(test_data), ncol = n_sim
+  )
+  
+  
+  sims_resp = model$family$linkinv(sims)
+  
+  
+  phi = summary(model)$dispersion
+  p   = model$family$getTheta(trans = TRUE)
+  
+  
+  mu_mat = sims_resp
+  shape  = mu_mat^(2 - p) / phi
+  scale  = phi * mu_mat^(p - 1)
+  obs_noise = matrix(
+    rgamma(length(mu_mat), shape = pmax(shape, 0.001), 
+           scale = pmax(scale, 0.001)),
+    nrow = nrow(test_data)
+  )
+  
+  lwr = apply(obs_noise, 1, quantile, probs = alpha / 2,     na.rm = TRUE)
+  upr = apply(obs_noise, 1, quantile, probs = 1 - alpha / 2, na.rm = TRUE)
+  
+  covered = test_data$PHOSPHU >= lwr & test_data$PHOSPHU <= upr
+  mean(covered, na.rm = TRUE)
+}
+```
+
+```{r}
+# spatio-temporal multiple linear regression 
+mlrt_SUB = lm(PHOSPHU ~ doy + year + Lat_j + Long_j, data = SOL_PHOSTRT)
+mlrh_SUB = lm(PHOSPHU ~ doy + year + Lat_j + Long_j, data = SOL_PHOSTRH)
+
+# spatio-temporal tensors fit with tweedie gams
+tpt_SUB = gam(PHOSPHU ~ te(Lat_j, Long_j, doy,
+                            bs = c("tp", "tp", "cc")) + year,
+               family = tw(), data = SOL_PHOSTRT, method = "REML")
+tph_SUB = gam(PHOSPHU ~ te(Lat_j, Long_j, doy,
+                            bs = c("tp", "tp", "cc")) + year,
+               family = tw(), data = SOL_PHOSTRH, method = "REML")
+```
+
+```{r}
+coverage_mlr(mlrt_SUB, SOL_PHOSTRT, alpha = 0.1)
+coverage_gam(tpt_SUB, SOL_PHOSTRT, alpha = 0.1)
+
+coverage_mlr(mlrh_SUB, SOL_PHOSTRH, alpha = 0.1)
+coverage_gam(tph_SUB, SOL_PHOSTRH, alpha = 0.1)
+```
+
+<br>
+
+<br>
+
+## Go away
+
+
+
