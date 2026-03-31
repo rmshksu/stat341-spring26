@@ -37,6 +37,7 @@ jobs:
             libfreetype6-dev \
             libfribidi-dev \
             libharfbuzz-dev \
+            libcairo2-dev \
             libpng-dev \
             libtiff5-dev \
             libjpeg-dev \
