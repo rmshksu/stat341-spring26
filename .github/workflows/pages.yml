@@ -41,6 +41,10 @@ jobs:
             libpng-dev \
             libtiff5-dev \
             libjpeg-dev \
+            libudunits2-dev \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
             pkg-config
 
       # If you use renv in your book project, add renv restore here.
