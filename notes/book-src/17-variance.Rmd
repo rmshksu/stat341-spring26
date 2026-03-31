@@ -266,7 +266,7 @@ lines(x, ks_roll_avg, col = "red", lwd = 2)
 
 ## Collinearity
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(httr)
 library(readxl)
 
@@ -274,7 +274,7 @@ url = "https://doi.org/10.1371/journal.pone.0148743.s005"
 GET(url, write_disk(path <- tempfile(fileext = ".xls")))
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 df1 = read_excel(path=path,sheet = "Data", col_names=TRUE,col_types="numeric")
 notes = read_excel(path=path,sheet = "Notes", col_names=FALSE)
 ```
