@@ -1,0 +1,185 @@
+# Day 18
+
+## Announcements
+
+- Plans for next week
+
+    - Finish distributional assumptions
+
+    - Course review (you made it!)
+
+- Datafest
+
+- Grades
+
+<br>
+
+## Review
+
+Whiteboard
+
+- Assumptions of the linear model
+
+<br>
+
+- Assumptions being "violated"
+
+<br>
+
+- "Fixing" the broken assumptions
+
+<br>
+
+- Methods of assessing / checking models
+
+<br>
+
+- Temporal statistics
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/GlobalLandTemperaturesByState.csv"
+land_temp_state = na.omit(read.csv(url, stringsAsFactors = FALSE))
+ks_temps = subset(land_temp_state, land_temp_state$State == "Kansas")
+ks_temps = ks_temps[order(ks_temps$dt), ]
+head(ks_temps)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(lubridate)
+ks_temps$dt = as.Date(ks_temps$dt)
+ks_temps$difft = as.numeric(difftime(ks_temps$dt, min(ks_temps$dt), units = "days"))
+ks_temps$month = as.integer(format(ks_temps$dt, "%m"))
+plot(ks_temps$difft, ks_temps$AverageTemperature, pch = 16, col  = "#D1D1D1",
+     xlab = "Days since 09-01-1768", ylab = "Avg Temp (°C)")
+```
+
+```{r}
+y = ks_temps$AverageTemperature
+x = ks_temps$difft
+lm(y ~ x)
+```
+
+- Moving (rolling) average
+
+$$
+\frac{1}{k} \sum_{i = n - k + 1}^n p_i
+$$
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+rolling_avg = function(x, k) {
+  n = length(x)
+  half_k = floor(k / 2)
+  out = rep(NA, n)
+  for (i in (half_k + 1):(n - half_k)) {
+    out[i] = mean(x[(i - half_k):(i + half_k)])
+  }
+  out
+}
+
+window_size = 12
+ks_roll_avg = rolling_avg(y, k = window_size)
+
+plot(x, y,
+     col  = "#D1D1D1", pch = 16,
+     xlab = "Days since 09-01-1768",
+     ylab = "Avg Temp (°C)")
+lines(x, ks_roll_avg, col = "red", lwd = 2)
+```
+
+<br>
+
+**Any questions?**
+
+<br>
+
+## Spatio-temporal data
+
+- Simpson's paradox
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+set.seed(42)
+n <- 1000
+group_a <- data.frame(
+  x = rnorm(n, mean = 2, sd = 0.5),
+  y = rnorm(n, mean = 4, sd = 0.5),
+  group = "A"
+)
+group_b <- data.frame(
+  x = rnorm(n, mean = 4, sd = 0.5),
+  y = rnorm(n, mean = 2, sd = 0.5),
+  group = "B"
+)
+group_a$y <- group_a$y + 0.6 * (group_a$x - mean(group_a$x))
+group_b$y <- group_b$y + 0.6 * (group_b$x - mean(group_b$x))
+data <- rbind(group_a, group_b, )
+
+par(mar = c(4,4,1,1))
+plot(data$x, data$y, xlab = "X", ylab = "Y", pch = 16, col = "#00000080")
+
+```
+
+<br>
+
+- Change of support
+
+<br>
+
+- Kriging methods
+
+    - Ordinary 
+
+    - Universal 
+
+    - Spatio-temporal 
+
+<br>
+
+- [Krige-and-regress](https://onlinelibrary.wiley.com/doi/10.1002/env.888)
+
+<br>
+
+- Reality of spatio-temporal data
+
+    - Spatial statistics isn't very useful
+    
+    - Temporal statistics is highly assumption driven
+    
+    - Spatio-temporal data is everywhere
+    
+    - Everything hits the fan so quickly
+
+- Suggestion: split the problem to piece you understand
+
+    - Make time a non-issue (divide and conquer)
+    
+    - Make space a non-issue (clustering)
+    
+- Spatial statistics tends to be more intuitive
+    
+    - Adding time to space isn't as hard as the converse
+    
+- STAT 764, Spring 2028 
+
+    - If you kept up decently well before
+    
+<br>
+
+## EDA
+
+- Live example
+
+<br>
+
+## In-class work time
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+## Go away
