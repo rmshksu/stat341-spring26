@@ -10,7 +10,7 @@ Assignments may be completed individually or in groups of two people. Group stud
 
 TABLE OF CONTENTS
 
-- [Homework 1]()
+- [Homework 1](https://rmshksu.github.io/stat341-spring26/assignments/homework-1)
 
 - Homework 2
 

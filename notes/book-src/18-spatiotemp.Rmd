@@ -113,11 +113,10 @@ group_b <- data.frame(
 )
 group_a$y <- group_a$y + 0.6 * (group_a$x - mean(group_a$x))
 group_b$y <- group_b$y + 0.6 * (group_b$x - mean(group_b$x))
-data <- rbind(group_a, group_b, )
+data <- rbind(group_a, group_b)
 
 par(mar = c(4,4,1,1))
 plot(data$x, data$y, xlab = "X", ylab = "Y", pch = 16, col = "#00000080")
-
 ```
 
 <br>
