@@ -1,0 +1,363 @@
+# Day 20
+
+## Review
+
+- Binomial distribution
+
+  - Discrete, binary processes
+  
+  - Success/failure
+
+\[
+X \sim \text{Bin}(n,p)
+\qquad \qquad 
+\mathbb{E}X = np
+\qquad \qquad 
+\mathbb{V}X = np(1-p)
+\]
+
+- Poisson distribution
+
+  - Positive discrete counts
+  
+\[
+X \sim \text{Pois}(\lambda)
+\qquad \qquad 
+\mathbb{E}X = \mathbb{V}X = \lambda
+\]
+
+- Geometric distribution
+
+  - Number of trials to reach success
+  
+\[
+X \sim \text{Geom}(p) 
+\qquad \qquad
+\mathbb{E}X = 1/p
+\]
+
+- Hypergeometric distribution
+
+  - Geometric distribution
+  
+  - Sampling without replacement
+  
+\[
+X \sim \text{Hyper}(N,K,n) 
+\qquad \qquad
+\mathbb{E}X = n \frac{K}{N}
+\]
+
+<br>
+
+- Continuous expected values
+
+\[
+\mathbb{E}X = \int_{\chi}x f_x(x)
+\]
+
+- Gamma distribution
+
+  - Positive continuous values
+
+\[
+X \sim \text{Gamma}(\alpha,\theta)
+\qquad \qquad 
+\mathbb{E}X = \alpha \theta
+\qquad \qquad 
+\mathbb{V}X = \alpha \theta^2
+\]
+
+- Beta distribution
+
+  - Proportions/probabilities
+
+\[
+X \sim \text{Beta}(\alpha,\beta)
+\qquad \qquad 
+\mathbb{E}X = \frac{\alpha}{\alpha + \beta}
+\qquad \qquad 
+\mathbb{V}X = \frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}
+\]
+
+- Uniform distribution
+
+  - Equi-probable events
+  
+  - Defined boundaries (a and b)
+  
+\[
+X \sim \text{Unif}(a,b)
+\qquad \qquad 
+\mathbb{E}X = \frac{1}{2}(b-a)
+\qquad \qquad 
+\mathbb{V}X = \frac{1}{12}(b-a)^2
+\]
+
+
+## A clarification
+
+```{r message=FALSE, warning=FALSE}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/heart.csv"
+heart = read.csv(url, stringsAsFactors = FALSE)
+```
+
+```{r}
+hist(heart$chol, breaks = 20, xlab = "Serum Cholesterol", main = "Heart Survey Participants", xlim = c(120,360))
+```
+
+- Define cholesterol as $y_i$
+
+- *We assume* from the histogram
+
+$$
+y_i \sim N(\mu, \sigma^2)
+$$
+
+- We *added* the assumption there may be multiple normal distributions
+
+$$
+y_i \sim N(\mu_i, \sigma^2 \boldsymbol{I})
+$$
+
+- When we fit a regression model:
+
+$$
+\mu_i = \beta_0 + \beta_1x_{1_i} + \dots + \beta_px_{p_i}
+$$
+
+- As a reminder:
+
+$$
+\sigma^2 = \frac{1}{N}\sum_{i=1}^N (x - \mu)^2
+$$
+
+<br>
+
+## Non-normal processes
+
+### Binomial
+
+- What is the process that creates a smoker?
+
+<br>
+
+```{r}
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/framingham_heart_study.csv"
+framingham = na.omit(read.csv(url, stringsAsFactors = FALSE))
+```
+
+```{r}
+table(framingham$currentSmoker)
+```
+
+<br>
+
+$$
+y \sim \text{Bin}(N, p)
+$$
+
+```{r}
+set.seed(1)
+rbinom(1,1,0.5)
+rbinom(10,1,0.5)
+```
+
+```{r}
+hist(rbinom(1000,5,0.3))
+```
+
+<br>
+
+- We don't really care about $N$
+
+    - $p$ is far more interesting
+    
+```{r}
+m1 = lm(currentSmoker ~ age + BMI, data = framingham)
+m2 = glm(currentSmoker ~ age + BMI, family = binomial(link = "logit"), data = framingham)
+```
+
+```{r}
+summary(m1)
+```
+
+```{r}
+summary(m2)
+```
+
+```{r}
+df_pred = data.frame(age = seq(min(framingham$age), max(framingham$age), length.out = 1000),
+                     BMI = seq(min(framingham$BMI), max(framingham$BMI), length.out = 1000))
+df_pred$Ey = predict(m2, type = "response", newdata = df_pred)
+
+plot(df_pred$age, df_pred$Ey, type = "l", col = "red", lwd = 1.5,
+     xlab = "Age", ylab = "P(Smoker)")
+points(df_pred$age, predict(m1, type = "response", newdata = df_pred), type = "l", lwd = 1.5)
+```
+
+<br>
+
+## Link functions
+
+$$
+\begin{array}{lll}
+\hline
+\text{Distribution} & \text{Link Name} & \text{Formula} \\
+\hline
+\text{Normal}   & \text{Identity} & \mu \\
+\text{Poisson}  & \text{Log}      & \ln(\mu) \\
+\text{Binomial} & \text{Logit}    & \ln\left(\frac{\mu}{1-\mu}\right) \\
+\text{Gamma}    & \text{Inverse}  & 1/\mu \\
+\hline
+\end{array}
+$$
+
+- Numerical stability
+
+    - We love these in computational statistics*
+    
+    - *When they retain numerical stability
+
+- Analytical convenience
+
+    - For mathemtical statistics these functions cause problems
+    
+    - They solve as many as they create, but in the long run we try to escape them
+    
+<br>
+
+### Poisson
+
+- What determines how many you smoke per day?
+
+```{r}
+hist(framingham$cigsPerDay, xlab = "Cigarettes", main = "Cigarettes per day")
+```
+
+- Probably that you smoke...
+
+```{r}
+smokers = framingham[framingham$currentSmoker == 1,]
+hist(smokers$cigsPerDay, xlab = "Cigarettes", main = "Cigarettes per day")
+```
+
+<br>
+
+$$
+y \sim Pois(\lambda)
+$$
+
+```{r}
+hist(rpois(1000,5))
+```
+
+$$
+\lambda = e^{\beta_0 + \beta_1x}
+$$
+
+<br>
+
+```{r}
+m1 = glm(cigsPerDay ~ smokers$heartRate, family = poisson(link = "log"), data = smokers)
+summary(m1)
+```
+
+<br>
+
+### Beta
+
+```{r}
+library(mgcv)
+par(mar = c(5, 9, 4, 2))
+boxplot(cruise$infected_proportion ~ cruise$liner,
+        xlab = "Proportion infected",
+        ylab = "",
+        main = "Norovirus outbreaks on cruise liners",
+        horizontal = TRUE,
+        las = 1,
+        cex.axis = 0.7,
+        col = "#D1D1D190")
+```
+
+\[
+\left[y|\alpha, \beta \right] \equiv \text{Beta}(\alpha,\beta)
+\]
+
+\[
+\alpha = \mu \phi \qquad \beta = (1 - \mu) \phi \qquad g(\mu) = \textbf{X}^\prime \boldsymbol{\beta}
+\]
+
+```{r}
+m1 = gam(infected_proportion ~ as.factor(liner) - 1,
+         data = cruise, family = betar(link = "logit"))
+```
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.align='center'}
+# liner levels exactly as used in the fitted model
+levs <- levels(model.frame(m1)[["as.factor(liner)"]])
+
+# prediction data: one row per liner
+nd <- data.frame(liner = factor(levs, levels = levs))
+
+# get fitted linear predictor + SE per liner
+pr <- predict(m1, newdata = nd, type = "link", se.fit = TRUE)
+
+# 95% CI on link scale, then transform to response
+invlogit <- m1$family$linkinv
+fit_r <- invlogit(pr$fit)
+lo_r  <- invlogit(pr$fit - 1.96 * pr$se.fit)
+hi_r  <- invlogit(pr$fit + 1.96 * pr$se.fit)
+
+# plot CI segments only, labeled by the original liner names
+op <- par(mar = c(5, 10, 4, 2))
+
+plot(
+  NULL,
+  xlim = range(c(lo_r, hi_r)),
+  ylim = c(0.5, length(levs) + 0.5),
+  yaxt = "n",
+  xlab = "Predicted infected proportion (95% CI)",
+  ylab = "",
+  main = "Predicted mean infection by liner"
+)
+
+segments(lo_r, seq_along(levs), hi_r, seq_along(levs), lwd = 3)
+
+axis(2, at = seq_along(levs), labels = levs, las = 1, cex.axis = 0.75)
+
+par(op)
+```
+
+
+<br>
+
+## Other named distributions
+
+- Non-normal regression is increasingly popular!
+
+    - Gamma, cauchy, laplace, etc.
+    
+- Non-normal distributions are everywhere
+
+    - It's weirder to see a normal distribution than a non-normal
+    
+- Why do we use the normal then?
+
+- When do we use non-normal regression?
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
