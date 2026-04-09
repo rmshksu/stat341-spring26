@@ -272,6 +272,7 @@ library(mgcv)
 url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/cruisedata.csv"
 cruise = read.csv(url, stringsAsFactors = FALSE)
 
+
 par(mar = c(5, 9, 4, 2))
 boxplot(cruise$infected_proportion ~ cruise$liner,
         xlab = "Proportion infected",
