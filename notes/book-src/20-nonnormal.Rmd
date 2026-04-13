@@ -352,6 +352,39 @@ par(op)
 
 <br>
 
+## Testing normality
+
+```{r}
+m1 = lm(currentSmoker ~ age + BMI, data = framingham)
+m2 = lm(cigsPerDay ~ smokers$heartRate, data = smokers)
+m3 = lm(infected_proportion ~ as.factor(liner) - 1, data = cruise)
+```
+
+```{r message=FALSE, warning=FALSE}
+plot(m1, 2)
+plot(m2, 2)
+plot(m3, 2)
+```
+
+<br>
+
+- Hypothesis test for normality
+
+```{r}
+shapiro.test(m1$residuals)
+```
+
+```{r}
+shapiro.test(m2$residuals)
+shapiro.test(m3$residuals)
+```
+
+<br>
+
+<br>
+
+## Go away
+
 
 
 
