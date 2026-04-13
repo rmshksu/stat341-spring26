@@ -1,0 +1,992 @@
+# Day 21
+
+## Announcements
+
+- Congratulations to The Outliers and Abra-ca-data!
+
+    - Very positive feedback on all of you
+
+    - Remember: participation is a resume bullet (see: "Hackathon")
+    
+    - Sign up for next year and bring your friends!
+    
+- Takeaway from datafest: keep it simple, stupid
+
+    - Clearly communicable results with large, readable figures
+    
+    - Keep that in mind for your final project
+    
+- Today and tomorrow
+
+    - Networks and graphs
+    
+    - Random effects
+    
+- This week: model fitting
+
+    - Due Saturday, April 18 
+
+    - Last call to struggle with R coding
+    
+- Next week: Results
+
+    - Decide on the figures/tables you'd like to use
+    
+    - Discuss the outcomes of fitting your models
+    
+    - Put it all in the context of the data / science
+    
+- Apr 26 - May 2: Early presentations and rough drafts
+
+- May 3 - May 12: Presentations
+
+- May 15: Project submission deadline
+
+- Portfolio
+
+    - Compile all of the assignments you've done for the course as PDFs
+    
+    - Combine them into one document with a cover sheet
+    
+    - Extra credit
+    
+    - "Do you have data analytics / R programming experience?"
+    
+<br>
+
+<br>
+
+## Review
+
+>All models are wrong, but some are very useful - George Box
+
+When we develop a statistical model, we seek to represent the data generating process
+
+<br>
+
+- Averages, sums, aggregates
+
+$$
+y_i \sim N(\mu, \sigma^2)
+$$
+
+- Normal distributions aren't normal
+
+    - They're very useful
+    
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+cols <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd")
+x <- seq(-6, 6, length.out = 500)
+plot(x, dnorm(x, 0, 1), type = "l", col = cols[1], lwd = 2,
+     ylim = c(0, 0.9), xlab = "x", ylab = "Density",
+     main = "Normal Distribution")
+lines(x, dnorm(x, 0, 0.5),  col = cols[2], lwd = 2)
+lines(x, dnorm(x, 0, 2),    col = cols[3], lwd = 2)
+lines(x, dnorm(x, -2, 1),   col = cols[4], lwd = 2)
+lines(x, dnorm(x, 2, 1.5),  col = cols[5], lwd = 2)
+legend("topright", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = c("mu=0,sig=1", "mu=0,sig=0.5", "mu=0,sig=2",
+                  "mu=-2,sig=1", "mu=2,sig=1.5"))
+```
+
+    
+<br>
+
+- Infections, sightings, successes
+
+$$
+y_i \sim \text{Bern}(p)
+$$
+
+- If we sum many bernoulli r.v.s:
+
+$$
+\sum_{i=1}^N y_i \sim \text{Bin}(N,p)
+$$
+
+
+<br>
+
+- Counts, occurrences
+
+$$
+y_i \sim \text{Pois}(\lambda)
+$$
+
+- There are many times poisson r.v.s will look binomial
+
+    - Common sense usually points us to the right one
+    
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+lambdas <- c(1, 2, 5, 10, 20)
+x_pts   <- 0:35
+plot(NULL, xlim = c(0, 35), ylim = c(0, 0.40),
+     xlab = "k", ylab = "P(X = k)", main = "Poisson Distribution")
+for (i in seq_along(lambdas)) {
+  points(x_pts, dpois(x_pts, lambdas[i]), type = "h",
+         col = cols[i], lwd = 2)
+  points(x_pts, dpois(x_pts, lambdas[i]), pch = 16,
+         col = cols[i], cex = 0.6)
+}
+legend("topright", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = paste0("λ=", lambdas))
+
+```
+
+    
+<br>
+
+- Probabilities, proportions, rates
+
+$$
+y_i \sim \text{Beta}(\alpha, \beta)
+$$
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+x <- seq(0.001, 0.999, length.out = 500)
+ab <- list(c(0.5,0.5), c(1,1), c(2,5), c(5,2), c(2,2))
+ylim_beta <- c(0, 3)
+plot(x, dbeta(x, ab[[1]][1], ab[[1]][2]), type = "l",
+     col = cols[1], lwd = 2, ylim = ylim_beta,
+     xlab = "x", ylab = "Density", main = "Beta Distribution")
+for (i in 2:length(ab))
+  lines(x, dbeta(x, ab[[i]][1], ab[[i]][2]), col = cols[i], lwd = 2)
+legend("top", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = c("a=0.5,b=0.5","a=1,b=1","a=2,b=5",
+                  "a=5,b=2","a=2,b=2"))
+```
+
+
+- Special cases:
+
+```{r}
+hist(rbeta(10000,1,1))
+```
+
+```{r}
+hist(runif(10000))
+```
+
+<br>
+
+- Crop yields, birthing weights
+
+$$
+y_i \sim \text{Gamma}(\alpha,\beta)
+$$
+
+- Useful method for modeling non-constant (mean dependent) variance
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+x <- seq(0.001, 20, length.out = 500)
+
+ag <- list(c(1,1), c(2,1), c(3,1), c(5,1), c(2,0.5))
+plot(x, dgamma(x, ag[[1]][1], rate = ag[[1]][2]), type = "l",
+     col = cols[1], lwd = 2, ylim = c(0, 1),
+     xlab = "x", ylab = "Density", main = "Gamma Distribution")
+for (i in 2:length(ag))
+  lines(x, dgamma(x, ag[[i]][1], rate = ag[[i]][2]),
+        col = cols[i], lwd = 2)
+legend("topright", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = c("a=1,b=1","a=2,b=1","a=3,b=1",
+                  "a=5,b=1","a=2,b=2"))
+```
+
+
+<br>
+
+Honorable mentions:
+
+- Laplace / Double exponential
+
+    - Useful when wanting to adjust the linear model for absolute loss instead of squared loss
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+dlaplace <- function(x, mu = 0, b = 1)
+  (1 / (2 * b)) * exp(-abs(x - mu) / b)
+
+x <- seq(-8, 8, length.out = 500)
+params_l <- list(c(0,1), c(0,0.5), c(0,2), c(-2,1), c(2,1.5))
+plot(x, dlaplace(x, params_l[[1]][1], params_l[[1]][2]),
+     type = "l", col = cols[1], lwd = 2, ylim = c(0, 1),
+     xlab = "x", ylab = "Density", main = "Laplace Distribution")
+for (i in 2:length(params_l))
+  lines(x, dlaplace(x, params_l[[i]][1], params_l[[i]][2]),
+        col = cols[i], lwd = 2)
+legend("topright", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = c("mu=0,b=1","mu=0,b=0.5","mu=0,b=2",
+                  "mu=-2,b=1","mu=2,b=1.5"))
+```
+
+<br>
+
+- Pareto distribution
+
+    - 80/20 law: $80\%$ of outcomes are the result of $20\%$ of causes
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+dpareto <- function(x, alpha, x_m = 1)
+  ifelse(x < x_m, 0, alpha * x_m^alpha / x^(alpha + 1))
+
+x <- seq(1, 8, length.out = 500)
+alphas_p <- c(1, 1.5, 2, 3, 4)
+y_all_p  <- sapply(alphas_p, function(a) dpareto(x, a))
+plot(x, y_all_p[,1], type = "l", col = cols[1], lwd = 2,
+     ylim = c(0, 4), xlim = c(1,5),
+     xlab = "x", ylab = "Density", main = "Pareto Distribution")
+for (i in 2:length(alphas_p))
+  lines(x, y_all_p[,i], col = cols[i], lwd = 2)
+legend("topright", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = paste0("a=", alphas_p, ", xm=1"))
+```
+
+<br>
+
+- Power law
+
+    - Pareto is just one type of power law distribution
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+dpowerlaw <- function(x, alpha, x_min = 1)
+  ifelse(x < x_min, 0, (alpha - 1) / x_min * (x / x_min)^(-alpha))
+
+x <- seq(1, 10, length.out = 500)
+alphas <- c(2, 2.5, 3, 3.5, 4)
+y_all  <- sapply(alphas, function(a) dpowerlaw(x, a))
+plot(x, y_all[,1], type = "l", col = cols[1], lwd = 2,
+     ylim = c(0, max(y_all)), xlim = c(1,5),
+     xlab = "x", ylab = "Density", main = "Power Law")
+for (i in 2:length(alphas))
+  lines(x, y_all[,i], col = cols[i], lwd = 2)
+legend("topright", bty = "n", lwd = 2, col = cols, cex = 0.7,
+       legend = paste0("a=", alphas))
+```
+
+<br>
+
+Generalized linear models
+
+- Simply change the distributional support of the linear model
+
+    - Normal regression / beta regression / binomial regression...
+
+    - *Insert distribution* regression
+
+- Pros: adjustment of assumption
+
+    - Non-normal data can break a lot of assumptions at once beyond just normality
+    
+    - Adjusting for that can get a lot of inferential and predictive power back
+    
+- Cons: loss of classical inference
+
+    - We're constantly improve inferential techniques for GLMs
+    
+    - Remember that an F-test relies on normality at it's core
+    
+    - t-test relies on *asymptotic* normality
+    
+    - This trend continues
+    
+<br>
+  
+<br>
+  
+**Any questions?**
+  
+<br>
+  
+  
+## Networks and Graphs
+  
+- Every math based science has a foundational math field that built it
+  
+- For statistics that's probability theory
+  
+- All of network sciences begins with graph theory
+  
+- Graph theory begins with Euler and the [Seven Bridges of Konigsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg)
+  
+<br>
+
+### Definitions and notation
+
+A graph is defined as $G = (V, E)$ where:
+
+- $V$ is the **vertex set**
+
+    - A vertex is an individual
+
+- $E$ is the **edge set**
+
+    - An edge is a connection between individuals
+    
+<br>
+    
+A graph is considered **undirected** if $G_{ij} = G_{ji}$
+
+- a.k.a. the direction of edge conntection is irrelevant
+
+    - We'll be focusing on undirected graphs today
+    
+    - Directed graphs are more common in causal studies
+
+<br>
+
+An **adjacency matrix** ($A$) is the matrix representation of a graph
+
+- Vertices are represented as rows and columns ($i,j$)
+
+- If an edge exists between $i$ and $j$ then $A_{i,j} = A_{j,i} =  1$
+
+- If there is no edge between $i$ and $j$ then $A_{i,j} = A_{j,i} = 0$
+
+<br>
+
+- (WhiteboarD) Basic graph examples
+
+    - Fully connected
+    
+    - Clusters
+    
+    - Small world
+
+<br>
+
+### Building a network
+
+```{r adjacency-matrix, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+n = 10
+
+# node communitys
+community = c(1, 1, 1, 2, 2, 2, 3, 3, 3, 3)
+node_labels = paste0("V", 1:n)
+
+# empty adjacency matrix
+A = matrix(0, nrow = n, ncol = n,
+           dimnames = list(node_labels, node_labels))
+
+# function to add edges
+add_edge = function(A, i, j) { A[i, j] <- 1; A[j, i] <- 1; A }
+
+# community edges
+# community A
+A = add_edge(A, 1, 2); A = add_edge(A, 1, 3); A = add_edge(A, 2, 3)
+# community B
+A = add_edge(A, 4, 5); A = add_edge(A, 4, 6); A = add_edge(A, 5, 6)
+# community C
+A = add_edge(A, 7, 8); A <- add_edge(A, 7, 9); A <- add_edge(A, 8, 9)
+A = add_edge(A, 8, 10); A <- add_edge(A, 9, 10)
+
+# cross-community edges
+A = add_edge(A, 3, 4)   # A <-> B (node 3 and 4)
+A = add_edge(A, 6, 7)   # B <-> C (node 6 and 7)
+
+print(A)
+```
+
+```{r}
+# undirected implies symmetric
+all(A == t(A))
+
+# E = sum(Adjacency Matrix) / 2 (since it's symmetric)
+sum(A) / 2
+```
+
+<br>
+
+### Basic analysis
+
+The **degree** $k_i$ of vertex $i$ is the sum of each row in $A$:
+$$k_i = \sum_{j} A_{ij}$$
+
+```{r}
+degree = rowSums(A)
+degree
+
+# degree distribution visualized
+barplot(degree, col = "white")
+```
+
+<br>
+
+The **shortest path** refers to the path from $i$ to $j$ that crosses the least edges of all possible paths.
+
+- **Betweenness** quantifies how often a node lies on the shortest path between two other nodes
+
+<br>
+
+To find shortest paths we use a shortest path **algorithm** to search the network.
+
+- There's a lot of diversity for algorithms (Dijkstra / Bellman-Ford / A-star)
+
+- Since the network is small we'll just use a **breadth-first search**
+
+    - Algorithm logic on the whiteboard
+    
+- Note: I'm implementing these algorithms from scratch
+
+    - Extremely impractical, I just don't want to use packages for this lecture
+    
+    - In practice you can use the `igraph` package in R or NetworkX library in python
+    
+<br>
+
+```{r}
+# standard breadth-first search algorithm
+bfsd = function(A, source) {
+  n = nrow(A)
+  dist = rep(Inf, n)
+  dist[source] = 0
+  q = source
+  while (length(q) > 0) {
+    u = q[1]
+    q = q[-1]
+    neighbors = which(A[u, ] == 1)
+    for (v in neighbors) {
+      if (is.infinite(dist[v])) {
+        dist[v] = dist[u] + 1
+        q = c(q, v)
+      }
+    }
+  }
+  dist
+}
+```
+
+```{r}
+# brandes algorithm for betweenness
+# implementing bfs as the sp algorithm
+betweenness = function(A) {
+  n = nrow(A)
+  cb = rep(0, n)
+
+  for (s in 1:n) {
+    dist = rep(-1, n); dist[s] = 0
+    sigma = rep(0, n);  sigma[s] = 1
+    pred = vector("list", n)
+    q = s
+    order_list = c()
+
+    while (length(q) > 0) {
+      v = q[1]; q = q[-1]
+      order_list = c(order_list, v)
+      for (w in which(A[v, ] == 1)) {
+        if (dist[w] < 0) {
+          dist[w] = dist[v] + 1
+          q = c(q, w)
+        }
+        if (dist[w] == dist[v] + 1) {
+          sigma[w] = sigma[w] + sigma[v]
+          pred[[w]] = c(pred[[w]], v)
+        }
+      }
+    }
+
+    delta = rep(0, n)
+    for (w in rev(order_list)) {
+      for (v in pred[[w]]) {
+        delta[v] = delta[v] + (sigma[v] / sigma[w]) * (1 + delta[w])
+      }
+      if (w != s) cb[w] = cb[w] + delta[w]
+    }
+  }
+  cb / 2
+}
+
+btwn = betweenness(A)
+names(btwn) = node_labels
+btwn
+
+# betweennes distribution
+# high betweenness is expected at "bridge" vertices
+barplot(btwn, col = "white")
+```
+
+<br>
+
+- The eigenvector centrality tells us about the *influence* of certain vertices
+
+    - Solve for the leading eigenvector of $A$:
+
+```{r eigenvector-centrality}
+ev = eigen(A)
+ev_cent = abs(ev$vectors[, 1])
+ev_cent = ev_cent / max(ev_cent) # normalize to [0,1]
+names(ev_cent) = node_labels
+
+round(ev_cent, 3)
+```
+
+<br>
+
+### Community detection
+
+Note: there are many method for community detection but since this is a stats class we'll stick to statistical pattern recognition.
+
+- Consider two graphs, $G_0$ and $G_A$
+
+    - $G_0$ arises from a uniform, random process
+    
+    - If a graph, $G$, arises from the same process as $G_0$, it should have no communities
+    
+    - $G_A$ arises from a process where communities form
+    
+- We can measure the degree with which $G \in G_0$ using **modularity**
+
+$$Q = \frac{1}{2m} \sum_{ij} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_i, c_j)$$
+
+Where $m$ is the total number of edges, $k_i$ is the degree of vertex $i$, and $\delta(c_i, c_j) = 1$ if vertex $i$ and $j$ are in the same community.
+
+```{r}
+compute_modularity = function(A, community) {
+  m = sum(A) / 2
+  k = rowSums(A)
+  n = nrow(A)
+  Q = 0
+  for (i in 1:n) {
+    for (j in 1:n) {
+      if (community[i] == community[j]) {
+        Q = Q + (A[i, j] - (k[i] * k[j]) / (2 * m))
+      }
+    }
+  }
+  Q / (2 * m)
+}
+
+Q_true = compute_modularity(A, community)
+as.numeric(Q_true)
+```
+
+- This value implies there's communities present and our graph does not belong to $G_0$
+
+    - From here we can use search algorithms to define communities from vertex features
+    
+    - There are also detection algorithms (i.e., greedy search) that focus on pure community classification
+    
+<br>
+
+### Erdos–Renyi
+
+An **Erdos–Renyi (ER) graph** $G(n, p)$ is generated by taking $n$ vertices and including each possible edge independently with probability $p$.
+
+$$\mathbb{E}[m] = p \binom{n}{2}$$
+
+- The degree distribution of an Edros-Reyni vertex is binomial
+
+    - As $n \rightarrow \infty$ it becomes poisson
+    
+<br>
+
+```{r}
+erdos_reyni = function(n, p) {
+  A = matrix(0, nrow = n, ncol = n)
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      if (runif(1) < p) {
+        A[i, j] = 1
+        A[j, i] = 1
+      }
+    }
+  }
+  rownames(A) = colnames(A) = paste0("V", 1:n)
+  A
+}
+
+set.seed(73)
+ER = erdos_reyni(n = 10, p = 0.3)
+ER
+```
+
+```{r}
+barplot(rowSums(ER), col = "white")
+```
+
+
+<br>
+
+### Why graphs?
+
+- Consider the scenario of disease spread
+
+    - Where you are and what time you're there are clearly important
+    
+    - But what about contact based disease? (i.e., COVID, Mono, STDs)
+    
+    - Then it also matters *who* you interacted with
+    
+<br>
+
+- In a situation where the graph arises randomly:
+
+    - There's no real need to understand network features
+    
+    - No knowledge of network structure is equivalent to knowledge of a random structure
+    
+- If a graph arises from a stricter process?
+
+    - Individuals who have a lot of contact will be the most threatening to the total graph
+    
+    - If we identify them they contain most of our information
+    
+    - (Whiteboard) Cheerleader / Football player model 
+    
+<br>
+
+- Networks are more concerned with modeling expectations and rate
+
+    - What will this trend towards?
+    
+- The goal is to deflate varince by uncovering more of the network's structure
+
+<br>
+
+### Simulation study
+
+We can simulate an outbreak across a network with a "Susceptible - Infected" (SI) model
+
+- Assumes that an individual is in one of two states
+
+    - Able to be infected or actively infected
+
+- Typical expansion: "Susceptible - Infected - Recovered" (SIR) model
+
+    - We'll avoid this to keep things simple but this is closer to reality since recovery tends to imply temporary immunity
+    
+- SI is a great model for non-lethal pathogens like HSV where contact is required for infection
+
+    - Vertex 1 is infected
+    
+    - Vertex 1 connects with Vertex 2
+    
+    - Vertex 2 is infected
+    
+    - Those two share no further connections
+    
+    - The outbreak is cut off at Vertex 2
+    
+<br>
+
+```{r}
+si_simulation = function(A, patient_zero = 1, beta = 0.4, max_t = 20) {
+  n = nrow(A)
+  status = rep("S", n)
+  status[patient_zero] = "I"
+  inf_time = rep(NA_real_, n)
+  inf_time[patient_zero] = 0
+
+  for (t in 1:max_t) {
+    new_status = status
+    for (j in which(status == "S")) {
+      infected_neighbors = sum(A[j, ] == 1 & status == "I")
+      if (infected_neighbors > 0) {
+        p_inf = 1 - (1 - beta)^infected_neighbors
+        if (runif(1) < p_inf) {
+          new_status[j] = "I"
+          inf_time[j] = t
+        }
+      }
+    }
+    status = new_status
+    if (all(status == "I")) break
+  }
+  inf_time
+}
+```
+
+```{r}
+n_sims = 100
+beta = 0.4
+patient_zero = 1
+max_t = 20
+t_grid = 0:max_t
+
+curves = function(adj_matrix, n_sims, beta, patient_zero, max_t) {
+  curves = matrix(0, nrow = n_sims, ncol = max_t + 1)
+  inf_times_all = matrix(NA, nrow = n_sims, ncol = nrow(adj_matrix))
+  for (s in 1:n_sims) {
+    inf_t = si_simulation(adj_matrix, patient_zero, beta, max_t)
+    inf_times_all[s, ] = inf_t
+    for (t in t_grid) {
+      curves[s, t + 1] = mean(!is.na(inf_t) & inf_t <= t)
+    }
+  }
+  list(curves = curves, inf_times = inf_times_all)
+}
+
+res_struct = curves(A, n_sims, beta, patient_zero, max_t)
+
+er_curves = matrix(0, nrow = n_sims, ncol = max_t + 1)
+er_inf_times = matrix(NA, nrow = n_sims, ncol = n)
+for (s in 1:n_sims) {
+  A_er_s = erdos_reyni(n, 0.3)
+  inf_t = si_simulation(A_er_s, patient_zero, beta, max_t)
+  er_inf_times[s, ] = inf_t
+  for (t in t_grid) {
+    er_curves[s, t + 1] = mean(!is.na(inf_t) & inf_t <= t)
+  }
+}
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mean_struct = colMeans(res_struct$curves)
+sd_struct = apply(res_struct$curves, 2, sd)
+mean_er = colMeans(er_curves)
+sd_er = apply(er_curves, 2, sd)
+
+plot(t_grid, mean_struct,
+     type = "l", lwd = 2, col = "#E07B54",
+     ylim = c(0, 1),
+     xlab = "Time Step",
+     ylab = "Proportion Infected",
+     main = "",
+     las = 1)
+
+polygon(c(t_grid, rev(t_grid)),
+        c(pmin(mean_struct + sd_struct, 1), rev(pmax(mean_struct - sd_struct, 0))),
+        col = adjustcolor("#E07B54", alpha.f = 0.2), border = NA)
+
+lines(t_grid, mean_er, lwd = 2, col = "#5B8DB8")
+polygon(c(t_grid, rev(t_grid)),
+        c(pmin(mean_er + sd_er, 1), rev(pmax(mean_er - sd_er, 0))),
+        col = adjustcolor("#5B8DB8", alpha.f = 0.2), border = NA)
+
+legend("bottomright",
+       legend = c("Original Graph", "Erdos–Renyi"),
+       col    = c("#E07B54", "#5B8DB8"),
+       lwd    = 2, bty = "n")
+abline(h = c(0.5, 1), lty = 3, col = "gray60")
+```
+
+<br>
+
+- An observation
+
+```{r}
+# similar edge count
+sum(A) / 2
+sum(ER) / 2
+```
+
+```{r}
+# similar average degree
+mean(rowSums(A))
+mean(rowSums(ER))
+```
+
+- Why does the infection curve differ for these two graphs?
+
+<br>
+
+<br>
+
+```{r}
+A # original graph
+ER # erdos-reyni graph
+```
+
+- Community structures inform decision making
+
+    - Measures like betweenness can identify points we can 'sever' vulnerabilities
+    
+```{r}
+barplot(btwn, col = "white")
+```
+
+<br>
+
+
+```{r}
+closeness = function(A) {
+  n = nrow(A)
+  cc = numeric(n)
+  for (i in 1:n) {
+    d = bfsd(A, i)
+    reachable = d[is.finite(d) & d > 0]
+    cc[i] = if (length(reachable) > 0) 1 / mean(reachable) else 0
+  }
+  cc
+}
+
+clsns = closeness(A)
+names(clsns) = node_labels
+
+early_cutoff = 5
+outcome_mat = (res_struct$inf_times <= early_cutoff)
+
+sim_df = do.call(rbind, lapply(1:n_sims, function(s) {
+  data.frame(
+    node = 2:n,
+    sim = s,
+    early_inf = as.integer(outcome_mat[s, 2:n] & !is.na(res_struct$inf_times[s, 2:n])),
+    degree = degree[2:n],
+    closeness = clsns[2:n],
+    betweenness = btwn[2:n],
+    community = community[2:n]
+  )
+}))
+
+sim_df$early_inf[is.na(sim_df$early_inf)] = 0
+
+cat(sprintf("Early infection rate: %.1f%%\n", 100 * mean(sim_df$early_inf)))
+```
+
+<br>
+
+- We can use network metrics in statistical model development
+
+    - We'll find they're powerful predictors when we're "classifying"
+
+```{r}
+m1 = glm(early_inf ~ scale(degree),
+          data = sim_df,
+          family = binomial(link = "logit"))
+
+m2 = glm(early_inf ~ scale(closeness),
+          data = sim_df,
+          family = binomial(link = "logit"))
+
+m3 = glm(early_inf ~ scale(degree) + scale(closeness) + scale(betweenness),
+          data = sim_df,
+          family = binomial(link = "logit"))
+
+AIC(m1,m2,m3)
+
+summary(m3)
+```
+
+<br>
+
+
+### k-Nearest-Neighbors
+
+Data can be analyzed strictly through it's geometry
+
+- One of those methods is known as "k-Nearest-Neighbors"
+
+- We assume that things tend to be similar to things they're close to
+
+    - The $k$ nearest neighbors of a given vertex are checked for a classification
+    
+    - The majority class of those neighbors is the class assigned to the vertex
+    
+- This is a form of non-parametric statistics where we "train" on every variable
+
+    - If there's some structure we can isolate from those variable relationships, it shows itself with knn
+
+```{r}
+library(MASS)
+data(Pima.tr)
+
+set.seed(42)
+# shuffle and split 
+idx = sample(nrow(Pima.tr))
+pima = Pima.tr[idx, ]
+split = floor(0.8 * nrow(pima))
+train_df = pima[1:split, ]
+test_df = pima[(split + 1):nrow(pima), ]
+
+# set up data partitions
+train_means = colMeans(train_df[, 1:7])
+train_sds = apply(train_df[, 1:7], 2, sd)
+scale_data = function(X, means, sds) {
+  sweep(sweep(X, 2, means, "-"), 2, sds, "/")
+}
+train_X = scale_data(as.matrix(train_df[, 1:7]), train_means, train_sds)
+test_X = scale_data(as.matrix(test_df[, 1:7]),  train_means, train_sds)
+train_y = as.character(train_df$type)
+test_y = as.character(test_df$type)
+
+# knn algorithm
+knn = function(train_X, train_y, test_X, k) {
+  apply(test_X, 1, function(query) {
+    dists = sqrt(rowSums((train_X - query)^2))
+    nn_idx = order(dists)[1:k]
+    nn_labs = train_y[nn_idx]
+    names(sort(table(nn_labs), decreasing = TRUE))[1]
+  })
+}
+
+# knn predictions
+k_full = nrow(train_X)
+pred_k3 = knn(train_X, train_y, test_X, k = 3)
+pred_kn = knn(train_X, train_y, test_X, k = k_full)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# confusion matrices
+cat("\nConfusion Matrix (k = 3):\n")
+print(table(Predicted = pred_k3, Actual = test_y))
+
+cat("\nConfusion Matrix (k = n):\n")
+print(table(Predicted = pred_kn, Actual = test_y))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# left plot - k = 3, right plot - k = n
+diag_cols = c("No" = "#5B8DB8", "Yes" = "#E07B54")
+par(mfrow = c(1,2), mar = c(4.5,4,1,1))
+for (run in list(list(k = 3, pred = pred_k3),
+                 list(k = k_full, pred = pred_kn))) {
+
+  correct = run$pred == test_y
+  label = if (run$k == 3) "k = 3" else sprintf("k = n  (%d)", k_full)
+
+  plot(test_df$glu, test_df$bmi,
+       col = diag_cols[test_y],
+       pch = ifelse(correct, 19, 4),
+       cex = 1.6,
+       xlab = "Plasma Glucose",
+       ylab = "BMI")
+
+  legend("topleft",
+         legend = c("No diabetes", "Diabetes", "Correct", "Misclass"),
+         col = c(diag_cols, "black", "black"),
+         pch = c(19, 19, 19, 4),
+         bty = "n", cex = 0.8)
+}
+```
+
+- The primary reasons we like this method:
+
+    - "Assumption free"
+    
+    - Supervised learning with minimal guidance
+    
+    - Easily scaled
+    
+- Assumptions can quickly make this a better method
+
+    - We don't know how long every assumption will hold
+    
+    - Assumption: Humans will get diabetes (probably solid)
+    
+    - Assumption: Diabetes relates to BMI (shakey, BMI is imperfect)
+
+<br>
+
+### Further discussion
+
+- Directed acyclic graphs (DAGs)
+
+    - Causal relationships
+    
+    - Causal search algorithms, variable rejection, rationalizing confounders
+
+- Bayes / Belief networks
+
+    - Dependence graphs
+
+    - Statistical machine learning 
+
+- Markov random fields
+
+    - Markov properties / processes
+    
+    - Sparse matrices versus dense matrices
+    
+<br>
+
+## Go away
