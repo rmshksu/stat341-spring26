@@ -1,0 +1,475 @@
+# Day 22
+
+## Effects
+
+Assumptions of statistics
+
+- Each observation
+
+    - Independent
+    
+    - Identically distributed
+
+- A study is conducted at a research hospital
+
+    - The subjects share location, nursing staff, equipment, environmental conditions
+    
+- Our subjects are more similar to each other than to outsiders who share their same characteristics
+    
+- We don't measure the background variables that dictate this phenomenon
+
+- **Psuedoreplication**
+
+    - General linear model *assumes* i.i.d. observations
+    
+    - Skews confidence bands and p-values
+
+<br>
+
+```{r pooling-illustration, echo=FALSE, fig.width=9, fig.height=8}
+
+set.seed(7)
+n_groups = 5
+n_per    = 12
+group    = rep(1:n_groups, each = n_per)
+x        = rnorm(n_groups * n_per)
+
+group_int_fx   = c(-4, -1.5, 0, 1.5, 3.5)
+group_slope_fx = c(-0.8, -0.3, 0, 0.4, 0.9)
+
+y = 2 + (0.8 + group_slope_fx[group]) * x +
+     group_int_fx[group] +
+     rnorm(n_groups * n_per, sd = 1)
+
+group_cols = c("#E07B54", "#5B8DB8", "#6AAB6A", "#9B7EC8", "#C4A35A")
+
+xlim = range(x)
+ylim = range(y)
+
+global_int   = mean(tapply(y - 0.8 * x, group, mean))
+group_ints   = tapply(y - 0.8 * x, group, mean)
+shrunk_ints  = 0.6 * group_ints + 0.4 * global_int
+
+global_slope  = coef(lm(y ~ x))[2]
+group_slopes  = sapply(1:n_groups, function(g) coef(lm(y[group==g] ~ x[group==g]))[2])
+shrunk_slopes = 0.6 * group_slopes + 0.4 * global_slope
+
+par(mfrow = c(2, 2), mar = c(4, 4, 3.5, 1))
+
+plot(x, y, col = adjustcolor(group_cols[group], 0.5), pch = 19, cex = 0.9,
+     main = "Fixed Intercept, Fixed Slope",
+     xlab = "x", ylab = "y", xlim = xlim, ylim = ylim)
+abline(lm(y ~ x), lwd = 2.5, col = "black")
+
+plot(x, y, col = adjustcolor(group_cols[group], 0.5), pch = 19, cex = 0.9,
+     main = "Random Intercepts, Fixed Slope",
+     xlab = "x", ylab = "y", xlim = xlim, ylim = ylim)
+for (g in 1:n_groups) {
+  abline(a = shrunk_ints[g], b = 0.8, col = group_cols[g], lwd = 2)
+}
+
+plot(x, y, col = adjustcolor(group_cols[group], 0.5), pch = 19, cex = 0.9,
+     main = "Fixed Intercept, Random Slopes",
+     xlab = "x", ylab = "y", xlim = xlim, ylim = ylim)
+for (g in 1:n_groups) {
+  abline(a = global_int, b = shrunk_slopes[g], col = group_cols[g], lwd = 2)
+}
+
+plot(x, y, col = adjustcolor(group_cols[group], 0.5), pch = 19, cex = 0.9,
+     main = "Random Intercepts, Random Slopes",
+     xlab = "x", ylab = "y", xlim = xlim, ylim = ylim)
+for (g in 1:n_groups) {
+  abline(a = shrunk_ints[g], b = shrunk_slopes[g], col = group_cols[g], lwd = 2)
+}
+
+par(mfrow = c(1, 1))
+```
+
+<br>
+
+- Choice of random versus fixed effect is very subjective (don't sue me)
+
+    - Our goal today will be to test the idea of what to assign as random
+
+<br>
+
+<br>
+
+## Mixed models
+
+South African Heart Disease
+
+- Retrospective sample of 462 males from a high-risk region of the Western
+Cape collected by Rossouw et al. (1983).
+
+```{r load-saheart}
+url = "https://hastie.su.domains/ElemStatLearn/datasets/SAheart.data"
+SAheart = read.csv(url)
+head(SAheart)
+```
+
+<br>
+
+- Age can be a pain to extract inference from
+
+    - We need everything inbetween the min and max
+    
+    - Otherwise it gets messy
+    
+- Decile groups can help with that problem
+
+```{r create-age-groups}
+library(nlme)
+library(tidyverse)
+
+SAheart$age_group = cut(SAheart$age,
+                         breaks = quantile(SAheart$age,
+                                           probs = seq(0, 1, by = 0.2)),
+                         include.lowest = TRUE,
+                         labels   = paste0("D", 1:5))
+
+
+print(table(SAheart$age_group))
+print(tapply(SAheart$age, SAheart$age_group, range))
+```
+
+
+```{r cardio-viz, echo=FALSE}
+group_cols = c("#E07B54", "#5B8DB8", "#6AAB6A", "#9B7EC8", "#C4A35A")
+names(group_cols) = paste0("D", 1:5)
+
+par(mar = c(4, 3, 3, 1))
+for (g in paste0("D", 1:5)) {
+  sub = SAheart[SAheart$age_group == g, ]
+  plot(sub$ldl, sub$sbp,
+       col  = group_cols[g],
+       pch  = 19, cex = 0.8,
+       xlab = "LDL", ylab = "SBP",
+       main = paste0("Age group ", g, "\n(n=", nrow(sub), ")"),
+       ylim = range(SAheart$sbp),
+       xlim = range(SAheart$ldl))
+  abline(lm(sbp ~ ldl, data = sub), col = "black", lwd = 1.5)
+}
+par(mfrow = c(1, 1))
+```
+
+```{r cardio-group-means, echo=FALSE}
+group_means = tapply(SAheart$sbp, SAheart$age_group, mean)
+barplot(group_means,
+        col    = group_cols,
+        border = "white",
+        main   = "Mean Systolic Blood Pressure by Age Group",
+        xlab   = "Age Decile Group",
+        ylab   = "Mean SBP (mmHg)",
+        ylim   = c(0, max(group_means) * 1.2))
+abline(h = mean(SAheart$sbp), lty = 2, col = "gray50")
+legend("topleft", legend = "Global mean", lty = 2, lwd = 2,
+       col = "gray50", bty = "n")
+```
+
+- (Whiteboard) Writing out random effects
+
+```{r cardio-models}
+# fixed effects
+m1 = lm(sbp ~ ldl + tobacco + obesity, data = SAheart)
+
+# random intercepts
+m2 = lme(sbp ~ ldl + tobacco + obesity,
+                   random = ~ 1 | age_group,
+                   data   = SAheart,
+                   method = "ML")
+
+# random slopes on ldl
+m3 = lme(sbp ~ ldl + tobacco + obesity,
+                     random = ~ 0 + ldl | age_group,
+                     data   = SAheart,
+                     method = "ML")
+
+# random intercepts and slopes
+m4 = lme(sbp ~ ldl + tobacco + obesity,
+                    random = ~ 1 + ldl | age_group,
+                    data   = SAheart,
+                    method = "ML")
+
+summary(m1)
+summary(m2)
+
+coef(m1)
+fixef(m2)
+fixef(m3)
+fixef(m4)
+```
+
+
+
+
+```{r cardio-coef-compare, echo=FALSE, fig.width=9, fig.height=5}
+
+preds = c("ldl", "tobacco", "obesity")
+
+coef_fixed      = coef(summary(m1))[preds, ]
+coef_rand_int   = summary(m2)$tTable[preds, ]
+coef_rand_slope = summary(m3)$tTable[preds, ]
+coef_rand_both  = summary(m4)$tTable[preds, ]
+
+ests = list(
+  coef_fixed[, "Estimate"],
+  coef_rand_int[, "Value"],
+  coef_rand_slope[, "Value"],
+  coef_rand_both[, "Value"]
+)
+
+ses = list(
+  coef_fixed[, "Std. Error"],
+  coef_rand_int[, "Std.Error"],
+  coef_rand_slope[, "Std.Error"],
+  coef_rand_both[, "Std.Error"]
+)
+
+model_cols = c(
+  "Fixed"         = "#E07B54",
+  "Rand. Int."    = "#5B8DB8",
+  "Rand. Slope"   = "#6AAB6A",
+  "Rand. Int+Slp" = "#9B7EC8"
+)
+
+par(mfrow = c(1, 3), mar = c(6, 4, 3, 1))
+
+for (i in seq_along(preds)) {
+  est_i = sapply(ests, `[`, i)
+  se_i  = sapply(ses,  `[`, i)
+  ylim  = range(c(est_i - 2 * se_i, est_i + 2 * se_i))
+
+  plot(1:4, est_i,
+       pch  = 19, cex  = 1.8,
+       col  = model_cols,
+       ylim = ylim,
+       xaxt = "n",
+       xlab = "",
+       ylab = "Estimate",
+       main = preds[i])
+  axis(1, at = 1:4, labels = names(model_cols), las = 2, cex.axis = 0.72)
+  segments(1:4, est_i - 1.96 * se_i,
+           1:4, est_i + 1.96 * se_i,
+           col = model_cols, lwd = 2)
+  abline(h = 0, lty = 2, col = "gray60")
+}
+```
+
+- `nlme::BodyWeight`
+
+    - Longitudinal experiment tracking the body weight (grams) of **64 rats** measured over 64 days under three different diets (Hand & Crowder, 1996)
+
+- Bioaccumulation
+
+    - We have some baseline level of environmental toxicity (i.e., microplastics in water)
+    
+    - Wouldn't it make sense to account for that?
+
+
+```{r load-bodyweight}
+data(BodyWeight, package = "nlme")
+head(BodyWeight)
+```
+
+```{r bw-viz, echo=FALSE}
+diet_cols = c("1" = "#E07B54", "2" = "#5B8DB8", "3" = "#6AAB6A")
+
+plot(BodyWeight$Time, BodyWeight$weight,
+     col  = adjustcolor(diet_cols[BodyWeight$Diet], 0.3),
+     pch  = 19, cex = 0.6,
+     xlab = "Day",
+     ylab = "Body Weight (g)",
+     main = "Rat Body Weight Over Time by Diet Group")
+
+for (rat in unique(BodyWeight$Rat)) {
+  sub = BodyWeight[BodyWeight$Rat == rat, ]
+  lines(sub$Time, sub$weight,
+        col = adjustcolor(diet_cols[sub$Diet[1]], 0.4), lwd = 0.8)
+}
+
+legend("topleft",
+       legend = paste("Diet", 1:3),
+       col    = diet_cols,
+       lwd    = 2, bty = "n")
+```
+
+```{r bw-boxplot, echo=FALSE}
+boxplot(weight ~ Diet, data = BodyWeight,
+        col    = diet_cols,
+        border = "gray30",
+        main   = "Body Weight Distribution by Diet Group",
+        xlab   = "Diet",
+        ylab   = "Weight (g)")
+```
+
+
+
+```{r bw-models}
+# fixed intercepts fixed slopes
+m1 = lm(weight ~ Time, data = BodyWeight)
+
+# random intercepts fixed slopes
+m2 = lme(weight ~ Time,
+           random = ~ 1 | Diet,
+           data   = BodyWeight,
+           method = "ML")
+
+# fixed intercept random slopes
+m3 = lme(weight ~ Time,
+           random = ~ 0 + Time | Diet,
+           data   = BodyWeight,
+           method = "ML")
+
+# random intercepts random slopes
+m4 = lme(weight ~ Time,
+           random = ~ 1 + Time | Diet,
+           data   = BodyWeight,
+           method = "ML")
+
+anova(m2, m3, m4)
+```
+
+```{r bw-fitted, echo=FALSE}
+time_seq  = seq(min(BodyWeight$Time), max(BodyWeight$Time), length.out = 100)
+diet_levs = levels(BodyWeight$Diet)
+
+pred_m1 = predict(m1, newdata = data.frame(Time = time_seq))
+
+pred_m2 = lapply(diet_levs, function(d) {
+  predict(m2, newdata = data.frame(Time = time_seq,
+                                   Diet = factor(d, levels = diet_levs)),
+          level = 1)
+})
+
+pred_m3 = lapply(diet_levs, function(d) {
+  predict(m3, newdata = data.frame(Time = time_seq,
+                                   Diet = factor(d, levels = diet_levs)),
+          level = 1)
+})
+
+pred_m4 = lapply(diet_levs, function(d) {
+  predict(m4, newdata = data.frame(Time = time_seq,
+                                   Diet = factor(d, levels = diet_levs)),
+          level = 1)
+})
+
+model_preds = list(pred_m2, pred_m3, pred_m4)
+model_names = c("Random Intercepts",
+                 "Random Slopes",
+                 "Random Int. + Slope")
+
+par(mfrow = c(1, 4), mar = c(4, 4, 3, 1))
+
+plot(BodyWeight$Time, BodyWeight$weight,
+     col  = adjustcolor(diet_cols[BodyWeight$Diet], 0.25),
+     pch  = 19, cex = 0.6,
+     xlab = "Day", ylab = "Body Weight (g)",
+     main = "Fixed Only")
+lines(time_seq, pred_m1, lwd = 2.5, col = "black")
+
+for (m in 1:3) {
+  plot(BodyWeight$Time, BodyWeight$weight,
+       col  = adjustcolor(diet_cols[BodyWeight$Diet], 0.25),
+       pch  = 19, cex = 0.6,
+       xlab = "Day", ylab = "Body Weight (g)",
+       main = model_names[m])
+  for (i in seq_along(diet_levs)) {
+    lines(time_seq, model_preds[[m]][[i]],
+          col = diet_cols[diet_levs[i]], lwd = 2.5)
+  }
+}
+```
+
+```{r bw-residuals, echo=FALSE}
+par(mfrow = c(2,2), mar = c(4, 4, 3, 1))
+
+resid_list  = list(residuals(m1), residuals(m2),
+                    residuals(m3), residuals(m4))
+resid_names = c("Fixed Only",       "Random Intercepts",
+                 "Random Slopes",    "Random Int. + Slope")
+
+for (i in 1:4) {
+  boxplot(resid_list[[i]] ~ BodyWeight$Diet,
+          col    = diet_cols,
+          border = "gray30",
+          main   = resid_names[i],
+          xlab   = "Diet Group",
+          ylab   = "Residual")
+  abline(h = 0, lty = 2, col = "gray50")
+}
+```
+
+## Assumption vs Data
+
+- How do we improve prediction?
+
+    - Add data
+    
+    - Add assumptions
+    
+- Assumptions are information
+
+    - If all we have is assumptions, a model is the intersection of expert opinions
+    
+    - If all we have is data, a model is an exploration of the data
+    
+- Random forests / kNN 
+
+    - Unsupervised learning for exploring data
+    
+    - Apply assumptions to the process and use the exploration to inform the final model
+    
+<br>
+
+## Bayesian
+
+- Originally everything was "Bayesian"
+
+    - Inverse-probability
+    
+- Many of the results we seek in "frequentist" statistics
+
+    - Imitations of their original bayesian counterparts
+    
+<br>
+
+Why Bayes?
+
+- Building a model for things we haven't observed (Rare / unheard of events)
+
+- Capturing true processes with mechanistic models (presence / absence)
+
+- Instant inferential output (some MLEs are made of duct tape and hope)
+
+<br>
+
+- Instead of MLE / MME / Kernel estimation / REML
+
+    - Bayes theorem
+    
+- Once the model is made, it just works*
+
+$$
+P(A|B) = \frac{P(B|A)P(A)}{P(B|A)P(A)+P(B|A^c)P(A^c)}
+$$
+
+<br>
+
+- *The denominator of Bayes theorem is a land mine
+
+$$
+P(\theta | y) = \frac{P(y | \theta) P(\theta)}{\int P(y | \theta) P(\theta) \, d\theta}
+$$
+
+<br>
+
+- Let's develop a model
+
+<br>
+
+<br>
+
+<br>
+
+## Go away
