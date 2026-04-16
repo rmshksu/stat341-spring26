@@ -103,8 +103,8 @@ South African Heart Disease
 Cape collected by Rossouw et al. (1983).
 
 ```{r load-saheart}
-url = "https://hastie.su.domains/ElemStatLearn/datasets/SAheart.data"
-SAheart = read.csv(url)
+url = "https://raw.githubusercontent.com/rmshksu/teaching-data/refs/heads/main/SAheart.csv"
+SAheart = read.csv(url)[,-1]
 head(SAheart)
 ```
 
